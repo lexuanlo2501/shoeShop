@@ -1,0 +1,42 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+  
+td, th {
+    border: 1px solid rgb(90, 89, 89);
+    text-align: left;
+    padding: 8px 15px;
+    vertical-align: top;
+
+    img {
+        width: 80px;
+        height: 59px;
+        object-fit: cover;
+        object-position: 0 -16px;
+
+    }
+
+}
+
+th {
+    background-color: rgb(214, 212, 212);
+}
+  
+tr:nth-child(even) {
+    // background-color: #dddddd;
+}
+
+.title_descri {
+    width: 250px;
+}
+
+.product_name {
+    width: 350px;
+}
+
+.product_description {
+    width: 300px;
+}
+

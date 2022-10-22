@@ -1,0 +1,47 @@
+.wrapper {
+    background-color: rgb(57, 57, 57);
+    width: 300px;
+    min-height: 1000px;
+
+    ul {
+        padding: 0;
+        font-size: 19px;
+        text-transform: capitalize;
+        // color: #fff;
+
+        li {
+            position: relative;
+
+            a {
+                display: inline-block;
+                width: 100%;
+                padding: 17px 15px 13px 15px;
+                border-bottom: 1px solid rgb(85, 85, 85);
+                color: #fff;
+                &:hover {
+                    background-color: rgb(150, 120, 152);
+                    color: #333
+                }
+            }
+
+            
+        }
+    }
+}
+
+
+.quantity_notify {
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 15px;
+    width: 25px;
+    text-align: center;
+    font-size: 15px;
+    background-color: rgb(248, 94, 16);
+    padding: 2px 4px;
+    border-radius: 50%;
+} 
+
+
