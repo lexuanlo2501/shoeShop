@@ -1,0 +1,105 @@
+.wrapper {
+    border-radius: 20px;
+    // width: 360px;
+    width: 100%;
+    // height: 477px;
+    padding: 23px;
+    padding-bottom: 10px;
+    background-color: #fff;
+
+    .teamTitle {
+        margin-bottom: 23px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+
+        .quantity_member {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ededed;
+            padding: 3px 15px;
+            width: 63px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 20px;
+            color: rgb(67, 109, 215);
+        }
+
+
+    }
+
+    .add_member {
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #333;
+        margin-top: 30px;
+        padding-top: 10px;
+
+        &:hover {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+        button {
+            font-size: 35px;
+            width: 45px;
+            color: #284067;
+            // border-radius: 50%;
+            background-color: transparent;
+            font-weight: 600;
+            margin-right: 10px;
+            &:hover {
+                color: #6fa3f7;
+            }
+            &:active {
+                opacity: 0.8;
+            }
+        }
+    }
+}
+
+
+
+
+.member_wrapper {
+    font-family: 'Source Sans Pro', sans-serif;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .name-role {
+        flex: 1;
+        p {
+            margin: 0;
+        }
+
+        .name {
+            font-weight: 600;
+            color: #294572;
+        }
+        .role {
+            color: #737373;
+
+        }
+    }
+
+
+    .avatar {
+        font-size: 25px;
+        margin-right: 10px;
+        background-color: rgb(164, 189, 190);
+        padding: 10px;
+        border-radius: 50%;
+        color: #fff;
+    }
+
+    .mail {
+        padding: 8px;
+        font-size: 20px;
+        background-color: #eeecec;
+        border-radius: 50%;
+    }
+
+}

@@ -1,4 +1,31 @@
 .content {
     width: 1300px;
     margin: 0 auto;
+    margin-top: 58px;
+    padding-top: 15px;
+
+}
+
+// mobile
+@media only screen and (max-width:46.1875em){
+    .wrapper {
+    }
+
+    .content {
+        width: auto;
+        // margin-top: 70px;
+
+    }
+    
+
+}
+
+// tablet
+@media only screen and (min-width: 46.25em) and (max-width: 78.25em){
+   .content {
+        width: auto;
+        margin: 0 10px;
+        margin-top: 70px;
+
+   }
 }

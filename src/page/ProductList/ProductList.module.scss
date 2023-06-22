@@ -62,23 +62,39 @@
 
 
 .wrapper {
+    margin: 0 20px;
     margin-top: 30px;
 
 }
 
 .route {
-    margin-left: 73px;
+    margin: 0 73px;
     text-transform: capitalize;
     color: rgb(72, 72, 72);
     font-size: 18px;
     font-weight: 600;
 
-    a {
-        display: inline-block;
-        cursor: pointer;
-        &:hover {
-            color: rgb(238, 154, 124) !important;
-        }
+    display: flex;
+    justify-content: space-between;
+
+   
+}
+
+.viewProd_btn {
+    padding: 6px;
+    font-size: 20px;
+    background-color: transparent;
+    cursor: pointer;
+
+    &+& {
+        margin-left: 5px;
+    }
+
+    &.active{
+        background-color: #515151;
+        color: #fff;
+        border-radius: 10px;
+
     }
 }
 
@@ -181,32 +197,109 @@ a{
 
 
 .card{
-    width: 28%;
+    width: 23%;
     height: auto;
-    background-color: #fff;
-    border-radius: 16px;
+    background-color: transparent;
     color: #e9eaec;
     overflow-y: hidden;
     position: relative;
     // margin: 0 17px;
-    margin-bottom: 38px;
+   margin-bottom: 38px;
     
+   &.active {
+        width: 80%;
+        margin: 0 20px;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+        display: flex;
+        margin-bottom: 18px;
+        border-radius: 30px;
+
+
+
+        .card_thumnal {
+            text-align: start;
+            width: auto;
+            height: 240px;
+            margin-right: 25px;
+        }
+
+        .card-img{
+            width: 250px;
+        }
+
+        .card-items {
+
+            flex-direction: column;
+            justify-content: space-around;
+            .card-title, .card-preci {
+                text-align: start;
+                font-size: 25px;
+            }
+            .card-preci {
+            }
+            .card-descr {
+                display: block;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 3; /* number of lines to show */
+                        line-clamp: 3; 
+                -webkit-box-orient: vertical;
+                color: #6d6c6c;
+            }
+
+        }
+   }
+}
+
+
+.card-img{
+   
+    filter: drop-shadow(5px 10px 15px rgba(9,9,13,0.4));
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+
+   
+
 }
 
 .card_thumnal {
     width: 100%;
-    height: 454px;
-    border-radius: 46px;
+    position: relative;
+    height: 270px;
+    border-radius: 30px;
     text-align: center;
-}
-.card-img{
-   
-    filter: drop-shadow(5px 10px 15px rgba(9,9,13,0.4));
-    width: 79%;
-    height: 454px;
-    object-fit: contain;
 
+    .contact_product {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: inline-block;
+        padding: 5px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        cursor: pointer;
+        color: #333;
+        font-weight: 600;
+
+    }
 }
+
+.card_thumna_loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 270px;
+    border-radius: 30px;
+    background-color: #d4d3d3;
+   
+}
+
+.card_loading {
+}
+
+
 .card-data{
     /* transform: translateY(150px); */
     text-align: center;
@@ -218,7 +311,7 @@ a{
 }
 .card-title,
 .card-preci{
-    font-size: 25px;
+    font-size: 18px;
     // color: #ff6f00;
     color: #333;
     text-align: center;
@@ -267,6 +360,10 @@ a{
     justify-content: space-between;
     margin-top: 10px;
     font-family: 'kanit';
+
+    .card-descr {
+        display: none;
+    }
 }
 .icon{
     /* margin-top: -37px; */
@@ -299,7 +396,7 @@ a{
         padding: 3px 0;
         text-align: center;
         font-size: 23px;
-        background-color: rgb(190, 157, 202);
+        // background-color: rgb(190, 157, 202);
         margin: 7px;
         border-radius: 12px;
         font-weight: 500;
@@ -308,8 +405,9 @@ a{
         user-select: none;
 
         &:hover {
-            background-color: #feade5;
+            // background-color: #f3c8e5;
             cursor: pointer;
+            transform: scale(1.3);
         }
         
     }
@@ -330,3 +428,36 @@ a{
         transform: scale(1.4);
     }
 }
+
+
+@media only screen and (min-width: 46.25em) and (max-width: 78.25em){
+   
+    .wrapper{
+        width: 100%;
+    }
+    
+    .card{
+        width: 32%;
+    }
+    .route {
+        text-align: center;
+    }
+}
+
+// mobile
+@media only screen and (max-width:46.1875em){
+    .wrapper{
+        width: 100%;
+    }
+    .card{
+        width: 47%;
+    }
+    .route {
+        text-align: center;
+    } 
+
+
+}
+
+
+

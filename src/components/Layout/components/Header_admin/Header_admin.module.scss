@@ -1,4 +1,78 @@
 .wrapper {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 5px;
     height: 50px;
-    background-color: rgb(79, 79, 79);
+    background-color: rgb(255, 255, 255);
+    border-bottom: 1px solid #d7d6d6;
+    width: 95%;
+    border-radius: 20px;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    margin: auto;
+    z-index: 90;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+
+
+    .left_side {
+
+        margin-left: 45px;
+        
+        
+        .calendarCurr {
+            background-color: #eae6e6;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #333;
+            letter-spacing: 1px;
+
+            span {
+                margin-left: 5px;
+            }
+        }
+    }
+    .right_side {
+        display: flex;
+        // margin-right: 10px;
+    }
+    
+    .alert-chat {
+        // float: right;
+        font-size: 23px;
+        line-height: 100%;
+        display: inline-block;
+        padding: 8px;
+        border-radius: 50%;
+        color: #434445;
+        background-color: #eae6e6;
+        font-weight: 600;
+
+       
+    }
+
+    .alert-chat+.alert-chat  {
+        margin-left: 10px;
+
+    }
 }
+
+
+
+// tablet
+@media only screen and (min-width: 46.25em) and (max-width: 78.25em){
+
+
+}
+
+// mobile
+@media only screen and (max-width:46.1875em){
+    .wrapper {
+        // width: 100vh;
+
+    }
+
+}
+

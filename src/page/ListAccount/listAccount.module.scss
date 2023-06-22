@@ -1,0 +1,116 @@
+.wrapper {
+    padding: 30px;
+}
+
+.role {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-weight: 600;
+
+
+    &.i {
+        background-color: rgb(249, 193, 140);
+    }
+    &.ii {
+        background-color: rgb(255, 199, 199);
+    }
+
+}
+
+.fullName {
+    width: 180px;
+}
+
+.status_btn {
+    border: 1px solid #bebbbb;
+    margin: 0 10px;
+    width: 70px;
+    display: flex;
+    padding: 4px 8px;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+
+    &:hover {
+        opacity: 0.8;
+    }
+    &:active {
+        opacity: 0.9;
+    }
+
+    &.lock {
+        background-color: rgb(230, 145, 114);
+        color: #fff;
+    }
+    &.unlock {
+        background-color: rgb(146, 202, 150);
+        color: #fff;
+
+    }
+}
+
+
+.info_btn {
+    cursor: pointer;
+    // font-size: 18px;
+    color: #444444;
+
+    &:hover {
+        background-color: rgb(248, 247, 193);
+    }
+
+
+    p {
+        text-align: center;
+        margin: 0;
+
+       
+    }
+}
+
+
+// MODAL
+
+.body_modal {
+
+    // display: flex;
+   
+
+
+    .user_info {
+        font-size: 18px;
+        margin-bottom: 20px;
+
+        p {
+            margin: 0;
+            color: #626161;
+
+
+            span {
+                color: #333;
+                display: inline-block;
+                text-transform: capitalize;
+                width: 95px;
+            }
+
+            &+p {
+                margin-top: 6px;
+            }
+        }
+    }
+
+    
+}
+
+.close_btn {
+    display: inline-block;
+    padding: 7px 25px;
+    border-radius: 10px;
+    background-color: #444444;
+    color: #fff;
+    font-size: 18px;
+    letter-spacing: 1px;
+    
+    
+}

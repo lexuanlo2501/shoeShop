@@ -1,33 +1,49 @@
 import { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./admin.module.scss"
-
-import Button from 'react-bootstrap/Button';
-
+import {toast } from 'react-toastify';
 
 
-
-import { faFileImage } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faFileImage } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+
 
 import axios from "axios";
 import ModifyQuantity from "../../components/ModifyQuantity";
 
 const cx = classNames.bind(styles)
 
+const createHistory = () => {
+    let date = new Date()
+    let splitDate = date.toJSON().slice(0, 10).split('-')
+    let result = `${splitDate[2]}/${splitDate[1]}/${splitDate[0]} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+    return result
+}
+const createID = () => {
+    let date = new Date()
+    let id = `${date.toJSON().slice(0, 10).replace(/-/g,'')}${date.getHours()}${date.getMinutes()}${date.getSeconds()}${date.getMilliseconds()}`
+    return Number(id)
+}
+
 function AddProducts() {
 
     const [img, setImg] = useState()
     const [imgs, setImgs] = useState([])
     const [imgURLs, setImgURLs] = useState([])
+    const [price, setPrice] = useState("0")
+
+    const [addmin, setAddmin] = useState({})
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("tokens"));
+        setAddmin(user)
+    }, [])
 
     
     // infor shoe
-    const [name, setName] = useState("")
-    const [price, setPrice] = useState("")
-    const [quantity, setQuantity] = useState(0)
-    const [description, setDescription] = useState("")
-    const [brand, setBrand] = useState("nike")
 
     const sizeValues = ['36', '37', '38', '39', '40', '41', '42', '43']
     const [inventory, setInventory] = useState(sizeValues.map((item, index) => {
@@ -46,7 +62,7 @@ function AddProducts() {
 
     const listColorBC = ['color_1','color_2','color_3','color_4','color_5',
     'color_6','color_7','color_8','color_9', 'color_10','color_11','color_12'
-    ,'color_13','color_14','color_15'
+    ,'color_13','color_14','color_15','color_16'
     ]
 
     const [quantity_size, setQuantity_size] = useState([])
@@ -65,7 +81,78 @@ function AddProducts() {
         
     }
 
+    const formatCurr = (number) => {
+        let curr = Number(number.replaceAll('.', '')).toLocaleString('vi', {style : 'currency', currency : 'VND'})
+        return curr.slice(0, curr.length-2)
+    }
+    const formatNum = (str) => {
+        return str.replaceAll('.', '')
+    }
     
+
+    // handle react form
+    const schema = yup.object().shape({
+        name: yup.string().required(),
+        // price: yup.number().required(),
+        description: yup.string().required()
+    }).required();
+
+    const { register, handleSubmit, watch, formState: { errors } } = useForm({
+        resolver: yupResolver(schema),
+    });
+
+
+    const createID = () => {
+        let date = new Date()
+        let id = `${date.toJSON().slice(0, 10).replace(/-/g,'')}${date.getHours()}${date.getMinutes()}${date.getSeconds()}${date.getMilliseconds()}`
+        return Number(id)
+    }
+
+    const onSubmit = (data) => {
+        if(img && price && !isNaN(price)) {
+            const infor = {
+                "id": createID(),
+                "name": data.name,
+                "productId": data.productId,
+                "price": formatCurr(price),
+                "img": img && img.name,
+                "imgs": imgs,
+                "description": data.description,
+                "inventory": inventory,
+                "BC_color": colorBCImg_main
+            }
+    
+            axios.post(`http://localhost:4000/products/${infor.productId}/data`,infor)
+            .then(res => {
+                console.log(res.data)
+
+                const history = {
+                    id: "hst"+createID(),
+                    id_admin : addmin._id,
+                    userName : addmin.fullName,
+                    email : addmin.email,
+                    date : createHistory().split(' - ')[0],
+                    time : createHistory().split(' - ')[1],
+                    active : 'add',
+                    content: `Thêm sản phẩm mã ${infor.id}`
+               }
+                axios.post(`http://localhost:4000/history`,history)
+                
+                toast.success("Thêm thành công")
+            })
+            .catch(err => {
+                toast.error("ERRORRRRRRRRRRR")
+            })
+
+            console.log(infor)
+        } 
+
+
+       
+
+       
+        
+    }
 
     return ( <div className={cx('wrapper')}>
 
@@ -75,6 +162,8 @@ function AddProducts() {
                 onChange={handlePreviewImg_main}
                 id="file"
                 className={cx('add_imgSub_btn-off')}
+
+
             />
 
             <div className={cx('backGround_color_imgMain')}>
@@ -97,29 +186,30 @@ function AddProducts() {
                     <FontAwesomeIcon icon={faFileImage}/>
                 </label> 
                 {img && <img className={cx('img')} src={img.preview}/>}
+                {img === "" && <span className="text-danger m-3 d-inline-block ">không được bỏ trống mục này</span> }
                 
             </div>
 
             <div className={cx('product_img--sub')}>
-                {
-                    Boolean(imgURLs.length) && imgURLs.map((item, index) =>
-                        <div className={cx('img_sub')} key={index}>
-                            <button 
-                                onClick={() => {
-                                    URL.revokeObjectURL(imgURLs[index])
-                                    setImgURLs(e => {
-                                        let arr = [...e]
-                                        return arr.filter((item2, index2) => {
-                                            return index2 !== index
-                                        })
+            {
+                Boolean(imgURLs.length) && imgURLs.map((item, index) =>
+                    <div className={cx('img_sub')} key={index}>
+                        <button 
+                            onClick={() => {
+                                URL.revokeObjectURL(imgURLs[index])
+                                setImgURLs(e => {
+                                    let arr = [...e]
+                                    return arr.filter((item2, index2) => {
+                                        return index2 !== index
                                     })
-                                }}
+                                })
+                            }}
 
-                            >X</button>
-                            <img src={item}/>
-                        </div>
-                    )
-                }  
+                        >X</button>
+                        <img src={item}/>
+                    </div>
+                )
+            }  
             </div>
 
             <input type="file"
@@ -152,7 +242,7 @@ function AddProducts() {
             <div className={cx('input_product')}>
                 <label className={cx('label-product')}>hãng: </label>
                 <select
-                    onChange={e => setBrand(e.target.value)}
+                    {...register("productId")}
                 >
                     <option value="nike">nike</option>
                     <option value="adidas">adidas</option>
@@ -163,16 +253,38 @@ function AddProducts() {
             </div>
             <div className={cx('input_product')}>
                 <label className={cx('label-product')}>tên SP: </label>
-                <input placeholder="..." 
-                    onChange={e => setName(e.target.value)}
+                <input placeholder="..."
+                    {...register("name", { required: true })}
+
                 />
+            {
+                errors.name && <span className={cx('message_err')}>không được bỏ trống mục này</span>
+            }
             </div>
 
             <div className={cx('input_product')}>
                 <label className={cx('label-product')}>giá: </label>
-                <input placeholder="..." 
-                    onChange={e => setPrice(e.target.value)}
+                <input placeholder="..."
+                    value={formatCurr(price)}
+                    onChange={(e) => {
+                        if(typeof e.target.value !== "number") {
+                            setPrice(formatNum(e.target.value))
+                        } 
+                        console.log(price)
+
+                    }}  
+                    // {...register("price", { required: true })}
                 />
+                {
+                    !!price &&
+                    <FontAwesomeIcon onClick={() => {setPrice("")}} className={cx('delPrice_btn')} icon={faClose}/>
+                }
+                {
+                    isNaN(price) && <span className={cx('message_err')}>vui lòng nhập số</span>
+                }
+                {
+                    price === "" && <span className={cx('message_err')}>không bỏ trống mục này</span>
+                }
             </div>
 
             <div className={cx('input_product')}>
@@ -226,40 +338,34 @@ function AddProducts() {
 
             <div className={cx('input_product')}>
                 <label style={{display:'block'}} className={cx('label-product')}>mô tả: </label>
-                <textarea className={cx('input_textarea')}
-                    onChange={e => setDescription(e.target.value)}
+                <textarea className={cx('input_textarea') }
+                    {...register("description", { required: true })}
                 ></textarea>
+                {
+                    errors.description && <span className={cx('message_err')}>không được bỏ trống mục này</span>
+                }
             </div>
 
-            <a
+            <button
                 href="http://localhost:3000/admin/addProducts"
-                className={cx('addShoe_btn')}
-                onClick={() => {
+                className={cx('button-54')}
+                role="button"
 
-                    const infor = {
-                        "name": name,
-                        "productId": brand,
-                        "price": Number(price).toLocaleString('vi', {style : 'currency', currency : 'VND'}),
-                        "img": img && img.name,
-                        "imgs": imgs,
-                        "description": description,
-                        "quantity": JSON.stringify(quantity),
-                        "productId": brand,
-                        "inventory": inventory,
-                        "BC_color": colorBCImg_main
+                onClick={(e) => {
+                  
+                    handleSubmit(onSubmit)(e)
+                    if(img == undefined) {
+                        setImg("")
+                    }
+                    if(price === "0") {
+                        setPrice("")
                     }
 
-                    axios.post(`http://localhost:4000/products/${brand}/data`,infor)
-                    .then(res => {
-                        console.log(res.data)
-                        alert('thêm sản phẩm thành công')
-                    })
-
-                    console.log(infor)
                 }}
-            >thêm</a>
+            >thêm</button>
 
         </div>
+
         
        
     </div> );

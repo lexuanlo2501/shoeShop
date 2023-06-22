@@ -2,8 +2,43 @@
     display: flex;
     // width: 1200px;
     // margin: 0 auto;
+    margin-top: 56px;
 }
 
 .content {
     flex: 1;
+    margin-left: 283px; 
+}
+
+.footer {
+    margin-left: 283px; 
+}
+
+// RESPONSIVE
+
+// tablet
+@media only screen and (min-width: 46.25em) and (max-width: 78.25em){
+    
+
+    .footer {
+        margin-left: 183px; 
+    }
+
+    .content{
+        margin-left: 183px;
+    }
+
+}
+
+// mobile
+@media only screen and (max-width:46.1875em){
+    .content {
+                
+        margin-left: 0;
+    }
+
+    .footer {
+        margin-left: 0; 
+    }
+
 }

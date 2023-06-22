@@ -36,7 +36,7 @@
 .container {
     // margin: 45px 90px;
     margin: 0;
-    margin-top: 20px;
+    // margin-top: 20px;
 
 }
 
@@ -44,6 +44,7 @@
 .container_rounter{
     padding: 0px 0px 6px 0px;
     border-bottom: 2px solid rgb(176, 176, 176);
+    margin-top: 20px;
 }
 
 .container_rounter li{
@@ -163,14 +164,16 @@
 .option {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
-#size_product {
+.size_product {
+    min-width: 180px;
     width: 50%;
     height: auto;
 }
 
-#quantity_product {
+.quantity_product {
     width: 46%;
     height: auto;
 }
@@ -222,7 +225,6 @@ p.btn_size-link:hover {
     justify-content: center;
     background: #FFF;
     border-radius: 12px;
-    margin-top: 5px;
     border: 2px solid black;
 }
 
@@ -250,6 +252,11 @@ p.btn_size-link:hover {
     border: 2px solid #000000;
     border-radius: 15px;
     cursor: pointer;
+
+    &:active {
+      opacity: 0.8;
+    }
+
 }
 
 .buy_btn_grp {
@@ -290,3 +297,149 @@ p.btn_size-link:hover {
     background: #ccc;
 }
 
+.choose_size {
+  width: 100%;
+}
+
+/* Tablet-specific styles */
+@media only screen and (min-width: 46.1875em) and (max-width: 63.9375em) {
+    /* Adjust the styles for tablet devices here */
+    .container {
+      margin: 20px;
+    }
+  
+    .container_rounter {
+      display: none;
+    }
+  
+    .row_grp1,
+    .row_grp2 {
+      width: 100%;
+    }
+  
+    .shoe_img {
+      width: 85%;
+      left: 0;
+      top: 0;
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+  
+    .shoe_name {
+      font-size: 30px;
+      line-height: 40px;
+    }
+  
+    .shoe_price {
+      font-size: 24px;
+      margin: 16px 0;
+    }
+
+    .option {
+        flex-direction: column;
+    }
+  
+    .btn_size {
+      height: 40px;
+      font-size: 18px;
+      margin: 4px 6px;
+    }
+  
+    .btn_size-link {
+      padding: 6px;
+    }
+  
+    .description {
+      padding: 10px 0;
+      font-size: 14px;
+    }
+  
+    .quantity,
+    .select {
+      font-size: 20px;
+      line-height: 32px;
+    }
+  
+    .wrapper span {
+      width: 64px;
+      font-size: 28px;
+    }
+  
+    .wrapper span.num {
+      width: 164px;
+      font-size: 20px;
+    }
+  }
+  
+  @media only screen and (max-width: 46.1875em) {
+    .container {
+      margin: 10px;
+    }
+  
+    .container_rounter {
+      display: none;
+    }
+  
+    .row {
+      display: block;
+    }
+    .row_grp1,
+    .row_grp2 {
+      width: 100%;
+    }
+  
+    .shoe_img {
+      width: 100%;
+      left: 0;
+      top: 0;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+  
+    .shoe_name {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  
+    .shoe_price {
+      font-size: 20px;
+      margin: 12px 0;
+    }
+  
+    ol,
+    ul {
+      padding-left: 1rem;
+    }
+  
+    .btn_size {
+      width: 44px;
+      height: 44px;
+      font-size: 16px;
+      margin: 4px 4px;
+    }
+  
+    .btn_size-link {
+      padding: 4px;
+    }
+  
+    .description {
+      padding: 8px 0;
+      font-size: 12px;
+    }
+  
+    .quantity,
+    .select {
+      font-size: 18px;
+      line-height: 28px;
+    }
+  
+    .wrapper span {
+      width: 48px;
+      font-size: 24px;
+    }
+  
+    .wrapper span.num {
+      width: 124px;
+      font-size: 18px;
+    }
+  }

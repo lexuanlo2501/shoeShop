@@ -1,10 +1,16 @@
 .wrapper {
-    margin: 80px;
+    margin: 30px 80px;
 
     h1 {
-        margin-top: 50px;
+        margin-top: 30px;
         text-transform: capitalize;
+        color: #878787;
     }
+    overflow-x: scroll;
+}
+
+th {
+    text-transform: capitalize;
 }
 
 .btn_product {
@@ -93,7 +99,9 @@
     }
 
     .amount_order {
-        font-size: 16px;
+        font-size: 19px;
+        font-weight: 600;
+        margin-top: 10px;
     }
 
 
@@ -105,4 +113,36 @@
     height: 200px;
     background-color: aquamarine;
 
+}
+
+.infor_delivery {
+    
+
+    
+    span {
+        display: inline-block;
+        width: 135px;
+    }
+
+}
+
+// RESPONSIVE
+
+
+// tablet
+@media only screen and (min-width: 46.25em) and (max-width: 78.25em){
+    .wrapper {
+        margin: 15px;
+    }
+
+}
+
+// mobile
+@media only screen and (max-width:46.1875em){
+    
+    .wrapper {
+        margin: 7px;
+    }
+
+   
 }

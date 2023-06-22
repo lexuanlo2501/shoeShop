@@ -372,7 +372,7 @@ li.cart_btn:hover .header_cart-list {
 }
 
 .content{
-    
+    margin: auto;
     // margin-left: auto;
     // margin-right: auto;
     
@@ -451,7 +451,9 @@ li.cart_btn:hover .header_cart-list {
 
 .content_production_left{
     border-bottom: 1px solid #ccc;
+    flex: 1;
 }
+
 
 .content_description_left{
     width: 210px;
@@ -755,10 +757,11 @@ p.price_product{
     }
 
     .input_infor {
+        position: relative;
         font-size: 17px;
         margin-bottom: 10px;
         label {
-            width: 130px;
+            width: 118px;
             text-transform: capitalize;
             cursor: pointer;
         }
@@ -770,7 +773,7 @@ p.price_product{
             width: 300px;
 
             &:focus {
-                border-color: rgb(251, 147, 147);
+                border-color: rgb(249, 188, 188);
             }
         }
         textarea {
@@ -778,9 +781,125 @@ p.price_product{
             width: 300px;
             padding: 8px;
         }
+
+        .err_messagge {
+            position: absolute;
+            left: 154px;
+            color:rgb(245, 172, 172);
+        }
     }
 
 
+}
+
+.header_modalPay {
+    font-weight: 600;
+}
+
+.modal_pay {
+    padding: 20px;
+
+    display: flex;
+    justify-content: space-between;
+    
+    .option_pay {
+        h2 {
+            font-size: 20px;
+            padding: 8px 10px;
+            background-color: #d5d4d4;
+            margin-bottom: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .inputPay {
+            font-size: 18px;
+            margin-bottom: 10px;
+            .title {
+                font-size: 15px;
+                margin: 0 10px;
+                cursor: pointer;
+                border-radius: 50%;
+                padding: 2px 7px;
+                background-color: rgb(241, 198, 198);
+            }
+            
+            input {
+                margin-right: 15px;
+                cursor: pointer;
+            }
+    
+            .icon {
+                margin-left: 10px;
+                font-size: 23px;
+                color: #5b5a5a;
+            }
+    
+            img {
+                width: 25px;
+                margin-left: 10px;
+    
+            }
+    
+           
+        }
+    }
+
+   
+
+    .total {
+        width: 40%;
+        background-color: #f1f1f1;
+        padding: 20px;
+
+        .infor_fee {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            color: #535252;
+
+
+            &.end_col {
+                margin-top: 10px;
+                border-top: 2px dashed #333;
+                padding-top: 20px;
+            }
+
+            .final_price {
+                font-size: 20px;
+                font-weight: 600;
+                letter-spacing: 1px;
+                color:rgb(237, 85, 85);
+            }
+        }
+
+        h1 {
+            font-weight: 600;
+            letter-spacing: 1px;
+            border-bottom: 2px solid  #333 ;
+        }
+
+
+        .compleOrder_btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 15px 0;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #fff;
+            background-color: rgb(239, 125, 83);
+            border-radius: 15px;
+
+            &:hover {
+                opacity: 0.9;
+            }
+            &:active {
+                opacity: 0.7;
+            }
+        }
+
+    }
 }
 
 
@@ -830,7 +949,15 @@ p.price_product{
         font-size: 20px;
     }
     
-
+    .modal_pay {
+        display: block;
+        .total {
+            margin: auto;
+            margin-top: 20px;
+            width: 80%;
+            
+        }
+    }
     
     
 }
@@ -900,6 +1027,16 @@ p.price_product{
     .remove_product:hover{
         color: #fff;
         background-color: var(--text-color);
+    }
+
+    .modal_pay {
+        display: block;
+
+        .total {
+            margin: auto;
+            margin-top: 20px;
+            width: 100%;
+        }
     }
     
 }

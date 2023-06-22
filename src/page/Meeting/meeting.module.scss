@@ -1,0 +1,89 @@
+.wrapper {
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 23px;
+    margin-top: 20px;
+
+    .descreiption {
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #b7b7b7;
+    }
+
+    .slectHour, .date_meeting {
+        background-color: #ededed;
+        padding: 8px 14px;
+        font-size: 18px;
+        border-radius: 10px;
+    }
+
+    .hour_meeting {
+        position: relative;
+        margin-bottom: 7px;
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            text-indent: 1px;
+            text-overflow: '';
+          }
+
+        .clock_icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    }
+
+    .slectHour {
+        width: 100%;
+        border: none;
+    }
+
+    .date_meeting {
+        width: 100%;
+
+        input {
+            background-color: transparent;
+            width: 100%;
+        }
+
+        .day {
+            position: absolute;
+            font-size: 17px;
+            right: 95px;
+        }
+    }
+
+    .sendLink_btn {
+        margin-top: 25px;
+        display: flex;
+        align-items: center;
+        border-radius: 100px;
+        padding-right: 15px;
+        background-color: rgb(156, 174, 174);
+        color: #fff;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;        
+        
+        &:hover {
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+        }
+        &:active {
+            opacity: 0.7;
+        }
+
+
+        .send_icon {
+            background-color: rgb(191, 224, 221);
+            color: #2f3285;
+            padding: 8px;
+            border-radius: 100px;
+            margin-right: 8px;
+        }
+    }
+
+    
+
+}

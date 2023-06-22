@@ -1,0 +1,73 @@
+.wrapper {
+    // padding: 50px;
+    background-color: #fff;
+    padding: 30px;
+    width: 700px;
+}
+
+.infor {
+    padding: 20px 0;
+    border-top: 1px solid #e8e4e4;
+}
+
+.input_update {
+    margin-bottom: 25px;
+
+    input {
+        margin-left: 20px;
+        border-bottom: 1px solid #cacaca;
+    }
+    .valueClkToChange {
+        margin-left: 20px;
+
+    }
+
+
+    label {
+        width: 120px;
+        text-align: end;
+    }
+
+    .label_gender {
+        width: 40px;
+
+    }
+
+    .changeInfor_btn {
+        display: inline-block;
+        margin-left: 20px;
+        color: rgb(44, 176, 202);
+        cursor: pointer;
+        text-decoration: underline;
+        text-transform: capitalize;
+        &:hover {
+            opacity: 0.8;
+        }
+        &:active {
+            opacity: 0.9;
+        }
+
+    }
+}
+
+.btn_save {
+    padding: 10px 0;
+    width: 150px;
+    background-color: rgb(255, 137, 137);
+    border-radius: 15px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    margin-top: 20px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    
+    &:hover {
+        opacity: 0.8;
+    }
+    &:active {
+        opacity: 0.9;
+
+    }
+}
+

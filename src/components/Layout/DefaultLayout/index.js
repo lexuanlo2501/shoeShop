@@ -7,15 +7,18 @@ import SideBar from "./SideBar";
 
 const cx = classNames.bind(styles)
 
-function DefaultLayout({children}) {
+function DefaultLayout({children, setBrand_v2}) {
+
     return ( 
         <div className={cx('wrapper')}>
             <Header/>
             <div className={cx('container')}>
-                <SideBar/>
+                <SideBar setBrand_v2={setBrand_v2} />
                 <div className={cx('content')}>{children}</div>
             </div>
-            <Footer/>
+            <div className={cx('footer')}>
+                <Footer/>
+            </div>
         </div>
     );
 }

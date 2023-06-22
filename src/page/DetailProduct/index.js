@@ -5,6 +5,7 @@ import Carousel from '../../components/Carousel';
 import SelectActive from '../../components/SelectActive';
 import Slider from '../../components/Slider';
 import styles from './DetailProduct.module.scss'
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles)
 
@@ -78,7 +79,7 @@ function DetailProduct({product}) {
                                     <p className={cx("id")}>Mã sản phẩm: <strong>{product.id}</strong></p>
                                     <p className={cx("avalable")}>Tình trạng: <strong>{avalable ? "còn hàng" : "hết hàng"}</strong></p>
                                 </div>
-                                <p className={cx("shoe_price")}>{product.price}</p>
+                                <p className={cx("shoe_price")}>{product.price} ₫</p>
                             </div>
 
                             <div className={cx(["line", "line2"])}></div>
@@ -89,7 +90,7 @@ function DetailProduct({product}) {
 
                             <div className={cx("line")}></div>
                             <div className={cx("option")}>
-                                <div id="size_product">
+                                <div className={cx("size_product")}>
                                     <p className={cx("select")}>Size: </p>
                                     <ul className={cx("button_size")}>
                                         <SelectActive>
@@ -112,7 +113,7 @@ function DetailProduct({product}) {
                                         </SelectActive>
                                     </ul>
                                 </div>
-                                <div id="quantity_product">
+                                <div className={cx("quantity_product")}>
                                     <p className={cx("quantity")}>Số Lượng: </p>
                                     <div className={cx("wrapper")}>
                                         <span className={cx("minus")}
@@ -131,14 +132,29 @@ function DetailProduct({product}) {
                             </div>
 
                             <div id="btn_grp">
-                                <div className={cx("buy_btn_grp")}
-                                
-                                >
+                                <div className={cx("buy_btn_grp")}>
                                     <h2 className={cx("buy")}>MUA HÀNG</h2>
                                 </div>
                 
                                 <div className={cx("add_btn_grp")}
-                                    onClick={() => addCart(product.id)}
+                                    onClick={() =>{ 
+                                        if(avalable) {
+                                            addCart(product.id)
+                                            toast.success("Đã thêm vào gỏi hàng", {
+                                                autoClose: 1,
+                                                theme: "colored",
+                                                position: "bottom-right",
+                                            })
+                                        }
+                                        else {
+                                            toast.error("size này tạm hết hàng", {
+                                                autoClose: 2,
+                                                theme: "colored",
+                                                position: "bottom-right",
+                                            })
+                                        }
+                                    }}
+
                                 >
                                     <h2 className={cx("add")}>THÊM VÀO GIỎ HÀNG</h2>
                                 </div>
@@ -149,6 +165,9 @@ function DetailProduct({product}) {
 
                 <Slider imgs={product.imgs}/>
                 <div className={cx("line")}></div>
+                <img className={cx('choose_size')} src={require('../../imgData/howto.png')} alt="shoe image"/>
+                <img className={cx('choose_size')} src={require('../../imgData/chart_size.png')} alt="shoe image"/>
+
                 <Carousel brand={product.productId}/>
 
             </div>

@@ -1,7 +1,9 @@
 .wrapper {
     border-right: 1px solid #ccc;
     width: 285px;
-
+    position: fixed;
+    z-index: 100;
+    background-color: #ffffff;
 }
 
 // ///////////////
@@ -203,4 +205,26 @@ a{
     margin-top: 8px;
 }
 
+
+
+// RESPONSIVE
+
+// tablet
+@media only screen and (min-width: 46.25em) and (max-width: 78.25em){
+    .wrapper {
+        width: 185px;
+
+    }
+
+    
+
+}
+
+// mobile
+@media only screen and (max-width:46.1875em){
+    .wrapper {
+        display: none;
+    }
+
+}
 
