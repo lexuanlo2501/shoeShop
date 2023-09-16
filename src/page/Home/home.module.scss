@@ -1,0 +1,53 @@
+.wrapper {
+    padding: 30px 0;
+}
+
+.brand {
+    margin-bottom: 40px;
+    
+    img {
+        width: 20%;
+    }
+}
+
+.news_1 {
+    margin-top: 40px;
+    font-weight: 600;
+
+  
+
+}
+
+.img_nikeBrand {
+
+
+    width: 100%;
+    
+}
+
+.display {
+    margin-top: 50px;
+
+    
+
+    .list {
+        
+
+        .brand_box {
+            display: flex;
+            align-items: center;
+            
+            img {
+                width: 100px;
+            }
+            h2 {
+                text-transform: uppercase;
+                font-size: 30px;
+                margin-left: 15px;
+                font-weight: 600;
+            }
+
+
+        }
+    }
+}

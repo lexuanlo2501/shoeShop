@@ -9,7 +9,11 @@ import {BrowserRouter as Router, Routes, Route, Navigate, json } from 'react-rou
 
 import Confirming from './page/Confirming';
 import ProductList from './page/ProductList';
+import ProductList_v2 from './page/ProductList_v2';
+
 import DetailProduct from './page/DetailProduct';
+import DetailProduct_v2 from './page/DetailProduct_v2';
+
 
 import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
@@ -28,62 +32,10 @@ import PurchaseOrder from './page/PurchaseOrder';
 import LayoutUserInfor from './components/LayoutUserInfor';
 import History from './page/History';
 import ListAccount from './page/ListAccount';
+import ProductList_v3 from './page/ProductList_v3';
 
 
 function App() {
-  const itemOnePage = 15
-
-
-  const [products, setProducts] = useState([])
-  const [numberOfPage, setNumberOfPage] = useState([])
-  const [productBrand_page, setProductBrand_page] = useState([])
-
-
-  // make array have form [1,2,3,...]
-  const arrPage = (m) => {
-    let arr = []
-    let page = m/itemOnePage
-    if(page < parseInt(page)+0.5) {page += 0.5}
-    let n = Number(page.toFixed(0))
-    for(let i = 1; i <=n; i++) {
-      arr.push(i)
-    }
-    return arr
-  }
-  // const arrPage_v2 = (n) => {
-  //   let arr = Array(n).fill(0).map((_, index) => index+1)
-  //   return arr
-  // }
-
-  
-
-  useEffect(() => {
-
-    const handle = async () => {
-      // get id brand
-      let res_1 = await axios.get('http://localhost:4000/products')
-
-      // get all product 
-      let res_2 = await axios.get('http://localhost:4000/data')
-      setProducts(res_2.data)
-      setNumberOfPage(arrPage(res_2.data.length))
-
-      const numberPage_brand = res_1.data.map(item => {
-        return {
-          "brand": item.id,
-  
-          // filter product of brand then create array number page
-          "quantity_product": arrPage(res_2.data.filter(i => i.productId === item.id).length)
-        }
-      })
-  
-      setProductBrand_page(numberPage_brand)
-      console.log(numberPage_brand)
-
-    }
-    handle()
-
-  }, [])
 
   // handle login
   const [login, setLogin] = useState("")
@@ -110,9 +62,6 @@ function App() {
   
 
   // end update ********************************************************************************************************
-
-
-
 
 
 
@@ -182,8 +131,10 @@ function App() {
             element={<HeaderOnly> <Home></Home> </HeaderOnly>}
           />
 
+         
+
           {
-             login === "client" &&
+             Boolean(login) &&
             <Route
               path="infor"
               element={<DefaultLayout> <LayoutUserInfor><InforUser/></LayoutUserInfor>  </DefaultLayout>}
@@ -197,64 +148,30 @@ function App() {
                 element={<DefaultLayout> <LayoutUserInfor><PurchaseOrder/></LayoutUserInfor> </DefaultLayout>}
               />
           }
-
-
-
           
             {/* DETAIL PRODUCT */}
-          {
-            products.map((item, index) => {
-              let route_name = `detail_product_${item.id}`
-
-              return <Route key={index}
-                path={route_name}
-                element={<HeaderOnly> <DetailProduct product={item} /> </HeaderOnly>}
-              />
-            })
-          }
-
           { 
             <Route
               path='order'
               element={ <HeaderOnly> <Orders/> </HeaderOnly>}
             />
           }
-         
 
 
-          {/* /////// */}
+          <Route
+            path="shoes/detail_product"
+            element={<HeaderOnly> <DetailProduct_v2/> </HeaderOnly>}
+
+          />
+
+          <Route
+            path="shoes"
+            element={<DefaultLayout setBrand_v2={setBrand_v2}><ProductList_v3 brand_v2={brand_v2}  /></DefaultLayout>}
+
+          />
 
 
-          {/* // filter product into brand */}
-          {
-            productBrand_page.map((item, index) => {
-
-              return item.quantity_product.map((item1, index1) => {
-                let route = `productList/${item.brand}/page${item1}`
-              
-                return <Route
-                  key={index1}
-                  path={route}
-                  element={<DefaultLayout setBrand_v2={setBrand_v2}><ProductList brand_v2={brand_v2} page={item1} limit={itemOnePage} numberOfPage={item.quantity_product} brand={item.brand}/></DefaultLayout>}
-                />
-              })
-
-            })
-          }
-
-
-          {/* page all products */}
-          {
-            numberOfPage.map((item, index) => {
-              let route = `productList/page${item}`
-              
-              return <Route
-                key={index}
-                path={route}
-                element={<DefaultLayout><ProductList page={item} limit={itemOnePage} numberOfPage={numberOfPage}/></DefaultLayout>}
-              />
-            })
-          }
+          
 
             
           

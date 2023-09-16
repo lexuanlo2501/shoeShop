@@ -20,6 +20,7 @@ const cx = classNames.bind(style)
 function SignUp() {
 
     const [accNameMess, setAccNameMess] = useState({})
+    const [messErr, setMessErr] = useState("")
 
     const navigate = useNavigate();
 
@@ -28,17 +29,19 @@ function SignUp() {
             let date = data.dateOfBirth.split('-')
             const dataPost = {
                 ...data,
-                password: md5(data.password),
+                password: data.password,
                 dateOfBirth: `${date[2]}/${date[1]}/${date[0]}`,
                 role: 'client'
             }
     
-            delete dataPost.passwordCF
+            // delete dataPost.passwordCF
 
-            axios.post("http://localhost:8000/accounts", dataPost)
+            // axios.post("http://localhost:8000/accounts", dataPost)
+            axios.post("http://localhost:5000/signup", dataPost)
+
             .then(res => {
                 console.log(res)
-
+                setMessErr(res.data.message)
                 setAccNameMess(res.data)
 
                 if(res.data.status) {
@@ -68,23 +71,24 @@ function SignUp() {
 
     const schema = yup.object().shape({
         fullName: yup.string().required(),
-        phoneNumber: yup.string().length(10).required(),
+        phoneNumber: yup.string().required("Bạn phải điền mục này").length(10, "Số điện thoại phải có 10 số"),
         email: yup.string().required(),
         accName: yup.string().required(),
         password: yup.string().required(),
-        passwordCF: yup.string().required(),
+        passwordCF: yup.string().required("Bạn phải điền mục này").oneOf([yup.ref("password")], "Mật khẩu không khớp"),
         dateOfBirth: yup.string().required(),
         gender: yup.string().required(),
 
     }).required();
 
-    const { register, handleSubmit, watch, formState: { errors } } = useForm({
+    const { register, handleSubmit, watch, formState: { errors, touched } } = useForm({
+        mode: "onTouched",
         resolver: yupResolver(schema),
         
     });
 
-    const InputRequire = () => {
-        return <span className={cx('err_mess')}>bạn phải điền mục này</span>
+    const InputRequire = ({message="Bạn phải điền mục này"}) => {
+        return <span className={cx('err_mess')}>{message}</span>
      }
 
     return (
@@ -102,14 +106,15 @@ function SignUp() {
                     <input type="text" placeholder="họ và tên"
                         {...register("fullName")}
                     />
-                    {errors.fullName && <InputRequire/>}
+                    {errors.fullName && <InputRequire />}
                 </div>
 
                 <div className={cx('inputField')}>
                     <input type="text" placeholder="số điện thoại"
                         {...register("phoneNumber")}
                     />
-                    {errors.phoneNumber && <InputRequire/>}
+                    {errors.phoneNumber && <InputRequire message={errors.phoneNumber?.message}/>}
+
                 </div>
                 <div className={cx('inputField')}>
                     <input type="email" placeholder="email"
@@ -129,13 +134,14 @@ function SignUp() {
                     <input placeholder="nhập lại mật khẩu" type='password'
                         {...register("passwordCF")}
                     />
-                    {errors.passwordCF && <InputRequire/>}
+                    {errors.passwordCF && <InputRequire message={errors.passwordCF?.message} />}
+
                 </div>
                 <div className={cx(['inputField', 'gender_com'])}>
                     <label className={cx(['label',{'err':errors.gender}])}>Giới tính </label>
-                    <input type="radio" name="gender" value='male' id="g1" {...register("gender")}/> <label htmlFor="g1">Nam</label>
-                    <input type="radio" name="gender" value='female' id="g2" {...register("gender")}/> <label htmlFor="g2">Nữ</label>
-                    <input type="radio" name="gender" value='other' id="g3" {...register("gender")}/> <label htmlFor="g3">Khác</label>
+                    <input type="radio" name="gender" value='Male' id="g1" {...register("gender")}/> <label htmlFor="g1">Nam</label>
+                    <input type="radio" name="gender" value='Female' id="g2" {...register("gender")}/> <label htmlFor="g2">Nữ</label>
+                    <input type="radio" name="gender" value='Other' id="g3" {...register("gender")}/> <label htmlFor="g3">Khác</label>
 
                 </div>
                 <div className={cx(['inputField'])}>
@@ -146,6 +152,9 @@ function SignUp() {
                     />
 
                 </div>
+
+                <div>{messErr}</div>
+
                 <button className={cx('signIn_btn')}
                     onClick={(e) => {
                         handleSubmit(handleSignUp)(e)

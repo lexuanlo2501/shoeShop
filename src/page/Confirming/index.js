@@ -40,9 +40,6 @@ function Confirming() {
 
 
 
-    // const [idOder_C, setIdOder_C] = useState('')
-
-
     const confirm_product = (idOder_C) => {
         // console.log(order_detail.products)
         let arr = order_detail.products.map((item, index) => {
@@ -64,8 +61,9 @@ function Confirming() {
         
         console.log(arr)
 
-        arr.forEach(e => {
-            axios.patch(`http://localhost:4000/data/${e.id}`,{"inventory":e.inventory})
+        // reduce quantity products
+        arr.forEach(i => {
+            axios.patch(`http://localhost:4000/data/${i.id}`,{"inventory":i.inventory})
             
         })
         
@@ -82,12 +80,24 @@ function Confirming() {
         axios.get('http://localhost:4000/orders')
         .then(res => {
             // console.log(res.data)
-            setOrders_NC(res.data.filter(item => item.status === 1))
-            setOrders_C(res.data.filter(item => item.status === 3))
-            setOrders_deli(res.data.filter(item => item.status === 2))
+            setOrders_NC(res.data.filter(item => item.status === 1)) /*no confirm */
+            setOrders_C(res.data.filter(item => item.status === 3)) /*confirmed */
+            setOrders_deli(res.data.filter(item => item.status === 2)) /*delivery */
 
         })
     }, [checkChange])
+
+    // getAllUser
+    const [users, setUsers] = useState([])
+    useEffect(() => {
+        axios.get("http://localhost:8000/accounts")
+        .then(res => setUsers(res.data))
+    }, [])
+
+    const handleOrderDetail = (item) => {
+        let userSelected = users.find(i => i._id ===item.id_client)
+        setOrder_detail({...item, ...userSelected})
+    }
 
     return ( 
         <div className={cx('wrapper')}>
@@ -96,11 +106,9 @@ function Confirming() {
                 <thead>
                     <tr className='table-info'>
                         <th scope="col">mã đơn hàng</th>
+                        <th scope="col">mã khách hàng</th>
                         <th scope="col">ngày đặt</th>
                         <th scope="col">địa chỉ</th>
-                        {/* <th scope="col">chú thích</th> */}
-                        <th scope="col">số điện thoại</th>
-                        <th scope="col">email</th>
                         <th scope="col">tổng tiền</th>
                         <th scope="col">xác nhận</th>
                         <th scope="col">chi tiết</th>
@@ -108,37 +116,35 @@ function Confirming() {
                 </thead>
 
                 <tbody>
-                    {
-                        orders_NC.map((item, index) =>
-                            <tr key={index}>
-                                <td>{item.id}</td>
-                                <td>{item.date_order}</td>
-                                <td>{item.address}</td>
-                                {/* <td>{item.description}</td> */}
-                                <td>{item.phone_number}</td>
-                                <td>{item.email}</td>
-                                <td>{item.amount}</td>
-                                <td className={cx(['btn_product','confirm'])}
-                                    onClick={() => {
-                                        setIdProduct_C(item.id)
-                                        handleShow_confirm()
-                                        setOrder_detail(item)
-                                    }}
-                                >
-                                    <button><FontAwesomeIcon icon={faClipboardCheck}/></button>
-                                </td>
-                                <td className={cx(['btn_product','detail'])}
-                                    onClick={() => {
-                                        setOrder_detail(item)
-                                        handleShow_detail()
-                                        console.log(item)
-                                    }}
-                                >
-                                    <button><FontAwesomeIcon icon={faCircleInfo}/></button>
-                                </td>
-                            </tr>
-                        )
-                    }
+                {
+                    orders_NC.map((item, index) =>
+                        <tr key={index}>
+                            <td >{item.id}</td>
+                            <td>{item?.id_client}</td>
+                            <td>{item.date_order}</td>
+                            <td>{item.address}</td>
+                            {/* <td>{item.description}</td> */}
+                            <td>{item.amount}</td>
+                            <td className={cx(['btn_product','confirm'])}
+                                onClick={() => {
+                                    setIdProduct_C(item.id)
+                                    handleShow_confirm()
+                                    handleOrderDetail(item)
+                                }}
+                            >
+                                <button><FontAwesomeIcon icon={faClipboardCheck}/></button>
+                            </td>
+                            <td className={cx(['btn_product','detail'])}
+                                onClick={() => {
+                                    handleShow_detail()
+                                    handleOrderDetail(item)
+                                }}
+                            >
+                                <button><FontAwesomeIcon icon={faCircleInfo}/></button>
+                            </td>
+                        </tr>
+                    )
+                }
                 </tbody>
             </table>
 
@@ -149,12 +155,9 @@ function Confirming() {
                 <thead>
                     <tr className='table-info'>
                         <th>mã đơn hàng</th>
+                        <th>mã khách hàng</th>
                         <th>ngày đặt</th>
-                        <th>ảnh</th>
                         <th>địa chỉ</th>
-                        {/* <th>chú thích</th> */}
-                        <th>số điện thoại</th>
-                        <th>email</th>
                         <th>tổng tiền</th>
                         <th>xác nhận</th>
                         <th>chi tiết</th>
@@ -162,43 +165,40 @@ function Confirming() {
                 </thead>
 
                 <tbody >
-                    {
-                        orders_deli.map((item, index) =>
-                            <tr>
-                                <td>{item.id}</td>
-                                <td>{item.date_order}</td>
-                                <td></td>
-                                <td>{item.address}</td>
-                                {/* <td>{item.description}</td> */}
-                                <td>{item.phone_number}</td>
-                                <td>{item.email}</td>
-                                <td>{item.amount}</td>
-                                <td className={cx(['btn_product','confirm'])}
-                                    onClick={() => {
-                                        setIdProduct_C(item.id)
+                {
+                    orders_deli.map((item, index) =>
+                        <tr>
+                            <td>{item.id}</td>
+                            <td>{item?.id_client}</td>
+                            <td>{item.date_order}</td>
+                            <td>{item.address}</td>
+                            <td>{item.amount}</td>
+                            <td className={cx(['btn_product','confirm'])}
+                                onClick={() => {
+                                    setIdProduct_C(item.id)
+                                }}
+                            >
+                                <ConfirmModal btnText={<FontAwesomeIcon icon={faClipboardCheck}/>}
+                                    title='Xác nhận hoàn tất đơn hàng'
+                                    body='Bấm xác nhận để hoàn tất'
+                                    accept={() => {
+                                        setCheckChange(pre => !pre)
+                                        confirm_product_complete(idProduct_C)
                                     }}
-                                >
-                                    <ConfirmModal btnText={<FontAwesomeIcon icon={faClipboardCheck}/>}
-                                        title='Xác nhận hoàn tất đơn hàng'
-                                        body='Bấm xác nhận để hoàn tất'
-                                        accept={() => {
-                                            setCheckChange(pre => !pre)
-                                            confirm_product_complete(idProduct_C)
-                                        }}
-                                    />
-                                </td>
-                                <td className={cx(['btn_product','detail'])}
-                                    onClick={() => {
-                                        setOrder_detail(item)
-                                        handleShow_detail()
-                                        console.log(item)
-                                    }}
-                                >
-                                    <button><FontAwesomeIcon icon={faCircleInfo}/></button>
-                                </td>
-                            </tr>
-                        )
-                    }
+                                />
+                            </td>
+                            <td className={cx(['btn_product','detail'])}
+                                onClick={() => {
+                                    handleOrderDetail(item)
+                                    handleShow_detail()
+                                    console.log(item)
+                                }}
+                            >
+                                <button><FontAwesomeIcon icon={faCircleInfo}/></button>
+                            </td>
+                        </tr>
+                    )
+                }
                 </tbody>
             </table>
 
@@ -207,12 +207,10 @@ function Confirming() {
                 <thead>
                     <tr className='table-info'>
                         <th>mã đơn hàng</th>
+                        <th>mã khách hàng</th>
                         <th>ngày đặt</th>
                         <th>ảnh</th>
                         <th>địa chỉ</th>
-                        {/* <th>chú thích</th> */}
-                        <th>số điện thoại</th>
-                        <th>email</th>
                         <th>tổng tiền</th>
                         <th>chi tiết</th>
                     </tr>
@@ -223,16 +221,15 @@ function Confirming() {
                     orders_C.map((item, index) =>
                         <tr>
                             <td>{item.id}</td>
+                            <td>{item?.id_client}</td>
                             <td>{item.date_order}</td>
                             <td></td>
                             <td>{item.address}</td>
                             {/* <td>{item.description}</td> */}
-                            <td>{item.phone_number}</td>
-                            <td>{item.email}</td>
                             <td>{item.amount}</td>
                             <td className={cx(['btn_product','detail'])}
                                 onClick={() => {
-                                    setOrder_detail(item)
+                                    handleOrderDetail(item)
                                     handleShow_detail()
                                     console.log(item)
                                 }}
@@ -256,24 +253,24 @@ function Confirming() {
                     <div style={{fontSize:"18px"}}>bạn có muốn xác nhận đơn hàng {idProduct_C}</div>
                 </Modal.Body>
                 <Modal.Footer>
-                <button
-                    className={cx(['btnModal'])}
-                    onClick={() => {
-                        handleClose_confirm()
-                        setCheckChange(pre => !pre)
-                        confirm_product(idProduct_C)
-                    }}
-                >
-                    xác nhận
-                </button>
-                <button
-                    className={cx(['btnModal'])}
-                    onClick={() => {
-                        handleClose_confirm()
-                    }}
-                >
-                    đóng
-                </button>
+                    <button
+                        className={cx(['btnModal'])}
+                        onClick={() => {
+                            handleClose_confirm()
+                            setCheckChange(pre => !pre)
+                            confirm_product(idProduct_C)
+                        }}
+                    >
+                        xác nhận
+                    </button>
+                    <button
+                        className={cx(['btnModal'])}
+                        onClick={() => {
+                            handleClose_confirm()
+                        }}
+                    >
+                        đóng
+                    </button>
                 </Modal.Footer>
             </Modal>
 
@@ -303,17 +300,21 @@ function Confirming() {
                         </div>
                         <div className={cx('infor_delivery')}>
                             <h1>Thông Tin</h1>
-                            <p><span>tên khách hàng</span>: {order_detail.name}</p>
-                            <p><span>địa chỉ</span>: {order_detail.address}</p>
-                            <p><span>email</span>: {order_detail.email}</p>
-                            {/* <p><span>ghi chú</span>: {order_detail.description}</p> */}
+                            <p><span>Tên khách hàng</span>: {order_detail.fullName}</p>
+                            <p><span>Địa chỉ</span>: {order_detail.address}</p>
+                            <p><span>Email</span>: {order_detail.email}</p>
+                            <p><span>SĐT</span>: {order_detail.phoneNumber}</p>
+
+                            <p><span>Ghi chú</span>: {order_detail.description}</p>
+                            {/* TESTING... */}
+                            
                             <p className={cx('amount_order')}>Tổng: {order_detail.amount}</p>
                         </div>
 
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button className={cx(['btnModal'])}
+                    {/* <button className={cx(['btnModal'])}
                         onClick={() => {
                             handleClose_detail()
                             setCheckChange(pre => !pre)
@@ -321,7 +322,7 @@ function Confirming() {
                         }}
                     >
                         xác nhận
-                    </button>
+                    </button> */}
                     <button className={cx(['btnModal'])}
                         onClick={handleClose_detail}
                     >
@@ -330,10 +331,6 @@ function Confirming() {
                 </Modal.Footer>
                 
             </Modal>
-
-
-            <a href = "mailto: anhtyty188dn@gmail.com">Send Email</a>
-
 
         </div>
     );

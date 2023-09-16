@@ -14,7 +14,7 @@ import { PacmanLoader } from "react-spinners";
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { faCreditCard, faCreditCardAlt, faTruckFast } from "@fortawesome/free-solid-svg-icons";
+import { faCreditCard, faCreditCardAlt, faTrashCan, faTruckFast } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 let md5 = require('md5');
@@ -54,7 +54,11 @@ function Orders() {
             let newCart = cart.map(item => {
                 return {
                     ...item,
-                    "product": res.data.filter(i => item.id === i.id)[0]
+                    // "product": res.data.filter(i => item.id === i.id)[0]
+                    
+                    // fix by array.property.find()
+                    "product": res.data.find(i => i.id === item.id)
+
                 }
             })
             setOrderItem(newCart.sort(function(a, b){return a.id - b.id}))
@@ -224,15 +228,13 @@ function Orders() {
                                             <p className={cx("list_into_price")}>
                                                 <span style={{fontWeight: 500, fontSize:14}}>Tạm tính: </span>
                                                 <p className={cx("price_produccxt box_1")}>
-                                                {
-                                                    total
-                                                }
+                                                    {total}
                                                 </p>
                                             </p>
                                         </div>
                                         <div className={cx("box_style")}>
                                             <p className={cx("list_into_price")}>
-                                                <span style={{marginTop: 5, fontWeight:500, fontSize:14}}>Thành tiền:  </span>
+                                                <span style={{marginTop: 5, fontWeight:500, fontSize:14}}>Thành tiền :</span>
                                                 <p className={cx(["price_product", "box_2"])}>{total}</p>
                                             </p>
                                         </div>
@@ -371,6 +373,7 @@ function Orders() {
                             <button 
                                 onClick={(e) => {
                                     handleSubmit(handlePay)(e)
+                                    handleClose()
                                 }}
                                 className={cx('compleOrder_btn')}>HOÀN TẤT ĐẶT HÀNG</button>
                         </div>
@@ -398,7 +401,10 @@ function Item_order({order, setCheck}) {
 
     const modifyQuantity = (add) => {
         let cart = JSON.parse(localStorage.getItem('cart'))
+        // tìm ra sản phẩm đang select
         let tmp = cart.find(i => i.id === order.id && i.size === order.size)
+
+        // lấy ra array mà k có sản phẩm đang select
         cart = cart.filter(i => i.id + i.size !== order.id + order.size)
         
         console.log(tmp)
@@ -443,40 +449,37 @@ function Item_order({order, setCheck}) {
             <i className="ti-close remove_product"></i>
             <a href="" className={cx("content_description_left")}>
                 <img src={require(`../../imgData/${order.product.img}`)} alt="" className={cx("content_product")}/>
-                {/* <img src={require('../../imgData/shoe-removebg-preview.png')} alt="" className={cx("content_product")}/> */}
             </a>
             <div className={cx("content_description_right")}>
                 <div className={cx("product_name_and_remove")}>
                     <p className={cx("content_description_name")}>{order.product.name}</p>
                     <p>Size {order.size}</p>
-                    <p className={cx("remove_product_item")}
-                        onClick={() => {
-                            let cart = JSON.parse(localStorage.getItem('cart'))
-                            cart = cart.filter(i => i.id + i.size !== order.id + order.size)
-                            localStorage.setItem('cart', JSON.stringify(cart))
-                            setCheck(pre => !pre)
-                        }}
-                    >Xóa</p>
                 </div>
                 <p className={cx("content_description_cost")}>{order.product.price}</p>
-                <div id={styles["content_quantity_product_3"]}>
+                <div id={styles["content_quantity_product_3"]} className={cx('quantity_delete')}>
                     <div className={cx("wrapper")}>
                         <span className={cx("minus")}
                             onClick={() => {
-                                // if(quantity>=1) setQuantity(pre => pre-1)
-
                                 modifyQuantity()
                             }}
                         >-</span>
                         <span className={cx("num")}>{quantity}</span>
                         <span className={cx("plus")}
                             onClick={() => {
-                                // setQuantity(pre => pre+1)
                                 modifyQuantity(true)
-                                
                             }}
                         >+</span>
                     </div>
+                    <button className={cx('delete_btn')}
+                        onClick={() => {
+                            let cart = JSON.parse(localStorage.getItem('cart'))
+                            cart = cart.filter(i => i.id + i.size !== order.id + order.size)
+                            localStorage.setItem('cart', JSON.stringify(cart))
+                            setCheck(pre => !pre)
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faTrashCan}/>
+                    </button>
                     
                 </div>
             </div>

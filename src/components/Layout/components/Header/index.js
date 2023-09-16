@@ -5,11 +5,12 @@ import axios from "axios";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart } from "@fortawesome/free-solid-svg-icons";
 // import Tippy from '@tippyjs/react';
 // import 'tippy.js/dist/tippy.css'; // optional
 
 import Tippy from '@tippyjs/react/headless';
+import { limit } from "../../../../common";
 
 
 
@@ -22,7 +23,6 @@ function Header() {
     const [check, setCheck] = useState(false)
     const [showBar, setShowBar] = useState(false)
 
-    const refInputSearch = useRef(null)
 
     const navigate = useNavigate();
 
@@ -34,7 +34,8 @@ function Header() {
 
     useEffect(() => {
         
-        axios.get("http://localhost:4000/data")
+        // axios.get("http://localhost:4000/data")
+        axios.get("http://localhost:5000/shoes")
         .then(res => {
             let cart = JSON.parse(localStorage.getItem('cart'))
             let newCart = cart.map(item => {
@@ -72,16 +73,7 @@ function Header() {
                 >
                     <FontAwesomeIcon icon={faBars}/>
                 </button>
-                <button className={cx("search_btn_mb")}
-                    onClick={() => {
-                        setShowBar(true)
-                        refInputSearch.current.focus()
-
-                    }}
-                >
-                    <FontAwesomeIcon  icon={faSearch}/>
-                </button>
-
+               
             </div>
 
 
@@ -107,9 +99,19 @@ function Header() {
 
                 </li>
 
-                <li className={cx(["men","menu"])}><a href="#">trang chủ</a></li>
+                <li className={cx(["men","menu"])}><Link to="/home" onClick={() => {window.scrollTo(0, 0)}}   
+                >trang chủ</Link>
+                
+
+                </li>
+                <li className={cx(["men","menu"])}><Link to="/home" onClick={() => {window.scrollTo(0, 0)}}   
+                >Giam Gia</Link>
+                
+
+                </li>
+
                 <li className={cx(["men","menu"])}>
-                    <Link to='/productList/page1' href="#">sản phẩm</Link>
+                    <Link to={`/shoes?_page=1&_limit=${limit}`} href="#" onClick={() => {window.scrollTo(0, 0)}}>sản phẩm</Link>
                     <ul className={cx("sub_nav_prod")}>
                         <li><Link to="">NIKE</Link></li>
                         <li><Link to="">ADIDAS</Link></li>
@@ -119,21 +121,17 @@ function Header() {
 
                     </ul>
                 </li>
-                <li className={cx(["kids","menu"])}><a href="#">safe off</a></li>
+                {/* <li className={cx(["kids","menu"])}><a href="#">safe off</a></li> */}
                 
 
-                <li className={cx("input-search")}> 
-                    <input  id={styles["search"]} type="text" className={cx("search-input")}  placeholder="Search"
-                        ref={refInputSearch}
-                    />
-                    <button className={cx('search_btn')}>
-                        <FontAwesomeIcon  icon={faSearch}/>
-                    </button>
-                </li>
+              
             </ul>
 
 
             <ul id={styles["nav"]}>
+                <li className={cx('favorite')}>
+                    <FontAwesomeIcon icon={faHeart}/>
+                </li>
                 {
                     login ?
                     <li className={cx('avatar')}>
@@ -144,10 +142,10 @@ function Header() {
                             render={attrs => (
                                 <div className={cx('menu_avatar')} tabIndex="-1" {...attrs}>
                                     <ul>
-                                        <li>
-                                            <Link to='/infor'>Thông tin cá nhân</Link>
+                                        <li onClick={(e) => {window.scrollTo(0, 0)}}>
+                                            <Link to='/infor' >Thông tin cá nhân</Link>
                                         </li>
-                                        <li>
+                                        <li onClick={(e) => {window.scrollTo(0, 0)}}>
                                             <Link to='/purchaseOrder'>Đơn mua</Link>
                                         </li>
                                         <li
@@ -226,7 +224,9 @@ function Header() {
 function CartItem_subnav({order}) {
     return (
         <li className={cx("header_cart-item")}>
-            <img src={require(`../../../../imgData/${order.product.img}`)} alt="dd" className={cx("header_cart-img")}/>
+            {/* <img src={require(`../../../../imgData/${order.product.img}`)} alt="dd" className={cx("header_cart-img")}/> */}
+            <img src={`http://localhost:5000/imgs/${order.product.img}`} alt="dd" className={cx("header_cart-img")}/>
+            
             
             <i className={cx("header_cart-icon-close")}>x</i>
             <div className={cx("header_cart-item-infor")}>

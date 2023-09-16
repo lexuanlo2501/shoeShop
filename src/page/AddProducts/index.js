@@ -31,6 +31,8 @@ const createID = () => {
 
 function AddProducts() {
 
+   
+
     const [img, setImg] = useState()
     const [imgs, setImgs] = useState([])
     const [imgURLs, setImgURLs] = useState([])
@@ -47,7 +49,6 @@ function AddProducts() {
 
     const sizeValues = ['36', '37', '38', '39', '40', '41', '42', '43']
     const [inventory, setInventory] = useState(sizeValues.map((item, index) => {
-        
         return {
             "size":item,
             "quantity": 0
@@ -76,6 +77,7 @@ function AddProducts() {
     const handlePreviewImg_main = (e) => {
         const file = e.target.files[0]
         console.log(e.target.files[0].name)
+        console.log(e.target.files[0])
         file.preview = URL.createObjectURL(file)
         setImg(file)
         
@@ -125,6 +127,12 @@ function AddProducts() {
             axios.post(`http://localhost:4000/products/${infor.productId}/data`,infor)
             .then(res => {
                 console.log(res.data)
+                let inventoryMess = inventory.reduce((accumulator, currentValue) => {
+                    if(currentValue.quantity){
+                        return accumulator + "size " + currentValue.size + " : " + currentValue.quantity + ", "
+                    }
+                    return accumulator
+                }, '')
 
                 const history = {
                     id: "hst"+createID(),
@@ -134,7 +142,10 @@ function AddProducts() {
                     date : createHistory().split(' - ')[0],
                     time : createHistory().split(' - ')[1],
                     active : 'add',
-                    content: `Thêm sản phẩm mã ${infor.id}`
+                    // content: `Thêm sản phẩm mã ${infor.id}`,
+                    content: `Thêm sản phẩm mã ${infor.id}` + " | " + inventoryMess,
+
+                    // inventory: inventory
                }
                 axios.post(`http://localhost:4000/history`,history)
                 
@@ -328,14 +339,6 @@ function AddProducts() {
             </div>
 
 
-            {/* QUANTITY */}
-            {/* <div className={cx('input_product')}>
-                <label className={cx('label-product')}>số lượng: </label>
-                <input placeholder="..."  type="number"
-                    onChange={e => setQuantity(e.target.value)}
-                />
-            </div> */}
-
             <div className={cx('input_product')}>
                 <label style={{display:'block'}} className={cx('label-product')}>mô tả: </label>
                 <textarea className={cx('input_textarea') }
@@ -365,6 +368,8 @@ function AddProducts() {
             >thêm</button>
 
         </div>
+
+      
 
         
        

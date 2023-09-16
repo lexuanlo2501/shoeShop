@@ -14,8 +14,9 @@ function DetailProduct({product}) {
 
     
     const [quantity_Order, setQuantity_Order] = useState(1)
-    const [size_Order, setSize_Order] = useState(sizeValues[0])
-    const [avalable, setAvalable] = useState(1)
+    // const [size_Order, setSize_Order] = useState(sizeValues[0])
+    const [size_Order, setSize_Order] = useState("")
+
 
 
     useEffect(() => {
@@ -24,7 +25,7 @@ function DetailProduct({product}) {
 
 
     const addCart = (id_product) => {
-        let product = {
+        let productAdd = {
             id: id_product,
             size: size_Order,
             quantity: quantity_Order
@@ -32,11 +33,10 @@ function DetailProduct({product}) {
 
         if(!Boolean(localStorage.getItem('cart'))) {
             localStorage.setItem('cart', JSON.stringify([]))
-            console.log('check')
         }
 
         let product_list = localStorage.getItem('cart')
-        let json = [...JSON.parse(product_list), product]
+        let json = [...JSON.parse(product_list), productAdd]
 
         localStorage.setItem('cart', JSON.stringify(json));
         console.log(JSON.parse(product_list))
@@ -77,7 +77,8 @@ function DetailProduct({product}) {
                                 >{product.name}</p>
                                 <div className={cx("status")} style={{margin: "13px 0px"}}>
                                     <p className={cx("id")}>Mã sản phẩm: <strong>{product.id}</strong></p>
-                                    <p className={cx("avalable")}>Tình trạng: <strong>{avalable ? "còn hàng" : "hết hàng"}</strong></p>
+                                    <p className={cx("avalable")}>Tình trạng: <strong>Còn hàng</strong></p>
+
                                 </div>
                                 <p className={cx("shoe_price")}>{product.price} ₫</p>
                             </div>
@@ -95,20 +96,26 @@ function DetailProduct({product}) {
                                     <ul className={cx("button_size")}>
                                         <SelectActive>
                                         {
-                                            sizeValues.map((item, index) =>
-                                                <span key={index}
-                                                    className={"btn_size"}
-                                                    onClick={() => {
-                                                        let quantitySize_select = product.inventory.find(i => i.size===item)
-                                                        // console.log(quantitySize_select)
-                                                        setAvalable(quantitySize_select.quantity)
-                                                        setSize_Order(item)
-                                                    }}
-                                                >
-                                                    {item}
-                                                </span>
+                                            sizeValues.map((item, index) => {
+                                                let quantitySize_select = product.inventory.find(i => i.size===item)
 
-                                            )
+                                                return (
+                                                    Number(quantitySize_select.quantity) ?
+                                                    <span key={index}
+                                                        className={cx("btn_size")}
+                                                        onClick={() => {
+                                                            console.log(quantitySize_select)
+                                                            setSize_Order(item)
+                                                        }}
+                                                    >
+                                                            {item}
+                                                    </span>
+                                                    :
+                                                    <span noActive className={cx(["btn_size", "noActive"])} onClick={() => {}}><span>x</span></span>
+                                                )
+                                                
+
+                                            })
                                         }
                                         </SelectActive>
                                     </ul>
@@ -137,22 +144,23 @@ function DetailProduct({product}) {
                                 </div>
                 
                                 <div className={cx("add_btn_grp")}
-                                    onClick={() =>{ 
-                                        if(avalable) {
+                                    onClick={() =>{
+                                        if(size_Order) {
                                             addCart(product.id)
                                             toast.success("Đã thêm vào gỏi hàng", {
-                                                autoClose: 1,
+                                                autoClose: 2000,
                                                 theme: "colored",
                                                 position: "bottom-right",
                                             })
                                         }
                                         else {
-                                            toast.error("size này tạm hết hàng", {
-                                                autoClose: 2,
+                                            toast.error("Vui lòng chọn size", {
+                                                autoClose: 2000,
                                                 theme: "colored",
                                                 position: "bottom-right",
                                             })
                                         }
+                                       
                                     }}
 
                                 >

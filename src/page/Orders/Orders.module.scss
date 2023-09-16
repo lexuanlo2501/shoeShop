@@ -444,6 +444,26 @@ li.cart_btn:hover .header_cart-list {
     position: relative;
 }
 
+.quantity_delete {
+    display: flex;
+    align-items: center;
+
+    .delete_btn {
+        font-size: 22px;
+        margin-left: 20px;
+        background-color: transparent;
+        color: #d07a7a;
+
+        &:hover {
+            opacity: 0.8;
+        }
+        &:active {
+            opacity: 0.9;
+
+        }
+    }
+}
+
 .remove_product{
     position: absolute;
     display: none;
@@ -533,6 +553,7 @@ p.list_into_price{
 }
 p.price_product{
     display: inline-block;
+    margin-left: 10px;
     
 }
 

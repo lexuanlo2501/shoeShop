@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
+import AvatarAuto from "../../components/AvatarAuto";
 
 
 const cx = classNames.bind(style)
@@ -80,37 +81,42 @@ function InforUser() {
             <h1>Hồ sơ của tôi</h1>
             <p>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
 
-            <div className={cx('infor')}>
-                <div className={cx('input_update')}>
-                    <label>Tên đăng nhập :</label> <span className={cx('valueClkToChange')}>{inforUser.accName}</span>
-                </div>
-                <div className={cx('input_update')}>
-                    <label>Tên :</label> 
-                    <input placeholder="..."
-                        {...register("fullName")}
-                    />
-                </div>
-                <div className={cx('input_update')}>
-                    <label>Email :</label> <span className={cx('valueClkToChange')}>{ inforUser?.email?.slice(0, 2) +'******'+'@gmail.com' }</span> <span className={cx('changeInfor_btn')}>thay đổi</span>
-                </div>
-                <div className={cx('input_update')}>
-                    <label>Số điện thoại :</label> <span className={cx('valueClkToChange')}>{'********'+inforUser?.phoneNumber?.slice(8, 10)}</span> <span className={cx('changeInfor_btn')}>thay đổi</span>
-                </div>
-                <div className={cx('input_update')}>
-                    <label>Giới tính :</label>
-                    <input type="radio" name="gender" value='male' id="g1" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g1">Nam</label>
-                    <input type="radio" name="gender" value='female' id="g2" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g2">Nữ</label>
-                    <input type="radio" name="gender" value='other' id="g3" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g3">Khác</label>
 
+
+            <div className={cx('infor')}>
+                <div>
+                    <div className={cx('input_update')}>
+                        <label>Tên đăng nhập :</label> <span className={cx('valueClkToChange')}>{inforUser.accName}</span>
+                    </div>
+                    <div className={cx('input_update')}>
+                        <label>Tên :</label>
+                        <input placeholder="..."
+                            {...register("fullName")}
+                        />
+                    </div>
+                    <div className={cx('input_update')}>
+                        <label>Email :</label> <span className={cx('valueClkToChange')}>{ inforUser?.email?.slice(0, 2) +'******'+'@gmail.com' }</span> <span className={cx('changeInfor_btn')}>thay đổi</span>
+                    </div>
+                    <div className={cx('input_update')}>
+                        <label>Số điện thoại :</label> <span className={cx('valueClkToChange')}>{'********'+inforUser?.phoneNumber?.slice(8, 10)}</span> <span className={cx('changeInfor_btn')}>thay đổi</span>
+                    </div>
+                    <div className={cx('input_update')}>
+                        <label>Giới tính :</label>
+                        <input type="radio" name="gender" value='male' id="g1" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g1">Nam</label>
+                        <input type="radio" name="gender" value='female' id="g2" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g2">Nữ</label>
+                        <input type="radio" name="gender" value='other' id="g3" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g3">Khác</label>
+                    </div>
+                    <div className={cx('input_update')}>
+                        <label>Ngày sinh :</label> <input type='date' placeholder="..." {...register("dateOfBirth")}/>
+                    </div>
+                    <button className={cx('btn_save')}
+                        onClick={(e) => {
+                            handleSubmit(handleSave)(e)
+                        }}
+                    > lưu</button>
                 </div>
-                <div className={cx('input_update')}>
-                    <label>Ngày sinh :</label> <input type='date' placeholder="..." {...register("dateOfBirth")}/>
-                </div>
-                <button className={cx('btn_save')}
-                    onClick={(e) => {
-                        handleSubmit(handleSave)(e)
-                    }}
-                > lưu</button>
+                <AvatarAuto nameU={inforUser?.fullName} />
+
             </div>
             
         </div>

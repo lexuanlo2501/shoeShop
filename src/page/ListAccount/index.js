@@ -133,6 +133,7 @@ function ModalInforUser({show, handleClose, userSelect}) {
                 <Modal.Body>
                     <div className={cx('body_modal')}>
                         <div className={cx('user_info')}>
+                            <p><span>vai trò</span>: {userSelect.role}</p>
                             <p><span>id</span>: {userSelect._id}</p>
                             <p><span>tài khoản</span>: {userSelect.accName}</p>
                             <p><span>email</span>: {userSelect.email}</p>

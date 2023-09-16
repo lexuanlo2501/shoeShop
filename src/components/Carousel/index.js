@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 import axios from 'axios';
+import { Link } from "react-router-dom";
+
 
 import classNames from 'classnames/bind';
 import styles from './Carousel.module.scss'
@@ -9,9 +11,9 @@ import styles from './Carousel.module.scss'
 const cx = classNames.bind(styles)
 
 
-const Carousel = ({brand}) => {
+const Carousel = ({brand, setTrigger}) => {
   const [products, setProducts] = useState([])
-
+  
   const handleDragStart = (e) => e.preventDefault();
   
   const responsive = {
@@ -21,39 +23,37 @@ const Carousel = ({brand}) => {
   };
 
   useEffect(() => {
-    let route_ =  brand ? `products/${brand}/` : ''
+    let brand_paraQuery =  brand ? `brand/${brand}` : ''
         // http://localhost:4000/products/adidas/data?_page=1&_limit=2
         // axios.get(`http://localhost:4000/data?_page=${page}&_limit=${limit}`)
-        axios.get(`http://localhost:4000/${route_}data?_page=1&_limit=8`)
+        // axios.get(`http://localhost:4000/${route_}data?_page=1&_limit=8`)
+        // axios.get(`http://localhost:4000/${route_}data`)
+        axios.get(`http://localhost:5000/shoes/${brand_paraQuery}?_limit=10&_page=1`)
         .then(res => {
             setProducts(res.data)
         })
   }, [])
   
-  
-  // const items = [
-  //   <img className={cx('img_product')} src={require('../../imgData/shoe-removebg-preview.png')} onDragStart={handleDragStart} role="presentation" />,
-  //   <img className={cx('img_product')} src={require('../../imgData/air-max-alpha-trainer-5-training-shoes-r0bxqt-removebg-preview.png')} onDragStart={handleDragStart} role="presentation" />,
-  //   <img className={cx('img_product')} src={require('../../imgData/4896bd57f0894845b5c0ae8300eec549_9366-removebg-preview.png')} onDragStart={handleDragStart} role="presentation" />,
-  //   <img className={cx('img_product')} src={require('../../imgData/4896bd57f0894845b5c0ae8300eec549_9366-removebg-preview.png')} onDragStart={handleDragStart} role="presentation" />,
-  //   <img className={cx('img_product')} src={require('../../imgData/4896bd57f0894845b5c0ae8300eec549_9366-removebg-preview.png')} onDragStart={handleDragStart} role="presentation" />,
-  //   <img className={cx('img_product')} src={require('../../imgData/4896bd57f0894845b5c0ae8300eec549_9366-removebg-preview.png')} onDragStart={handleDragStart} role="presentation" />,
-  //   <img className={cx('img_product')} src={require('../../imgData/4896bd57f0894845b5c0ae8300eec549_9366-removebg-preview.png')} onDragStart={handleDragStart} role="presentation" />,
-  //   <img className={cx('img_product')} src={require('../../imgData/4896bd57f0894845b5c0ae8300eec549_9366-removebg-preview.png')} onDragStart={handleDragStart} role="presentation" />,
-  
-  // ];
-
   const items = products.map((item, index) =>
-    <a href={`detail_product_${item.id}`}>
+    <Link 
+      // to={`shoes/detail_product?_id=${item.id}`}
+      to={`?_id=${item.id}`}
+
+      onClick={() => {
+        setTrigger(pre => !pre)
+        window.scrollTo(0, 0)
+      }}
+      replace
+    >
       <img
         key={index}
         className={cx(['img_product', item.BC_color])}
         onDragStart={handleDragStart} 
         role="presentation"
-        src={require(`../../imgData/${item.img}`)}
-  
+        // src={require(`../../imgData/${item.img}`)}
+        src={`http://localhost:5000/imgs/${item.img}`}
       />
-    </a>
+    </Link>
   )
   return (
     <AliceCarousel 

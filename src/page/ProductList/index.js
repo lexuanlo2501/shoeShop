@@ -3,11 +3,12 @@ import classNames from 'classnames/bind';
 import { useEffect, useState, CSSProperties  } from 'react';
 import styles from './ProductList.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faGrip, faList} from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight, faGrip, faList, faHeart as faHeartSolid} from '@fortawesome/free-solid-svg-icons';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { Link } from 'react-router-dom';
 import { Placeholder, Spinner } from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
-import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import SearchItem from '../../components/SearchItem';
 
 const cx = classNames.bind(styles)
 
@@ -18,6 +19,11 @@ function ProductList({page, limit, numberOfPage, brand, brand_v2}) {
     const [loading, setLoading] = useState(true)
 
     const [listView, setListView] = useState(false)
+
+    useEffect(() => {
+        const user = localStorage.getItem("tokens")
+        console.log(JSON.parse(user))
+    }, [])
 
     useEffect(() => {
 
@@ -64,6 +70,9 @@ function ProductList({page, limit, numberOfPage, brand, brand_v2}) {
                     }
                     <span>{brand}</span>
                 </div>
+
+                <SearchItem/>
+
                 <div>
                     <FontAwesomeIcon className={cx(['viewProd_btn', {'active':listView}])} icon={faList}
                         onClick = {() => {
@@ -92,7 +101,7 @@ function ProductList({page, limit, numberOfPage, brand, brand_v2}) {
             }
 
             {   
-                products.map((item, index) => <Card listView={listView} key={index} product={item}/>)
+                products.map((item, index) => <Card listView={listView} key={item.id} product={item}/>)
             }
             </div>
 
@@ -157,11 +166,25 @@ function ProductList({page, limit, numberOfPage, brand, brand_v2}) {
 }
 
 function Card({product, listView}) {
+    const [like, setLike] = useState(false)
+
     return (
-        <Link to={`/detail_product_${product.id}`} className={cx(["card", {"active":listView}])}>
+        <Link to={`/detail_product_${product.id}`} className={cx(["card", {"active":listView}])}
+            onClick={(e) => {window.scrollTo(0, 0)}}
+        >
             <div className={cx(["card_thumnal", product.BC_color])}>
                 <img src={require(`../../imgData/${product.img}`)} a lt="" className={cx(["card-img"])}/>
-                <FontAwesomeIcon className={cx('contact_product')} icon={faHeart}/>
+                <FontAwesomeIcon className={cx(['contact_product'], {"active":like})} icon={like ?faHeartSolid:faHeart}
+                    onClick={(e) => {
+                        e.preventDefault()
+
+                        // sự kiện xủi bọt
+                        e.stopPropagation()
+
+                        console.log("heart logo")
+                        setLike(pre => !pre)
+                    }}
+                />
             </div>
 
             <div className={cx("card-data")}>

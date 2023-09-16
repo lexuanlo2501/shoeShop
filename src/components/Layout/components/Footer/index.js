@@ -1,5 +1,8 @@
 import classNames from "classnames/bind";
 import styles from './Footer.module.scss'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
+// import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles)
 
@@ -31,23 +34,24 @@ function Footer() {
                 
                 <div>
                     <img className={cx("")} src={require("./monitoring.png")} alt=""/> 
-                    <div>
-                        <div>
-                            <label>Email</label>
-                            <br/>
-                            <input/>
-                        </div>
-                        <br/>
+                      
+                    <a className={cx('send_btn')}
+                        href="mailto:lexuanlo2501@gmail.com?subject='Phản hồi từ khách hàng'&body='...'"
+                    >
+                        <span>gửi
+                            <span className={cx('styleMailLetter')}>
+                                <span>m</span>
+                                <span>a</span>
+                                <span>i</span>
+                                <span>l</span>
+                            </span>
+                        </span>
+                        <FontAwesomeIcon icon={faEnvelope}/>
+                    </a>
+                        {/* <a href="mailto:lexuanlo2501@gmail.com">Click to Send an Email</a> */}
+                        {/* <a href="mailto:lexuanlo2501@gmail.com?subject='Phản hồi từ khách hàng'&body='Just popped in to say hello'">Click to Send an Email</a> */}
 
-                        <div>
-                            <label>Nội dung</label>
-                            <br/>
 
-                            <textarea/>
-                        </div>
-                        <button className={cx('send_btn')}>gửi</button>
-
-                    </div>
                 </div>
             </div>
         </div>

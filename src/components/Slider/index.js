@@ -28,11 +28,12 @@ export default function Slider({imgs}) {
 
 
       {
-        imgs.map((item, index) => 
+        imgs?.map((item, index) => 
         <MDBCarouselItem key={index}
             className='vh-100 mx-auto d-block'
             itemId={index+1}
-            src={require('../../imgData/'+item)}
+            // src={require('../../imgData/'+item)}
+            src={`http://localhost:5000/imgs/${item}`}
             alt='...'
         />
       )
