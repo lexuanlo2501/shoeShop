@@ -16,14 +16,12 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { faCreditCard, faCreditCardAlt, faTrashCan, faTruckFast } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-let md5 = require('md5');
+import {formatPrice, limit} from "../../common"
 
 const cx = classNames.bind(styles)
 
 function Orders() {
 
-    const [address2, setAddress2] = useState('')
     const [user, setUser] = useState({})
 
 
@@ -34,9 +32,21 @@ function Orders() {
     const [show, setShow] = useState(false);
     const [optionPay, setOptionPay] = useState("cod")
     
-    const handleChange = (event) => {
+    const [urlVNP, setUrlVNP] = useState("")
+
+    const handleChange_payMent = (event) => {
         setOptionPay(event.target.value)
         console.log(event.target.value)
+        if(event.target.value === "credit") {
+            axios.post("http://localhost:5000/create_payment_url", {
+                "amount":total,
+                "language":"vn"
+            })
+            .then(res => {
+                console.log(res.data)
+                setUrlVNP(res.data)
+            })
+        }
     }
 
     const handleClose = () => setShow(false);
@@ -48,26 +58,29 @@ function Orders() {
 
     useEffect(() => {
         
-        axios.get("http://localhost:4000/data")
+        let cart = JSON.parse(localStorage.getItem('cart'))
+        let cart_prod_id = cart.map(i => i.id).toString()
+
+        axios.get("http://localhost:5000/shoesList/"+cart_prod_id)
         .then(res => {
+
             let cart = JSON.parse(localStorage.getItem('cart'))
             let newCart = cart.map(item => {
                 return {
                     ...item,
-                    // "product": res.data.filter(i => item.id === i.id)[0]
-                    
-                    // fix by array.property.find()
                     "product": res.data.find(i => i.id === item.id)
 
                 }
             })
+
             setOrderItem(newCart.sort(function(a, b){return a.id - b.id}))
-            // console.log(newCart)
+            console.log(newCart)
             setLoading(false)
         })
 
 
     }, [check])
+
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("tokens"));
@@ -75,23 +88,16 @@ function Orders() {
     }, [])
 
 
-    const formatCurr = (number) => {
-        return number.slice(0, number.length-2)
-    }
-    const formatNum = (str) => {
-        return str.replaceAll('.', '')
-    }
-
     const total = useMemo(() => {
         let result = orderItem.reduce((pre, cur) => {
-            return pre + Number(formatNum(cur.product.price)) * cur.quantity
+            return pre + cur?.product?.price * cur.quantity
 
         }, 0)
 
         // console.log(result)
 
-        let curr = Number(result).toLocaleString('vi', {style : 'currency', currency : 'VND'})
-        return formatCurr(curr)
+        return result
+      
     })
 
     const handleOrder = (data) => {
@@ -100,7 +106,6 @@ function Orders() {
         // logic tài khoản bị khóa thì không thể đặt hàng
 
         if(!user.lock) {
-            setAddress2(data.address)
 
             let checkQuantity = orderItem.every(i => i.quantity == 0)
             console.log(checkQuantity)
@@ -114,6 +119,7 @@ function Orders() {
             console.log('block')
         }
 
+        localStorage.setItem("tokens", JSON.stringify({...user, address:data.address, description:data.description}))
         
 
     }
@@ -128,22 +134,6 @@ function Orders() {
         resolver: yupResolver(schema),
     });
 
-    const handleDate = (d,type) => {
-
-        let today = d;
-        let dd = String(today.getDate()).padStart(2, '0');
-        let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        let yyyy = today.getFullYear();
-
-        // let date = 
-        if(type==="not")
-            return dd+mm+yyyy
-        if(type==="mdy")
-            return mm + '/' + dd + '/' + yyyy
-
-        return dd + '/' + mm + '/' + yyyy
-    }
-
     const ComponentRequire = () => {
        return <span className={cx('err_messagge')}>bạn phải điền mục này</span>
     }
@@ -153,16 +143,17 @@ function Orders() {
             const user = JSON.parse(localStorage.getItem("tokens"))
 
             const order = {
-                "id_client" : user._id,
-                "status": 1,
+                "client_id" : user.accName,
                 "description": data.description,
                 "address": data.address,
-                "date_order": handleDate(new Date()),
-                "amount": total,
-                "products": orderItem.filter(i => i.quantity!=0)
+                "products": orderItem.filter(i => i.quantity!=0).map(prod => ({
+                    "product_id": prod.id,
+                    "size": prod.size,
+                    "quantity": prod.quantity
+                }))
             }
 
-            axios.post('http://localhost:4000/orders', order)
+            axios.post('http://localhost:5000/orders', order)
             .then(res => {
                 toast("Đặt hàng thành công", {
                     theme: "light",
@@ -176,13 +167,14 @@ function Orders() {
                     position: "top-center",
                 })
                 console.log(err)
-
             })
     
             console.log(order)
 
         }
     }
+
+
 
 
 
@@ -200,11 +192,7 @@ function Orders() {
                             <h1 className={cx("lbl_shopping_cart")}>
                             Giỏ hàng     
                             </h1>
-                            <span>
-                                (
-                                    <span className={cx("count_item")}> {orderItem.length} </span>
-                                sản phẩm)
-                            </span>
+                            <span>(<span className={cx("count_item")}> {orderItem.length} </span>sản phẩm)</span>
                         </div>
                         <div className={cx("content_description")}>
                             <div className={cx("content_production_left")}>
@@ -227,15 +215,13 @@ function Orders() {
                                         <div className={("box_stylcxe fee")}>
                                             <p className={cx("list_into_price")}>
                                                 <span style={{fontWeight: 500, fontSize:14}}>Tạm tính: </span>
-                                                <p className={cx("price_produccxt box_1")}>
-                                                    {total}
-                                                </p>
+                                                <p className={cx("price_produccxt box_1")}>{formatPrice(total)}</p>
                                             </p>
                                         </div>
                                         <div className={cx("box_style")}>
                                             <p className={cx("list_into_price")}>
                                                 <span style={{marginTop: 5, fontWeight:500, fontSize:14}}>Thành tiền :</span>
-                                                <p className={cx(["price_product", "box_2"])}>{total}</p>
+                                                <p className={cx(["price_product", "box_2"])}>{formatPrice(total)}</p>
                                             </p>
                                         </div>
                                         <button className={cx("btn_payment")}
@@ -246,13 +232,15 @@ function Orders() {
                                                     navigate("/signin")
                                                 }
 
+
                                                 handleSubmit(handleOrder)(e)
                                                 
                                             }}
                                         >Thanh toán ngay</button>
-                                        <Link to="/productList/page1" >
+                                        <Link to={`/shoes?_page=1&_limit=${limit}`} >
                                             <button className={cx("btn_continue_shopping")}>Tiếp tục mua hàng</button>
                                         </Link>
+                                        
                                         {
                                             orderItem.some(i => i.quantity == 0) && <p className="text-danger">Vui lòng kiểm tra giỏ hàng. có sản phẩm với số lượng là 0</p>
                                         }
@@ -264,24 +252,26 @@ function Orders() {
                 </div>
 
                 <div className={cx('fillOut_infor')}>
-                <h1>thông tin người nhận</h1>
+                    <h1>thông tin người nhận</h1>
+                    
                 
-               
-               
-                <div className={cx('input_infor')}>
-                    <label htmlFor="input_5">địa chỉ</label><span>:</span>
-                    <input id="input_5" {...register("address")}/> 
-                    {
-                        errors.address && <ComponentRequire/>
-                    }
+                    <div className={cx('input_infor')}>
+                        <label htmlFor="input_5">địa chỉ</label><span>:</span>
+                        <input id="input_5" {...register("address")}/> 
+                        {
+                            errors.address && <ComponentRequire/>
+                        }
+
+                        <p>Tỉnh/Thành phố, Quận/Huyện, Phường/Xã</p>
+                    </div>
+
+                    <div className={cx('input_infor')}>
+                        <label htmlFor="input_4">ghi chú</label><span>:</span>
+                        <textarea id="input_4"
+                        {...register("description")}
+                        />
+                    </div>
                 </div>
-                <div className={cx('input_infor')}>
-                    <label htmlFor="input_4">ghi chú</label><span>:</span>
-                    <textarea id="input_4"
-                      {...register("description")}
-                    />
-                </div>
-            </div>
 
             </div>
 
@@ -300,7 +290,7 @@ function Orders() {
                         <div className={cx('option_pay')}>
                             <h2 >PHƯƠNG THỨC GIAO HÀNG</h2>
                             <div className={cx('inputPay')}>
-                                <input type="radio" name="" checked="checked"/>
+                                <input type="radio" name="" checked="checked" onChange={()=>{}}/>
                                 Tốc độ tiêu chuẩn (từ 2 - 5 ngày làm việc)
 
                                 <span className={cx('title')} title="Tuỳ vào địa chỉ giao hàng mà tốc độ giao hàng tiêu chuẩn sẽ khác nhau. Chúng tôi luôn cố gắng để đơn hàng đến tay bạn sớm nhất.">?</span>
@@ -312,10 +302,12 @@ function Orders() {
                                 <input type="radio" name="option" 
                                     value="cod"
                                     checked={optionPay === 'cod'}
-                                    onChange={handleChange}
+                                    onChange={handleChange_payMent}
+                                    id="cod"
                                 />
-                                Thanh toán trực tiếp khi giao hàng
-                                <span className={cx('title')} title="Là phương thức thanh toán bằng tiền mặt trực tiếp khi nhận hàng">?</span>
+                                <label htmlFor="cod">Thanh toán trực tiếp khi giao hàng</label>
+                                
+                                <span  className={cx('title')} title="Là phương thức thanh toán bằng tiền mặt trực tiếp khi nhận hàng">?</span>
                                 <FontAwesomeIcon className={cx('icon')} icon={faTruckFast}/>
 
                             </div>
@@ -323,10 +315,11 @@ function Orders() {
                                 <input type="radio" name="option"
                                     value="credit"
                                     checked={optionPay === 'credit'}
-                                    onChange={handleChange}
-
+                                    onChange={handleChange_payMent}
+                                    id="credit"
                                 />
-                                Thanh toán bằng Thẻ quốc tế / Thẻ nội địa / QR Code
+                                <label htmlFor="credit">Thanh toán bằng Thẻ quốc tế / Thẻ nội địa / QR Code</label>
+                                
                                 <span className={cx('title')} title="Phương thức thanh toán sử dụng các loại thẻ quốc tế như Visa, Master, JCB,… hoặc các loại thẻ thanh toán nội địa (ATM) hoặc thanh toán bằng QR ngân hàng hoặc ví điện tử. Vui lòng đọc kĩ các cam kết thanh toán khi chọn phương thức này. Phí thanh toán đối với phương thức này hiện là 1% trên tổng giá trị giao dịch.">?</span>
                                 <FontAwesomeIcon className={cx('icon')} icon={faCreditCard}/>
 
@@ -335,22 +328,22 @@ function Orders() {
                                 <input type="radio" name="option"
                                     value="momo"
                                     checked={optionPay === 'momo'}
-                                    onChange={handleChange}
-
+                                    onChange={handleChange_payMent}
+                                    id="momo"
                                 />
-                                Thanh toán bằng ví MoMo
+                                <label htmlFor="momo">Thanh toán bằng ví MoMo</label>
                                 <span className={cx('title')} title="Phương thức dành cho khách hàng có tài khoản và lựa chọn thanh toán qua ví điện tử MoMo. Vui lòng đọc kĩ các cam kết về phương thức này trước khi quyết định. Phí thanh toán đang được áp dụng là 1% trên tổng thanh toán.">?</span>
                                 <img src={require('./MoMo_Logo.png')}/>
                             </div>
-                            <h3>Địa chỉ: {address2}</h3>
-                            <p className='text-danger'>{optionPay !== "cod" && <span>Hiện chưa có phương thức này</span>} </p>
+                            <h3>Địa chỉ: { JSON.parse(localStorage.getItem("tokens")).address }</h3>
+                            <p className='text-danger'>{optionPay === "momo" && <span>Hiện chưa có phương thức này</span>} </p>
 
                         </div>
                         <div className={cx('total')}>
                             <h1>ĐƠN HÀNG</h1>
                             <div className={cx('infor_fee')}>
                                 <span>Đơn hàng</span>
-                                <span>{total}</span>
+                                <span>{formatPrice(total)}</span>
                             </div>
                             <div className={cx('infor_fee')}>
                                 <span>Gỉam</span>
@@ -367,15 +360,22 @@ function Orders() {
 
                             <div className={cx(['infor_fee','end_col'])}>
                                 <span>TỔNG CỘNG</span>
-                                <span className={cx('final_price')}>{total} VND</span>
+                                <span className={cx('final_price')}>{formatPrice(total)}</span>
                             </div>
-
+                        {
+                            optionPay === "credit" ?
+                            <a className={cx('compleOrder_btn')} href={urlVNP}>HOÀN TẤT ĐẶT HÀNG (VNP)</a>
+                            :
                             <button 
                                 onClick={(e) => {
                                     handleSubmit(handlePay)(e)
                                     handleClose()
                                 }}
-                                className={cx('compleOrder_btn')}>HOÀN TẤT ĐẶT HÀNG</button>
+                                className={cx('compleOrder_btn')}
+                            >HOÀN TẤT ĐẶT HÀNG</button>
+                        }
+
+                           
                         </div>
                         
                     </div>
@@ -438,24 +438,64 @@ function Item_order({order, setCheck}) {
 
         setCheck(pre => !pre)
         
-        
+    }
+
+    const [size, setSize] = useState(order?.size)
+
+    const handleChangeSize = (product, size) => {
+        let cart = JSON.parse(localStorage.getItem('cart'))
+
+        // tìm ra sản phẩm đang select
+        let tmp = cart.find(i => i.id === product.id && i.size === product.size)
+
+        // lấy ra array mà k có sản phẩm đang select
+        cart = cart.filter(i => i.id + i.size !== product.id + product.size)
+        cart.push({...tmp, size:size})
+
+        let cart_sort = [...cart].sort(
+            function(a, b){
+                return a.id*Number(a.size) - b.id*Number(b.size)
+                //  lấy id x size để cố định số index trên item component khi thay đổi số lượng sản phẩm
+                //  việc thay đổi số lượng làm set lại card bằng toán tử ..., các phầm tử array sẽ thay đổi vị trí
+
+            }
+        )
+        localStorage.setItem('cart', JSON.stringify(cart_sort))
+        setCheck(pre => !pre)
+
+
     }
 
     useEffect(() => {
     }, [])
+    const sizeValues = ['36', '37', '38', '39', '40', '41', '42', '43']
+
     
     return (
         <div className={cx("content_description_wrapper")}>
             <i className="ti-close remove_product"></i>
             <a href="" className={cx("content_description_left")}>
-                <img src={require(`../../imgData/${order.product.img}`)} alt="" className={cx("content_product")}/>
+                <img src={`http://localhost:5000/imgs/${order?.product?.img}`} alt="" className={cx("content_product")}/>
+
             </a>
             <div className={cx("content_description_right")}>
                 <div className={cx("product_name_and_remove")}>
-                    <p className={cx("content_description_name")}>{order.product.name}</p>
-                    <p>Size {order.size}</p>
+                    <p className={cx("content_description_name")}>{order?.product?.name}</p>
+                    {/* <p>Size {order.size}</p> */}
+                    <span>Size: </span>
+                    <select
+                        value={size}
+                        onChange={(e) => {
+                            setSize(e.target.value)
+                            handleChangeSize(order, e.target.value)
+                        }}
+                    >
+                    {
+                        sizeValues.map(i => <option key={i} value={i}>{i}</option>)
+                    }
+                    </select>
                 </div>
-                <p className={cx("content_description_cost")}>{order.product.price}</p>
+                <p className={cx("content_description_cost")}>{formatPrice(order?.product?.price)}</p>
                 <div id={styles["content_quantity_product_3"]} className={cx('quantity_delete')}>
                     <div className={cx("wrapper")}>
                         <span className={cx("minus")}

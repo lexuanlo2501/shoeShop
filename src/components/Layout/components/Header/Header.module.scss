@@ -130,20 +130,14 @@ html{
 .border{
     border-left: 1px solid;
 }
-// .nav-menu #img-logo{
-//     padding-top:46px;
-//     span {
-//         display: inline-block;
-//     }
 
-    
     
 // }
 .logo{
     width: 37px;
 }
 
-#img-logo{
+.box_logo{
     width: 283px;
     padding-left: 30px;
     box-sizing: border-box;
@@ -304,7 +298,7 @@ html{
 .avatar {
     padding: 5px;
     font-size: 23px;
-    margin-right: 8px;
+    // margin-right: 8px;
     cursor: pointer;
 
 
@@ -521,14 +515,16 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
 }
 
 .header_cart-notice{
+    width: 13px;
+    height: 13px;
     position: absolute;
-    padding: 0px 7px;
+    // padding: 0px 7px;
     background-color: #fa5d6f;
     font-size: 0.9rem;
     color: var(--white-color);
     border-radius: 50%;
-    top: -10px;
-    right: -7px;
+    top: -6px;
+    right: 2px;
     font-size: 14px;
 }
 
@@ -635,7 +631,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         top: 58px;
     }
 
-    #img-logo {
+    .box_logo {
         max-width: 160px;
     }
 
@@ -652,36 +648,39 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
 // mobile
 @media only screen and (max-width:46.1875em){
     .wrapper {
-        
+        #nav-menu li{
+            padding: 0 10px;
+            
+        }
+
+       #nav li {
+        font-size: 17px;
+        padding-right: 8px;
+
+       }
+       #nav-menu li a {
+        font-size: 14px;
+       }
+
+    //    #nav > li{
+    //     display: inline-block;
+    //     padding-right: 15px;
+    //     }
     }
 
     .close_bar_btn {
         display: inline-block;
     }
 
-    .nav_dropdown {
-        display: none;
-
-        li {
-            width: 100%;
-            a {
-                color: #ffffff;
-            }
-
-        }
-    }
-
     .box_logo {
-        // display: none;
-        span,img {
+        display: none;
+        width: 0;
+        img, span {
             display: none;
         }
     }
 
-    #img-logo {
-        display: none;
-    }
-
+    
    
 
     .show_bar {
@@ -701,8 +700,6 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         display: block;
     }
 
-    .search-input {
-        width: 80%;
-    }
+   
 
 }

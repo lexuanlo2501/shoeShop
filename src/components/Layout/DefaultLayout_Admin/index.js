@@ -18,10 +18,10 @@ function DefaultLayout_Admin({children}) {
                     <Header_admin/>
                     <div className={cx('body')}>
                         <div className={cx('content')}>{children}</div>
-                        <div className={cx("member_control")}>
+                        {/* <div className={cx("member_control")}>
                             <Team/>
                             <Meeting/>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

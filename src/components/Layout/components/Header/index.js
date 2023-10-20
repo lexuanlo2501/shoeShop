@@ -10,31 +10,24 @@ import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, 
 // import 'tippy.js/dist/tippy.css'; // optional
 
 import Tippy from '@tippyjs/react/headless';
-import { limit } from "../../../../common";
+import { formatPrice, limit } from "../../../../common";
 
 
 
 
 const cx = classNames.bind(styles)
 
-function Header() {
+function Header({setRe_render}) {
 
     const [orderItem, setOrderItem] = useState([])
     const [check, setCheck] = useState(false)
-    const [showBar, setShowBar] = useState(false)
 
 
     const navigate = useNavigate();
 
-    // const quantityChange = useMemo(() => {
-    //     return JSON.parse(localStorage.getItem('cart')).length
-    // })
-
-
 
     useEffect(() => {
         
-        // axios.get("http://localhost:4000/data")
         axios.get("http://localhost:5000/shoes")
         .then(res => {
             let cart = JSON.parse(localStorage.getItem('cart'))
@@ -58,37 +51,20 @@ function Header() {
         }
         console.log( (JSON.parse(token)) )
 
-        setLogin(JSON.parse(token).role)
+        setLogin(JSON.parse(token)?.role)
     }, [])
 
 
 
     return ( 
         <div className={cx('wrapper')}>
-            <div className={cx('menubarAndSearMB_btn')}>
-                <button className={cx("show_bar_btn")}
-                    onClick={() => {
-                        setShowBar(pre => !pre)
-                    }}
-                >
-                    <FontAwesomeIcon icon={faBars}/>
-                </button>
-               
-            </div>
+           
 
 
-            <ul className={cx(["nav_dropdown", {"show_bar":showBar}])} id={styles["nav-menu"]} >
-                <button className={cx("close_bar_btn")}
-                    onClick={() => {
-                        setShowBar(pre => !pre)
-                    }}
-                >
-                    <FontAwesomeIcon icon={faClose}/>
-                </button>
-
-                <li className={cx("box_logo")} id={styles["img-logo"]}>
-                 
+            <ul className={cx(["nav_dropdown"])} id={styles["nav-menu"]} >
                 
+
+                <li className={cx("box_logo")} >
                     <img className={cx('logo')} src={require('./logoDT-70.png')}/>
                     <span className={cx('logo_title')}>
                         <span className={cx('L_1')}>C</span>
@@ -96,32 +72,26 @@ function Header() {
                         <span className={cx('L_3')}>I</span>
                         <span className={cx('L_4')}>O</span>
                     </span>
-
-                </li>
-
-                <li className={cx(["men","menu"])}><Link to="/home" onClick={() => {window.scrollTo(0, 0)}}   
-                >trang chủ</Link>
-                
-
-                </li>
-                <li className={cx(["men","menu"])}><Link to="/home" onClick={() => {window.scrollTo(0, 0)}}   
-                >Giam Gia</Link>
-                
-
                 </li>
 
                 <li className={cx(["men","menu"])}>
-                    <Link to={`/shoes?_page=1&_limit=${limit}`} href="#" onClick={() => {window.scrollTo(0, 0)}}>sản phẩm</Link>
-                    <ul className={cx("sub_nav_prod")}>
-                        <li><Link to="">NIKE</Link></li>
-                        <li><Link to="">ADIDAS</Link></li>
-                        <li><Link to="">CONVERSE</Link></li>
-                        <li><Link to="">VANS</Link></li>
-                        <li><Link to="">PUMA</Link></li>
-
-                    </ul>
+                    <Link to="/home" onClick={() => {window.scrollTo(0, 0)}}>trang chủ</Link>
                 </li>
-                {/* <li className={cx(["kids","menu"])}><a href="#">safe off</a></li> */}
+
+                <li className={cx(["men","menu"])}>
+                    <Link 
+                        to={`/shoes?_page=1&_limit=${limit}`} 
+                        onClick={() => {
+                            window.scrollTo(0, 0)
+                            // setRe_render(pre => !pre)
+                        }}
+                    >sản phẩm</Link>
+                   
+                </li>
+
+                <li className={cx(["men","menu"])}>
+                    <Link to="/home" onClick={() => {window.scrollTo(0, 0)}}>giảm giá</Link>
+                </li>
                 
 
               
@@ -168,7 +138,7 @@ function Header() {
                     </li>
                     :
                     <li className={cx("login")}>
-                        <span href="" >
+                        <span  >
                             TÀI KHOẢN
                         </span>
                         <ul className={cx(["sub_nav","the_first"])}>
@@ -184,14 +154,17 @@ function Header() {
                         <Link to="/order" className={cx("header_cart")}>
                             <FontAwesomeIcon className={cx('header_cart-icon')} icon={faCartShopping}/>
                         </Link>
-                        <span className={cx("header_cart-notice")}>{orderItem.length}</span>
+                        {/* <span className={cx("header_cart-notice")}>{orderItem.length}</span> */}
+                        <span className={cx("header_cart-notice")}></span>
+
                         
                         <div className={cx("header_cart-list")}>
                             <img src="./assets/img/no-cart.png" alt="" className={cx("header_cart-no-cart-img")}/>
                             
                         {
                             !Boolean(orderItem.length) && <p className={cx("header_cart-list-no-cart-msg")}>
-                                Chưa có sản phẩm
+                                <p>Chưa có sản phẩm</p>
+                                <p>¯\_( ͡❛ ͜ʖ ͡❛)_/¯</p>
                             </p>
                         }
                             
@@ -225,15 +198,15 @@ function CartItem_subnav({order}) {
     return (
         <li className={cx("header_cart-item")}>
             {/* <img src={require(`../../../../imgData/${order.product.img}`)} alt="dd" className={cx("header_cart-img")}/> */}
-            <img src={`http://localhost:5000/imgs/${order.product.img}`} alt="dd" className={cx("header_cart-img")}/>
+            <img src={`http://localhost:5000/imgs/${order?.product?.img}`} alt="dd" className={cx("header_cart-img")}/>
             
             
             <i className={cx("header_cart-icon-close")}>x</i>
             <div className={cx("header_cart-item-infor")}>
-                <a href="" className={cx("header_cart-item-name")}>{order.product.name}</a>
-                <span className={cx("header_cart-item-price")}>{order.product.price}</span>
+                <a href="" className={cx("header_cart-item-name")}>{order?.product?.name}</a>
+                <span className={cx("header_cart-item-price")}>{formatPrice(order?.product?.price)}</span>
                 <div id={styles["quantity_product_1"]}>
-                    <p className={cx("quantity")}>Số Lượng: {order.quantity}</p>
+                    <p className={cx("quantity")}>Số Lượng: {order?.quantity}</p>
                 </div>
             </div>
         </li>

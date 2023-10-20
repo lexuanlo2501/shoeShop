@@ -2,16 +2,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import classNames from "classnames/bind";
 import styles from "./Confirming.module.scss"
+import {toast } from 'react-toastify';
 
 import axios from "axios";
 import { useEffect, useState } from "react";
+import {formatPrice} from "../../common"
 
 // bootstrap
 import Modal from 'react-bootstrap/Modal';
 
 
 // icon
-import { faCircle, faCircleInfo, faClipboardCheck} from "@fortawesome/free-solid-svg-icons";
+import { faCircle, faCircleInfo, faClipboardCheck, faClockRotateLeft, faTrashCan, faTruck} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import ConfirmModal from '../../components/ConfirmModal';
 import e from 'cors';
@@ -20,222 +22,189 @@ import { object } from 'yup';
 const cx = classNames.bind(styles)
 
 function Confirming() {
-    const [orders_NC, setOrders_NC] = useState([])
-    const [orders_C, setOrders_C] = useState([])
-    const [orders_deli, setOrders_deli] = useState([])
+ 
     const [idProduct_C, setIdProduct_C] = useState('')
     const [order_detail, setOrder_detail] = useState({})
 
 
     const [checkChange, setCheckChange] = useState(false)
 
-    const [showConfirm, setShowConfirm] = useState(false);
-    const handleClose_confirm = () => setShowConfirm(false);
-    const handleShow_confirm = () => setShowConfirm(true);
+    
 
     const [showDetail, setShowDetail] = useState(false);
     const handleClose_detail = () => setShowDetail(false);
     const handleShow_detail = () => setShowDetail(true);
+
+
+    const pagName = ['tất cả','chờ xác nhận','đang giao','hoàn thành']
+    // 0:
+    // 1: pending
+    // 2: delivery
+    // 3: complete
+    const [pagCurr, setPagCurr] = useState(0)
+    const [orders, setOrders] = useState([])
     
-
-
-
-    const confirm_product = (idOder_C) => {
-        // console.log(order_detail.products)
-        let arr = order_detail.products.map((item, index) => {
-            return {
-                ...item,
-                indexC: item.product.inventory.map(i => i.size).indexOf(item.size),
-                inventory : item.product.inventory, 
-            }
-        })
-
-        
-        arr.forEach(e => {
-            delete e.product
-            e.inventory[e.indexC] = {
-                size:e.size, 
-                quantity: Number( e.inventory[e.indexC].quantity) - e.quantity  + ""
-            }
-        });
-        
-        console.log(arr)
-
-        // reduce quantity products
-        arr.forEach(i => {
-            axios.patch(`http://localhost:4000/data/${i.id}`,{"inventory":i.inventory})
-            
-        })
-        
-
-        axios.patch(`http://localhost:4000/orders/${idOder_C}`, {"status": 2})
-    }
-
-    const confirm_product_complete = (idOder_C) => {
-        axios.patch(`http://localhost:4000/orders/${idOder_C}`, {"status": 3})
-    }
-
-
     useEffect(() => {
-        axios.get('http://localhost:4000/orders')
+        axios.get(`http://localhost:5000/orders?_status=${pagCurr}`)
         .then(res => {
-            // console.log(res.data)
-            setOrders_NC(res.data.filter(item => item.status === 1)) /*no confirm */
-            setOrders_C(res.data.filter(item => item.status === 3)) /*confirmed */
-            setOrders_deli(res.data.filter(item => item.status === 2)) /*delivery */
-
+            setOrders(res.data)
         })
-    }, [checkChange])
+    },[pagCurr, checkChange])
 
-    // getAllUser
-    const [users, setUsers] = useState([])
-    useEffect(() => {
-        axios.get("http://localhost:8000/accounts")
-        .then(res => setUsers(res.data))
-    }, [])
+    const handleCancel = (id) => {
+        axios.delete(`http://localhost:5000/orders/`+id)
+        .then(res => {
+            toast("Xóa đơn hàng thành công", {
+                theme: "light",
+                position: "top-center",
+            })
+
+            // MỤC ĐÍCH ĐỂ KÍCH HOẠT CHẠY DEPEDENCY TRONG SIDE EFFECT
+            setCheckChange(pre => !pre)
+        })
+        .catch(err => console.log(err))
+
+    }
+
+    const confirm_product = (order_id, status) => {
+        axios.patch(`http://localhost:5000/orders/${order_id}`, {"status": status})
+        .then(res => {
+            console.log("Xac thuc thanh cong")
+        })
+        .catch(err => console.log(err))
+
+    }
+
 
     const handleOrderDetail = (item) => {
-        let userSelected = users.find(i => i._id ===item.id_client)
-        setOrder_detail({...item, ...userSelected})
+        axios.get("http://localhost:5000/accounts/"+item.client_id)
+        .then(res => {
+            setOrder_detail({...item, ...res.data})
+        })
+
     }
+
+   
 
     return ( 
         <div className={cx('wrapper')}>
-            <h1>đơn đang chờ xác nhận</h1>
+            <h1>QUẢN LÝ ĐƠN HÀNG</h1>
+             <ul className={cx('navigate')} >
+            {
+                pagName.map((item,index) => <li key={item} className={ cx({"li_active":index ===pagCurr}) }
+                    onClick={() => {
+                        setPagCurr(index)
+                    }}
+                >
+                    {item}
+                </li>)
+            }
+            </ul>
+
+{/*  */}
+            
+
             <table className="table table-hover">
                 <thead>
                     <tr className='table-info'>
                         <th scope="col">mã đơn hàng</th>
-                        <th scope="col">mã khách hàng</th>
+                        <th scope="col">tài khoản</th>
                         <th scope="col">ngày đặt</th>
                         <th scope="col">địa chỉ</th>
                         <th scope="col">tổng tiền</th>
-                        <th scope="col">xác nhận</th>
+                    {
+                        pagCurr !==3 && <th scope="col">duyệt</th>
+                    }
+
+                    {
+                        pagCurr !==1 && <th scope="col">thu hồi</th>
+                    }                    
+                        
                         <th scope="col">chi tiết</th>
+                    {
+                        pagCurr !==3 && <th scope="col">xóa</th>
+                    }
                     </tr>
                 </thead>
 
                 <tbody>
                 {
-                    orders_NC.map((item, index) =>
+                    orders.map((item_order, index) =>
                         <tr key={index}>
-                            <td >{item.id}</td>
-                            <td>{item?.id_client}</td>
-                            <td>{item.date_order}</td>
-                            <td>{item.address}</td>
-                            {/* <td>{item.description}</td> */}
-                            <td>{item.amount}</td>
+                            <td >{item_order.id}</td>
+                            <td>{item_order?.client_id}</td>
+                            <td>{item_order.date_order}</td>
+                            <td>{item_order.address}</td>
+                            {/* <td>{item_order.description}</td> */}
+                            <td>{formatPrice(item_order?.amount)}</td>
+                        {
+                            item_order.status !== 3 &&
                             <td className={cx(['btn_product','confirm'])}
                                 onClick={() => {
-                                    setIdProduct_C(item.id)
-                                    handleShow_confirm()
-                                    handleOrderDetail(item)
+                                    // setIdProduct_C(item_order.id)
+                                    handleOrderDetail(item_order)
                                 }}
                             >
-                                <button><FontAwesomeIcon icon={faClipboardCheck}/></button>
-                            </td>
-                            <td className={cx(['btn_product','detail'])}
-                                onClick={() => {
-                                    handleShow_detail()
-                                    handleOrderDetail(item)
-                                }}
-                            >
-                                <button><FontAwesomeIcon icon={faCircleInfo}/></button>
-                            </td>
-                        </tr>
-                    )
-                }
-                </tbody>
-            </table>
+                                <ConfirmModal
+                                    title={item_order.status===2?"XÁC NHẬN ĐƠN HOÀN THÀNH":"XÁC NHẬN ĐƠN HÀNG"}
+                                    body={`Bạn có muốn xác nhận đơn hàng mã ${item_order.id} ?`}
+                                    btnText={<FontAwesomeIcon icon={item_order.status===2?faClipboardCheck:faTruck}/>}
+                                    accept={() =>{
+                                        if(item_order.status===1) {
+                                            // confirm_product_delivery(item_order.id)
+                                            confirm_product(item_order.id, 2)
 
-           
+                                        }
+                                        else if(item_order.status===2) {
+                                            // confirm_product_complete(item_order.id)
+                                            confirm_product(item_order.id, 3)
 
-            <h1>đơn đã xác nhận/đang giao</h1>
-            <table className="table table-hover">
-                <thead>
-                    <tr className='table-info'>
-                        <th>mã đơn hàng</th>
-                        <th>mã khách hàng</th>
-                        <th>ngày đặt</th>
-                        <th>địa chỉ</th>
-                        <th>tổng tiền</th>
-                        <th>xác nhận</th>
-                        <th>chi tiết</th>
-                    </tr>
-                </thead>
-
-                <tbody >
-                {
-                    orders_deli.map((item, index) =>
-                        <tr>
-                            <td>{item.id}</td>
-                            <td>{item?.id_client}</td>
-                            <td>{item.date_order}</td>
-                            <td>{item.address}</td>
-                            <td>{item.amount}</td>
-                            <td className={cx(['btn_product','confirm'])}
-                                onClick={() => {
-                                    setIdProduct_C(item.id)
-                                }}
-                            >
-                                <ConfirmModal btnText={<FontAwesomeIcon icon={faClipboardCheck}/>}
-                                    title='Xác nhận hoàn tất đơn hàng'
-                                    body='Bấm xác nhận để hoàn tất'
-                                    accept={() => {
+                                        }
                                         setCheckChange(pre => !pre)
-                                        confirm_product_complete(idProduct_C)
+                                    }}
+                                />
+                                {/* <button><FontAwesomeIcon icon={item_order.status===2?faClipboardCheck:faTruck}/></button> */}
+                            </td>
+                        }
+
+                        {
+                            pagCurr !==1 &&
+                            <td className={cx(['btn_product'])}>
+                                <ConfirmModal
+                                    title="THU HỒI ĐƠN HÀNG"
+                                    body={`Bạn có muốn thu hồi đơn hàng mã ${item_order.id} ?`}
+                                    btnText={<FontAwesomeIcon icon={faClockRotateLeft}/>}
+                                    accept={() =>{
+                                        confirm_product(item_order.id,item_order.status-1)
+
+                                        setCheckChange(pre => !pre)
                                     }}
                                 />
                             </td>
+                        }
+                           
                             <td className={cx(['btn_product','detail'])}
                                 onClick={() => {
-                                    handleOrderDetail(item)
                                     handleShow_detail()
-                                    console.log(item)
+                                    handleOrderDetail(item_order)
                                 }}
                             >
                                 <button><FontAwesomeIcon icon={faCircleInfo}/></button>
                             </td>
-                        </tr>
-                    )
-                }
-                </tbody>
-            </table>
-
-            <h1>đơn hoàn thành</h1>
-            <table className="table table-hover ">
-                <thead>
-                    <tr className='table-info'>
-                        <th>mã đơn hàng</th>
-                        <th>mã khách hàng</th>
-                        <th>ngày đặt</th>
-                        <th>ảnh</th>
-                        <th>địa chỉ</th>
-                        <th>tổng tiền</th>
-                        <th>chi tiết</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                {
-                    orders_C.map((item, index) =>
-                        <tr>
-                            <td>{item.id}</td>
-                            <td>{item?.id_client}</td>
-                            <td>{item.date_order}</td>
-                            <td></td>
-                            <td>{item.address}</td>
-                            {/* <td>{item.description}</td> */}
-                            <td>{item.amount}</td>
-                            <td className={cx(['btn_product','detail'])}
-                                onClick={() => {
-                                    handleOrderDetail(item)
-                                    handleShow_detail()
-                                    console.log(item)
-                                }}
-                            >
-                                <button><FontAwesomeIcon icon={faCircleInfo}/></button>
+                        {
+                            item_order.status !== 3 &&
+                            <td className={cx(['btn_product','cancle'])}>
+                                <ConfirmModal
+                                    title="HỦY ĐƠN HÀNG"
+                                    body={`Bạn có muốn xóa đơn hàng mã ${item_order.id} ?`}
+                                    btnText={<FontAwesomeIcon icon={faTrashCan}/>}
+                                    accept={() =>{
+                                        handleCancel(item_order.id)
+                                    }}
+                                />
                             </td>
+                        }
+                            
                         </tr>
                     )
                 }
@@ -243,36 +212,8 @@ function Confirming() {
             </table>
 
 
-            <Modal show={showConfirm} onHide={handleClose_confirm}>
-                <Modal.Header closeButton>
-                <Modal.Title>
-                    <h1>XÁC NHẬN ĐƠN HÀNG</h1>
-                </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div style={{fontSize:"18px"}}>bạn có muốn xác nhận đơn hàng {idProduct_C}</div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <button
-                        className={cx(['btnModal'])}
-                        onClick={() => {
-                            handleClose_confirm()
-                            setCheckChange(pre => !pre)
-                            confirm_product(idProduct_C)
-                        }}
-                    >
-                        xác nhận
-                    </button>
-                    <button
-                        className={cx(['btnModal'])}
-                        onClick={() => {
-                            handleClose_confirm()
-                        }}
-                    >
-                        đóng
-                    </button>
-                </Modal.Footer>
-            </Modal>
+{/*  */}
+
 
             <Modal show={showDetail} onHide={handleClose_detail} centered
                 size="lg"
@@ -287,12 +228,15 @@ function Confirming() {
                                 order_detail.products &&
                                 order_detail.products.map((item, index) => 
                                     <div className={cx('infor_product__item')} key={index}>
-                                        <img src={require('../../imgData/'+item.product.img)} alt="error"/>
+                                        
+                                        {/* <img src={require('../../imgData/'+item.product.img)} alt="error"/> */}
+                                        <img src={`http://localhost:5000/imgs/${item.img}`} alt="error"/>
+
                                         <div>
-                                            <p>{item.product.name}</p>
+                                            <p>{item.name}</p>
                                             <p>size: {item.size}</p>
                                             <p>x {item.quantity}</p>
-                                            <p>{item.product.price}</p>
+                                            <p>{formatPrice(item?.price)}</p>
                                         </div>
                                     </div>
                                 )
@@ -308,26 +252,13 @@ function Confirming() {
                             <p><span>Ghi chú</span>: {order_detail.description}</p>
                             {/* TESTING... */}
                             
-                            <p className={cx('amount_order')}>Tổng: {order_detail.amount}</p>
+                            <p className={cx('amount_order')}>Tổng: {formatPrice(order_detail?.amount)}</p>
                         </div>
 
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    {/* <button className={cx(['btnModal'])}
-                        onClick={() => {
-                            handleClose_detail()
-                            setCheckChange(pre => !pre)
-                            confirm_product(order_detail.id)
-                        }}
-                    >
-                        xác nhận
-                    </button> */}
-                    <button className={cx(['btnModal'])}
-                        onClick={handleClose_detail}
-                    >
-                        đóng
-                    </button>
+                    <button className={cx(['btnModal'])}onClick={handleClose_detail}>đóng</button>
                 </Modal.Footer>
                 
             </Modal>

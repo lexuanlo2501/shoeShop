@@ -15,7 +15,10 @@ function History (){
     const [history, setHistory] = useState([])
 
     useEffect(() => {
-        axios.get("http://localhost:4000/history")
+        // axios.get("http://localhost:4000/history")
+        
+        axios.get("http://localhost:5000/history")
+
         .then(res => {
             console.log(res.data)
             setHistory(res.data)
@@ -25,13 +28,13 @@ function History (){
 
     const ActiveIcon = (ac) => 
     {  
-        if(ac === "modify"){
+        if(ac === "Modify"){
             return <FontAwesomeIcon className={cx(['icon_ac',"i"])} icon={faPenToSquare}/>
         }
-        else if(ac === "delete") {
+        else if(ac === "Delete") {
             return <FontAwesomeIcon className={cx(['icon_ac',"ii"])} icon={faTrashCan}/>
         }
-        else if(ac === "add") {
+        else if(ac === "Add") {
             return <FontAwesomeIcon className={cx(['icon_ac',"iii"])} icon={faAdd}/>
         }
         
@@ -67,11 +70,11 @@ function History (){
                                 <td>
                                 <AvatarAuto nameU={item.userName}/>
                                 </td>
-                                <td>{ActiveIcon(item.active)}</td>
+                                <td>{ActiveIcon(item.activity)}</td>
                                 <td>{item.userName}</td>
                                 <td>{item.email}</td>
-                                <td>{item.date}</td>
-                                <td>{item.time}</td>
+                                <td>{item.history_date.slice(0,10)}</td>
+                                <td>{item.history_date.slice(11)}</td>
                                 <td>{item.content}</td>
 
                             </tr>

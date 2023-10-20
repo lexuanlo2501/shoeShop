@@ -9,22 +9,18 @@ import { Link } from 'react-router-dom';
 import { Placeholder, Spinner } from 'react-bootstrap';
 import { BeatLoader } from 'react-spinners';
 import SearchItem from '../../components/SearchItem';
-import {limit} from "../../common"
+import {limit, formatPrice, priceDiscount} from "../../common"
 
 const cx = classNames.bind(styles)
-const formatPrice = (price) => {
-    return  price.toLocaleString('vi', {style : 'currency', currency : 'VND'})
-}
 
 
 
-
-
-function ProductList_v3({ brand_v2}) {
+function ProductList_v3({ re_render }) {
     let currentUrl = window.location.href;
     let param = currentUrl.split("?")[1]
     let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
-    console.log(currentUrl)
+    // console.log(currentUrl)
+    let [favorite_list, setFavorite_list] = useState([])
 
     const [products, setProducts] = useState([])
     const [pageChange, setPageChange] = useState(+paramToObject._page)
@@ -38,9 +34,8 @@ function ProductList_v3({ brand_v2}) {
         return arr
     }
 
-
+    
     useEffect(() => {
-        // const user = localStorage.getItem("tokens")
     }, [])
 
     useEffect(() => {
@@ -58,7 +53,7 @@ function ProductList_v3({ brand_v2}) {
         return () => {
 
         }
-    }, [brand_v2, pageChange])
+    }, [re_render, pageChange])
 
     const previousPage = () => {
         setPageChange(pre => pre>1 ? pre-1 : pre )
@@ -81,14 +76,15 @@ function ProductList_v3({ brand_v2}) {
     
     return ( 
         <div id='scrollTo' className={cx('wrapper')}>
-            <button
+            {/* TEST CONSOLE.LOG PARAM */}
+            {/* <button
                 onClick={() => {
                     // console.log(para_query_value)
                     console.log(param);
                     console.log(paramToObject)
 
                 }}
-            >show param</button>
+            >show param</button> */}
 
             <div  className={cx('route')}>
                 <div>
@@ -178,7 +174,19 @@ function ProductList_v3({ brand_v2}) {
 }
 
 function Card({product, listView}) {
-    const [like, setLike] = useState(false)
+    const inforUser = JSON.parse(localStorage.getItem("tokens"));
+    // const [like, setLike] = useState(false)
+    const [like, setLike] = useState(inforUser?.favorite?.includes(product.id))
+    const [token, setToken] = useState(inforUser)
+
+
+
+
+
+
+    // useEffect(() => {
+    //     setToken(JSON.parse(localStorage.getItem("tokens")))
+    // }, [like])
 
     return (
         <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx(["card", {"active":listView}])}
@@ -189,12 +197,26 @@ function Card({product, listView}) {
                 <FontAwesomeIcon className={cx(['contact_product'], {"active":like})} icon={like ?faHeartSolid:faHeart}
                     onClick={(e) => {
                         e.preventDefault()
-
                         // sự kiện xủi bọt
                         e.stopPropagation()
 
-                        console.log("heart logo")
+                         console.log(token)
+
+                        const handleFavorite = (arr, id) => {
+                            let result = arr.includes(id) ? arr.filter(i => i!==id):[...arr, id]
+                            return result
+                        }
+
+
+                        axios.patch("http://localhost:5000/favorite_list/"+token.accName,{product_id:product.id})
+                        .then(res => {
+                           console.log(res.data)
+                           localStorage.setItem("tokens", JSON.stringify({...token, favorite:res.data}))
+                        })
+                        
                         setLike(pre => !pre)
+
+
                     }}
                 />
             </div>
@@ -205,7 +227,16 @@ function Card({product, listView}) {
             <div className={cx("card-items")}>
                 <div className={cx("card-title")}>{product.name}</div>
                 <div className={cx("card-descr")}>{product.description}</div>
+            {
+                product.discount_id ?
+                <div className={cx("price_discount")}>
+                    <span className={cx("shoe_price_old")}>{formatPrice(product.price)}</span>
+                    <span className={cx("shoe_price")}>{formatPrice(priceDiscount(product.price, product.discount_id))}</span>
+                    <span className={cx("discount_tag")}>-{product.discount_id}%</span>
+                </div>
+                :
                 <div className={cx("card-preci")}>{formatPrice(product.price)}</div>
+            }
             </div>
             {/* <div className={cx("icon")}>
                 <i className="fa-sharp fa-solid fa-star"></i>

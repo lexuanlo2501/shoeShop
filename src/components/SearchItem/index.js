@@ -17,7 +17,7 @@ function SearchItem() {
 
 
     useEffect(() => {
-        axios.get('http://localhost:4000/data')
+        axios.get('http://localhost:5000/shoes')
         .then(res => setProducts(res.data))
     }, [])
 
@@ -68,10 +68,14 @@ function FilterDataSearch({products, filterSearch}) {
 
 function Item({data}) {
     return (
-        <Link to={`/detail_product_${data.id}`} className={cx("link_item")}>
+        <Link 
+            to={`/shoes/detail_product?_id=${data.id}`}
+            // to={`/detail_product_${data.id}`} 
+            className={cx("link_item")}
+        >
             <div className={cx('wrapper_item')}>
-                    <img src={require(`../../imgData/${data.img}`)}/>
-                    <p>{data.name}</p>
+                <img src={`http://localhost:5000/imgs/${data.img}`}/>
+                <p>{data.name}</p>
             </div>
         </Link>
     )

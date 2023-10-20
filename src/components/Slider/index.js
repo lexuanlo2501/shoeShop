@@ -4,7 +4,9 @@ import {
   MDBCarouselItem,
 } from 'mdb-react-ui-kit';
 
-export default function Slider({imgs}) {
+export default function Slider({imgs = []}) {
+
+  // console.log(imgs)
   return (
     <MDBCarousel showControls dark> 
       {/* <MDBCarouselItem
@@ -27,17 +29,21 @@ export default function Slider({imgs}) {
       /> */}
 
 
+
       {
-        imgs?.map((item, index) => 
-        <MDBCarouselItem key={index}
-            className='vh-100 mx-auto d-block'
-            itemId={index+1}
-            // src={require('../../imgData/'+item)}
-            src={`http://localhost:5000/imgs/${item}`}
-            alt='...'
-        />
-      )
+        imgs.map((item, index) => 
+          <MDBCarouselItem 
+              key={index}
+              className='vh-100 mx-auto d-block'
+              itemId={index+1}
+              // src={require('../../imgData/'+item)}
+              src={`http://localhost:5000/imgs/${item}`}
+              alt='...'
+          />
+        )
       }
+
+
     </MDBCarousel>
   );
 }

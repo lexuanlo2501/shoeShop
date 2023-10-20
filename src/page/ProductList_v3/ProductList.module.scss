@@ -235,10 +235,10 @@ a{
         .card-items {
 
             flex-direction: column;
-            justify-content: space-around;
-            .card-title, .card-preci {
+            // justify-content: space-around;
+            .card-title, .card-preci, .price_discount {
                 text-align: start;
-                font-size: 25px;
+                font-size: 20px;
             }
             .card-preci {
             }
@@ -325,6 +325,35 @@ a{
     color: #333;
     text-align: center;
 }
+
+
+.price_discount {
+    span {
+        display: inline-block;
+    }
+    text-align: center;
+    span+span {
+        margin-left: 12px;
+    }
+
+    .shoe_price_old {
+        font-size: 15px;
+        text-decoration: line-through;
+        color: #6b6a6a;
+    }
+    .shoe_price {
+        font-size: 18px;
+    }
+    
+    .discount_tag {
+        color: #5b9b54;
+    }
+}
+
+
+
+
+
 .card-button{
     display: block;
     background-color: #f2a20c;
@@ -365,8 +394,8 @@ a{
 }    
 .card-items{
     /* bottom: 42px; */
-    display: flex;
-    justify-content: space-between;
+    // display: flex;
+    // justify-content: space-between;
     margin-top: 10px;
     font-family: 'kanit';
 

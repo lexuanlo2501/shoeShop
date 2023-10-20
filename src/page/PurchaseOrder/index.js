@@ -5,6 +5,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "../../components/ConfirmModal";
 import { BeatLoader, MoonLoader } from "react-spinners";
+import {formatPrice, priceDiscount} from "../../common"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import {  } from "@fortawesome/free-regular-svg-icons";
+import { faStarAndCrescent, faStar } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 
 
 const cx = classNames.bind(style)
@@ -24,46 +29,49 @@ function PurchaseOrder({userID}) {
 
     useEffect(() => {
         let canceled = false
-
         const controller = new AbortController();
-
+        
         const user = JSON.parse(localStorage.getItem("tokens"));
-        axios.get("http://localhost:4000/orders",{signal: controller.signal})
+        console.log(user)
+        // axios.get("http://localhost:5000/orders?_client_id="+user.accName,{signal: controller.signal})
+        axios.get("http://localhost:5000/orders?_client_id="+userID,{signal: controller.signal})
+        // axios.get("http://localhost:4000/orders",{signal: controller.signal})
         .then(res => {
-            let orderUser = []
+
+            let orderUser = [...res.data]
             if(!canceled) {
                 
-                if(userID) {
-                    // nếu có userID thì lọc data order của userID
-                    // tận dụng code cũ để tìm ra bất cứ đơn hàng của user nào
-                    user._id = userID
-                }
+                // if(userID) {
+                //     // nếu có userID thì lọc data order của userID
+                //     // tận dụng code cũ để tìm ra bất cứ đơn hàng của user nào
+                //     user._id = userID
+                // }
 
                 setLoading(false)
                 if(pagCurr === 0) {
-                    orderUser = res.data.filter(i => i.id_client === user._id)
+
                 }
                 else if(pagCurr === 1) {
-                    orderUser = res.data.filter(i => i.id_client === user._id)
+                    // orderUser = res.data.filter(i => i.id_client === user._id)
                     orderUser = orderUser.filter(i => i.status === 1)
                 }
                 else if(pagCurr === 2) {
-                    orderUser = res.data.filter(i => i.id_client === user._id)
+                    // orderUser = res.data.filter(i => i.id_client === user._id)
                     orderUser = orderUser.filter(i => i.status === 2)
     
                 }
                 else if(pagCurr === 3) {
-                    orderUser = res.data.filter(i => i.id_client === user._id)
+                    // orderUser = res.data.filter(i => i.id_client === user._id)
                     orderUser = orderUser.filter(i => i.status === 3)
                 }
                 else if(pagCurr === 4) {
-                    orderUser = res.data.filter(i => i.id_client === user._id)
+                    // orderUser = res.data.filter(i => i.id_client === user._id)
                     orderUser = orderUser.filter(i => i.status === 4)
                 }
                 setOrders(orderUser.reverse())
     
                 console.log(orderUser)
-                setDeliAmount(res.data.filter(i => i.status===2 && i.id_client === user._id).length)
+                setDeliAmount(res.data.filter(i => i.status===2).length)
             }
 
             // RULE
@@ -89,7 +97,7 @@ function PurchaseOrder({userID}) {
         <div className={cx('wrapper')}>
             <ul className={cx('navigate')} >
             {
-                pagName.map((item,index) => <li className={ cx({"li_active":index ===pagCurr}) }
+                pagName.map((item,index) => <li key={item} className={ cx({"li_active":index ===pagCurr}) }
                     onClick={() => {
                         setPagCurr(index)
                     }}
@@ -123,11 +131,12 @@ function Orders({orders, setRerender, userID}) {
 
 
     const cancleOrder = (id) => {
-        let dataPatch = {status: 4}
-        axios.patch(`http://localhost:4000/orders/${id}`,dataPatch)
-        
-        console.log(id)
+        axios.delete(`http://localhost:5000/orders/`+id)
+        .then(res => {
+            console.log("xoa thanh cong don hang " + id)
+        })
     }
+   
 
     const undoOrder = (id) => {
         let undoData = orders.find(i => i.id === id).products
@@ -135,7 +144,7 @@ function Orders({orders, setRerender, userID}) {
             let {product, ...res} = i
             return res
         })
-        console.log(undoData)
+        // console.log(undoData)
         localStorage.setItem('cart', JSON.stringify(undoData))
         navigate("/order")
 
@@ -192,13 +201,13 @@ function Orders({orders, setRerender, userID}) {
                         </div>
                         <div className={cx('body_bill')}>
                         {
-                            item.products.map((item2) => <CardOrder data={item2}/>)
+                            item.products.map((item2) => <CardOrder key={item2.id} data={item2} status={item.status}/>)
                         }
                         </div>
                     
                         <div className={cx('footer_bill')}>
                         {
-                            !userID && (
+                            
                             item.status === 1 ? 
                             // <button className={cx('button-74')}
                             //     onClick={() => cancleOrder(item.id)}
@@ -215,7 +224,7 @@ function Orders({orders, setRerender, userID}) {
                             <button className={cx('button-74')}
                                 onClick={() => undoOrder(item.id)}
                             >Mua Lại</button>
-                            )
+                            
                         }
                             {/* <ConfirmModal btnText='Hủy Đơn' className='button-74'
                                 title='Bạn có muốn hủy đơn hàng này'
@@ -223,7 +232,7 @@ function Orders({orders, setRerender, userID}) {
 
                             /> */}
 
-                            <h3 className={cx('total')}>Thành Tiền: <span>{item.amount} đ</span> </h3>
+                            <h3 className={cx('total')}>Thành Tiền: <span>{formatPrice(item.amount)}</span> </h3>
                             
                         </div>
                     </div>
@@ -245,19 +254,81 @@ function Orders({orders, setRerender, userID}) {
 
 
 
-function CardOrder({data}) {
+function CardOrder({data, status}) {
+    // console.log(data)
     return (
         <div className={cx('card_order')}>
             <div className={cx('infor_product')}>
-                <img src={require(`../../imgData/${data.product.img}`)} alt=""/>
+                {/* <img src={require(`../../imgData/${data.product.img}`)} alt=""/> */}
+            {
+              data?.img && <img src={`http://localhost:5000/imgs/${data?.img}`} alt=""/>
+
+            }
+                
                 <div className={cx('infor_detail')}>
-                    <p>{data.product.name}</p>
+                    <p>{data?.name}</p>
                     <div className={cx('size_price')}>
-                        <p><span className={cx('size')}>size: {data.size}</span> x {data.quantity}</p>
-                        <p >{data.product.price} đ</p>
+                        <p><span className={cx('size')}>size: {data?.size}</span> x {data?.quantity}</p>
+                    {
+                        data.discount_id ?
+                         <p>
+                             <span className={cx("shoe_price_old")}>{formatPrice(data.price)}</span>
+                             <span className={cx("shoe_price")}>{formatPrice(priceDiscount(data.price, data.discount_id))}</span>
+                         </p>
+                         :
+                        <p >{formatPrice(data?.price)}</p>
+                    }
                     </div>
+                {
+                    status === 3 && <Rating order_detail={data}/>
+                }
                 </div>
             </div>
+        </div>
+    )
+}
+
+const Rating = ({order_detail}) => {
+    const [numberStar, setNumberStar] = useState(order_detail.rating)
+    let arrStar = [1,2,3,4,5]
+    return (
+        <div className={cx("rating_wrapper")}>
+            <div className={cx("stars")}>
+            {
+                arrStar.map(i => (
+                    <FontAwesomeIcon key={i} className={cx("star",{"check":numberStar>=i})} icon={faStar}
+                        onClick={() => {
+                            if(!order_detail.rating) {
+                                setNumberStar(i)
+                            }
+                        }}
+                    />
+                ))
+            }
+            </div>
+
+        {
+            !order_detail.rating &&
+            <button
+                className={cx("rating_send_btn")}
+                onClick = {() => {
+                    if(numberStar) {
+                        const dataP = {rating:numberStar, detail_order_id:order_detail.detail_order_id}
+                        axios.post("http://localhost:5000/rating", dataP)
+                        .then(() => {
+                            toast.success("Gửi đánh giá thành công")
+                        })
+                        // console.log(dataP)
+                    }
+                    else {
+                        console.log("Vui lòng đánh giá số sao")
+                    }
+                }}
+
+            >Gửi Đánh Gía</button>
+        }
+
+
         </div>
     )
 }

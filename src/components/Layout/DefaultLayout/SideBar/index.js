@@ -8,20 +8,23 @@ import { Link } from "react-router-dom";
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import {limit} from "../../../../common"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles)
 
-function SideBar({setBrand_v2}) {
+function SideBar({setRe_render}) {
     const [brands, setBrands] = useState([])
     const [types, setTypes] = useState([])
 
     const [price, setprice] = useState([0, 30000000])
-    const [brand, setBrand] = useState("")
     const [type, setType] = useState('')
+    const [isBars, setIsBars] = useState(false)
 
     let currentUrl = window.location.href;
     let param = currentUrl.split("?")[1]
-    let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
+
+    let paramToObject = param && JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
 
 
     useEffect(() => {
@@ -51,15 +54,18 @@ function SideBar({setBrand_v2}) {
 
     return (
         <div className={cx('wrapper')}>
-            {/* <img className={cx("thumbnail")} src="https://wallpapercave.com/wp/wp5866497.jpg" alt=""/>  */}
-            <div className={cx('menu')}>
+            <FontAwesomeIcon icon={faBars} className={cx("showBar_btn")}
+                onClick={() => setIsBars(pre => !pre)}
+            />
+            <img className={cx(["thumbnail",isBars?"":"off"])} src="https://wallpapercave.com/wp/wp5866497.jpg" alt=""/> 
+            <div className={cx(['menu',isBars ? "showBar":"offBar"])}>
                 <ul className={cx("nav-bar")}>
                     <li>hãng</li>
                     <li
                         className={cx('select_type-Brand')}
                         onClick={() => {
                             handleClickScroll(
-                            setBrand_v2("")
+                            setRe_render(pre => !pre)
 
                         )}}
                     >
@@ -70,7 +76,7 @@ function SideBar({setBrand_v2}) {
                         <li key={item.brand_id}
                             className={cx('select_type-Brand')}
                             onClick={() => {
-                                setBrand_v2(item.brand_id)
+                                setRe_render(pre => !pre)
                                 handleClickScroll()
                             }}
                         >
@@ -114,21 +120,15 @@ function SideBar({setBrand_v2}) {
                             max={10000000}
                             step={10000}
                         />
-                        <br/>
-                        <button className={cx('filter_price_btn')} 
-                            onClick={() => {
-                                setBrand_v2(pre => pre+1)
-                                console.log()
-                            }}
-                        >
+                        {/* <br/> */}
+                        <button className={cx('filter_price_btn')} onClick={() => setRe_render(pre => !pre)}>
                             <Link 
                                 to={
-                                    paramToObject._brand ? 
+                                    paramToObject?._brand ? 
                                     `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_brand=${paramToObject._brand}`
                                     :
                                     `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}`
                                 }
-                            
                             >Lọc</Link>
                         
                             

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./admin.module.scss"
 import {toast } from 'react-toastify';
+import Modal from 'react-bootstrap/Modal';
 
 
-import { faClose, faFileImage } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faCross, faFileImage, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,35 +15,49 @@ import * as yup from "yup";
 
 import axios from "axios";
 import ModifyQuantity from "../../components/ModifyQuantity";
+import { useRef } from "react";
+import ConfirmModal from "../../components/ConfirmModal";
 
 const cx = classNames.bind(styles)
 
-const createHistory = () => {
-    let date = new Date()
-    let splitDate = date.toJSON().slice(0, 10).split('-')
-    let result = `${splitDate[2]}/${splitDate[1]}/${splitDate[0]} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
-    return result
-}
-const createID = () => {
-    let date = new Date()
-    let id = `${date.toJSON().slice(0, 10).replace(/-/g,'')}${date.getHours()}${date.getMinutes()}${date.getSeconds()}${date.getMilliseconds()}`
-    return Number(id)
-}
 
 function AddProducts() {
 
    
 
-    const [img, setImg] = useState()
-    const [imgs, setImgs] = useState([])
-    const [imgURLs, setImgURLs] = useState([])
-    const [price, setPrice] = useState("0")
+    const [img, setImg] = useState("")
+    const [imgs_v2, setImgs_v2] = useState([])
 
-    const [addmin, setAddmin] = useState({})
+    const [price, setPrice] = useState("0")
+    const [atri_prod, setAtri_prod] = useState({}) // {brands: [],types: [],discounts: []}
+    
+
+
+
+    const [show, setShow] = useState(false);
+    const [atribName, setAtribName] = useState("");
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+
+
+    const [trigger_Atrib, setTrigger_Atrib] = useState(false)
+
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("tokens"));
-        setAddmin(user)
-    }, [])
+        const handle_CallAIP = async () => {
+            const brands_data = await axios("http://localhost:5000/brands")
+            const types_data = await axios("http://localhost:5000/types")
+            const discount_data = await axios("http://localhost:5000/discounts")
+
+            const combineData = {brands: brands_data.data,types: types_data.data,discounts: discount_data.data}
+            console.log(combineData)
+            setAtri_prod(combineData)
+        }
+        handle_CallAIP()
+
+
+    }, [trigger_Atrib])
 
     
     // infor shoe
@@ -58,12 +73,12 @@ function AddProducts() {
     
     const [colorBCImg_main, setColorBCImg_main] = useState("color_df")
 
-    const [quantity_input, setQuantity_input] = useState(0)
 
 
-    const listColorBC = ['color_1','color_2','color_3','color_4','color_5',
-    'color_6','color_7','color_8','color_9', 'color_10','color_11','color_12'
-    ,'color_13','color_14','color_15','color_16'
+    const listColorBC = ['color_1','color_19','color_2','color_20','color_3','color_7','color_4','color_5',
+    'color_18','color_13','color_14',
+    'color_6','color_21','color_9', 'color_8','color_17','color_10','color_11','color_12'
+    ,'color_15','color_22','color_16'
     ]
 
     const [quantity_size, setQuantity_size] = useState([])
@@ -80,7 +95,6 @@ function AddProducts() {
         console.log(e.target.files[0])
         file.preview = URL.createObjectURL(file)
         setImg(file)
-        
     }
 
     const formatCurr = (number) => {
@@ -104,58 +118,58 @@ function AddProducts() {
     });
 
 
-    const createID = () => {
-        let date = new Date()
-        let id = `${date.toJSON().slice(0, 10).replace(/-/g,'')}${date.getHours()}${date.getMinutes()}${date.getSeconds()}${date.getMilliseconds()}`
-        return Number(id)
-    }
+    
+
+    
+    
 
     const onSubmit = (data) => {
         if(img && price && !isNaN(price)) {
             const infor = {
-                "id": createID(),
                 "name": data.name,
-                "productId": data.productId,
-                "price": formatCurr(price),
+                "brand_id": data.productId || "ADIDAS",
+                "price": +price,
                 "img": img && img.name,
-                "imgs": imgs,
+                "imgs": imgs_v2.map(i => i.name),
                 "description": data.description,
+                "type": +data.type || 1,
+                "discount_id": +data.discount_id,
+
                 "inventory": inventory,
                 "BC_color": colorBCImg_main
             }
-    
-            axios.post(`http://localhost:4000/products/${infor.productId}/data`,infor)
-            .then(res => {
-                console.log(res.data)
-                let inventoryMess = inventory.reduce((accumulator, currentValue) => {
-                    if(currentValue.quantity){
-                        return accumulator + "size " + currentValue.size + " : " + currentValue.quantity + ", "
-                    }
-                    return accumulator
-                }, '')
 
-                const history = {
-                    id: "hst"+createID(),
-                    id_admin : addmin._id,
-                    userName : addmin.fullName,
-                    email : addmin.email,
-                    date : createHistory().split(' - ')[0],
-                    time : createHistory().split(' - ')[1],
-                    active : 'add',
-                    // content: `Thêm sản phẩm mã ${infor.id}`,
-                    content: `Thêm sản phẩm mã ${infor.id}` + " | " + inventoryMess,
-
-                    // inventory: inventory
-               }
-                axios.post(`http://localhost:4000/history`,history)
-                
-                toast.success("Thêm thành công")
-            })
-            .catch(err => {
-                toast.error("ERRORRRRRRRRRRR")
-            })
 
             console.log(infor)
+            console.log(imgs_v2)
+
+    
+            axios.post("http://localhost:5000/shoes_add", infor)
+            .then(res => {
+                toast.success("Thêm thành công")
+            })
+            .catch(err =>  toast.error("ERRORRRRRRRRRRR"))
+
+            // HANDLE IMG
+
+            // imgs
+            const formdata_imgs = new FormData()
+            for (let i = 0; i < imgs_v2.length; i++) {
+                formdata_imgs.append("files", imgs_v2[i])
+            }
+            axios.post("http://localhost:5000/upload_imgs", formdata_imgs)
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
+
+            // img
+            const formdata_img = new FormData()
+            formdata_img.append('file', img)
+            axios.post("http://localhost:5000/upload_img", formdata_img)
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
+
+
+
         } 
 
 
@@ -203,12 +217,13 @@ function AddProducts() {
 
             <div className={cx('product_img--sub')}>
             {
-                Boolean(imgURLs.length) && imgURLs.map((item, index) =>
+
+                Boolean(imgs_v2.length) && imgs_v2.map((item, index) =>
                     <div className={cx('img_sub')} key={index}>
                         <button 
                             onClick={() => {
-                                URL.revokeObjectURL(imgURLs[index])
-                                setImgURLs(e => {
+                                URL.revokeObjectURL(imgs_v2[index])
+                                setImgs_v2(e => {
                                     let arr = [...e]
                                     return arr.filter((item2, index2) => {
                                         return index2 !== index
@@ -217,7 +232,7 @@ function AddProducts() {
                             }}
 
                         >X</button>
-                        <img src={item}/>
+                        <img src={item.preview}/>
                     </div>
                 )
             }  
@@ -228,8 +243,7 @@ function AddProducts() {
                     const file = e.target.files[0]
                     console.log(e.target.files[0].name)
                     file.preview = URL.createObjectURL(file)
-                    setImgs(pre => [...pre, e.target.files[0].name])
-                    setImgURLs(pre => [...pre,file.preview])
+                    setImgs_v2(pre => [...pre, file])
                 }}
                 id="file2"
                 className={cx('add_imgSub_btn-off')}
@@ -255,13 +269,56 @@ function AddProducts() {
                 <select
                     {...register("productId")}
                 >
-                    <option value="nike">nike</option>
-                    <option value="adidas">adidas</option>
-                    <option value="converse">converse</option>
-                    <option value="puma">puma</option>
-                    <option value="vans">vans</option>
+                {
+                    atri_prod?.brands?.map(i => <option key={i.brand_id} value={i.brand_id}>{i.brand_id}</option>)
+                }
                 </select>
+                <FontAwesomeIcon  className={cx('addAtribute_btn')} icon={faPlus}
+                    onClick={() => {
+                        setAtribName("brands")
+                        handleShow()
+                    }}  
+                />
             </div>
+
+            <div className={cx('input_product')}>
+                <label className={cx('label-product')}>loại: </label>
+                <select
+                    {...register("type")}
+                >
+                {
+                    atri_prod?.types?.map(i => <option key={i.id} value={i.id}>{i.type_name}</option>)
+                }
+                </select>
+                <FontAwesomeIcon className={cx('addAtribute_btn')} icon={faPlus}
+                    onClick={() => {
+                        setAtribName("types")
+                        handleShow()
+                    }}  
+                />
+            </div>
+
+            <div className={cx('input_product')}>
+                <label className={cx('label-product')}>khuyến mãi: </label>
+                <select
+                    {...register("discount_id")}
+                >
+                {
+                    atri_prod?.discounts?.map(i => <option key={i.id} value={i.id}>{i.per}%</option>)
+                }
+                </select>
+                <FontAwesomeIcon className={cx('addAtribute_btn')} icon={faPlus}
+                    onClick={() => {
+                        setAtribName("discounts")
+                        handleShow()
+                    }} 
+                />
+
+            </div>
+
+
+
+
             <div className={cx('input_product')}>
                 <label className={cx('label-product')}>tên SP: </label>
                 <input placeholder="..."
@@ -323,7 +380,7 @@ function AddProducts() {
 
                                         let tmpList = [...inventory]
                                         let newList = tmpList.map((item2, index2) => {
-                                            if(item === item2.size) return {...item2, "quantity" : e.target.value}
+                                            if(item === item2.size) return {...item2, "quantity" : +e.target.value}
                                             return item2
 
                                         })
@@ -370,10 +427,145 @@ function AddProducts() {
         </div>
 
       
+    {
+        show && <Modal_modify_atribute show={show} attrib_name={atribName}  handleClose={handleClose} atri_prod={atri_prod} setTrigger_Atrib={setTrigger_Atrib}/>
 
-        
+    }
        
     </div> );
+}
+
+const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, attrib_name}) => {
+
+    const [attrib, setAttrib] = useState(attrib_name)
+    const input_add = useRef("");
+
+    const attrib_list = [{id:"brands",name:"Thương hiệu"}, {id:"discounts",name:"Khuyến mãi"}, {id:"types",name:"loại"}]
+
+    
+
+    const handle_delete = (id) => {
+        axios.delete(`http://localhost:5000/${attrib}/${id}`)
+        setTrigger_Atrib(pre => !pre)
+
+    }
+
+    const handle_add = (value) => {
+        setTrigger_Atrib(pre => !pre)
+        if(attrib === "brands") {
+            axios.post(`http://localhost:5000/${attrib}`, {brand_id:value})
+        }
+        else if (attrib === "discounts") {
+            axios.post(`http://localhost:5000/${attrib}`, {per:+value})
+        }
+        else if (attrib === "types") {
+            axios.post(`http://localhost:5000/${attrib}`, {type_name:value})
+        }
+        input_add.current.value = ""
+    }
+    
+    return (
+        <Modal
+            // size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            show={show} onHide={handleClose}
+        >
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <div className={cx("modify_attrib")}>
+                    <ul className={cx("navigate_attribProd")}>
+                    {
+                        attrib_list.map(i => (
+                            <li key={i.id} className={cx({"active":i.id === attrib})}
+                                onClick={() => {setAttrib(i.id)}}
+                            >{i.name}</li>
+                        ))
+                    }
+                    </ul>
+
+                    <table className="table">
+                        <thead className="table-secondary">
+                            <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Gía trị</th>
+                            <th scope="col">Chức năng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            attrib === "types" &&
+                            atri_prod[attrib].map((item, index) => (
+                                <tr key={item.id}>
+                                    <th scope="row">{index}</th>
+                                    <td>{item.type_name}</td>
+                                    <td>
+                                        {/* <button className={cx("atrib_del_btn")}
+                                            onClick={() => handle_delete(item.id)}
+                                        >x</button> */}
+                                        <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA LOẠI SẢN PHẨM" body={<div>Bạn có muốn xóa loại <b>{item.type_name}</b> không ?</div>}
+                                            accept={() => handle_delete(item.id)}
+                                        />
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                        {
+                            attrib === "brands" &&
+                            atri_prod[attrib].map((item, index) => (
+                                <tr key={item.brand_id}>
+                                    <th scope="row">{index}</th>
+                                    <td>{item.brand_id}</td>
+                                    <td>
+                                        <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA HÃNG SẢN PHẨM" body={<div>Bạn có muốn xóa hãng <b>{item.brand_id}</b> ?</div>}
+                                            accept={() => handle_delete(item.brand_id)}
+                                        />
+                                    </td>
+
+                                </tr>
+                            ))
+                        }
+                        {
+                            attrib === "discounts" &&
+                            atri_prod[attrib].map((item, index) => (
+                                <tr key={item.id}>
+                                    <th scope="row">{index}</th>
+                                    <td>{item.per}</td>
+                                    <td>
+                                        <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA KHUYẾN MÃI SẢN PHẨM" body={<div>Bạn có muốn xóa mã khuyến mãi <b>{item.per}%</b> này không?</div>}
+                                            accept={() => handle_delete(item.id)}
+                                        />
+                                    </td>
+
+                                </tr>
+                            ))
+                        }
+                            <tr >
+                                <th scope="row"></th>
+                                <td><input ref={input_add} className={cx("input_add")} placeholder="Nhập giá trị mới ..."/></td>
+                                <td>
+                                    <button className={cx("atrib_add_btn")}
+                                        onClick={() => {
+                                            console.log(input_add.current.value)
+                                            handle_add(input_add.current.value)
+                                        }}
+                                    >+</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                
+
+                
+            </Modal.Body>
+           
+        </Modal>
+    )
 }
 
 export default AddProducts;

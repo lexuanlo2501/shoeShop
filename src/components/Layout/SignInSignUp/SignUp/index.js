@@ -11,9 +11,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import {toast } from 'react-toastify';
 
-const md5 = require('md5');
-
-
 
 const cx = classNames.bind(style)
 
@@ -21,11 +18,33 @@ function SignUp() {
 
     const [accNameMess, setAccNameMess] = useState({})
     const [messErr, setMessErr] = useState("")
+    const [messPassW, setMessPassW] = useState([])
+    
+    const checkPass = (pass) => {
+        let mess = []
+        var character_special = "!\\\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+        const mess1 = "Ít nhất 10 kí tự"
+        const mess2 = "Chứa ít nhất 1 số"
+        const mess3 = "Chứa ít nhất 1 kí tự đặc biệt"
+
+        let checkNum = Boolean(pass.split("").find(i => Number(i)))
+        let checkChar = Boolean(pass.split("").find(i => character_special.includes(i)))
+
+        if(pass.length<10) mess.push(mess1)
+        if(!checkNum) mess.push(mess2)
+        if(!checkChar) mess.push(mess3)
+
+        return mess
+    }
 
     const navigate = useNavigate();
 
     const handleSignUp = (data) => {
-        if(data.password === data.passwordCF) {
+        setMessPassW(checkPass(data.password))
+
+        // if(data.password === data.passwordCF && checkPass(data.password).length === 0 ) {
+        if(data.password === data.passwordCF ) {
+
             let date = data.dateOfBirth.split('-')
             const dataPost = {
                 ...data,
@@ -36,9 +55,7 @@ function SignUp() {
     
             // delete dataPost.passwordCF
 
-            // axios.post("http://localhost:8000/accounts", dataPost)
             axios.post("http://localhost:5000/signup", dataPost)
-
             .then(res => {
                 console.log(res)
                 setMessErr(res.data.message)
@@ -63,11 +80,6 @@ function SignUp() {
 
     }
 
-    useEffect(() => {
-        // axios.get('http://localhost:8000/posts')
-        // .then(res => console.log(res.data))
-        // .catch(err => console.log(err))
-    }, [])
 
     const schema = yup.object().shape({
         fullName: yup.string().required(),
@@ -129,6 +141,11 @@ function SignUp() {
                         {...register("password")}
                     />
                     {errors.password && <InputRequire/>}
+               
+                </div>
+                <div className={cx("mess_passW")}>
+                    {!!(messPassW.length) && <p>Mật khẩu phải có chứa:</p>}
+                    {messPassW.map(i => <p key={i}>- {i}</p>)}
                 </div>
                 <div className={cx('inputField')}>
                     <input placeholder="nhập lại mật khẩu" type='password'

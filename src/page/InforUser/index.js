@@ -8,6 +8,7 @@ import * as yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarAuto from "../../components/AvatarAuto";
+import ConfirmModal from "../../components/ConfirmModal";
 
 
 const cx = classNames.bind(style)
@@ -62,7 +63,7 @@ function InforUser() {
         console.log(data)
 
 
-        axios.patch(`http://localhost:8000/accounts/${inforUser['_id']}`, data)
+        axios.patch(`http://localhost:5000/accounts/${inforUser['accName']}`, data)
         .then(res => {
             console.log(res)
             localStorage.setItem('tokens', JSON.stringify({...inforUser, ...data}))
@@ -99,6 +100,43 @@ function InforUser() {
                     </div>
                     <div className={cx('input_update')}>
                         <label>Số điện thoại :</label> <span className={cx('valueClkToChange')}>{'********'+inforUser?.phoneNumber?.slice(8, 10)}</span> <span className={cx('changeInfor_btn')}>thay đổi</span>
+                    </div>
+                    <div className={cx('input_update')}>
+                        <label>Mật khẩu :</label> <span className={cx('valueClkToChange')}>************</span>
+                        <ConfirmModal
+                            title={<h1 className={cx("changePass_modal_title")}>ĐỔI MẬT KHẨU</h1>}
+                            body={
+                                <div className={cx("changePass_modal")}>
+                                    <div className={cx('input_update')}>
+                                        <label>Mật khẩu hiện tại :</label>
+                                        <input {...register("oldPass")} type="password" placeholder="**********"/>
+                                    </div>
+                                    <div className={cx('input_update')}>
+                                        <label>Mật khẩu mới :</label>
+                                        <input {...register("newPass")} type="password" placeholder="**********"/>
+                                    </div>
+                                    <div className={cx('input_update')}>
+                                        <label>Nhập lại mật khẩu :</label>
+                                        <input {...register("pass_confirm")} type="password" placeholder="**********"/>
+                                    </div>
+                                </div>
+                            }
+                            accept={(e) => {
+                                handleSubmit((data) => {
+                                    const pass = {
+                                        oldPass : data.oldPass,
+                                        newPass : data.newPass,
+                                        pass_confirm : data.pass_confirm,
+                                    }
+                                    console.log(pass)
+                                    // axios.patch("http://localhost:5000/changePassword/"+inforUser.accName, pass)
+                                
+                                
+                                
+                                })(e)
+                            }}
+                            btnText={<span className={cx('changeInfor_btn')}>thay đổi</span>}
+                        />
                     </div>
                     <div className={cx('input_update')}>
                         <label>Giới tính :</label>

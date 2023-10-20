@@ -7,11 +7,11 @@ import Slider from '../../components/Slider';
 import styles from './DetailProduct.module.scss'
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import {priceDiscount, formatPrice} from "../../common"
+
 
 const cx = classNames.bind(styles)
-const formatPrice = (price) => {
-    return  price.toLocaleString('vi', {style : 'currency', currency : 'VND'})
-}
+
 
 function DetailProduct_v2() {
     const sizeValues = ['36', '37', '38', '39', '40', '41', '42', '43']
@@ -59,19 +59,14 @@ function DetailProduct_v2() {
 
 
 
-        // let product_list = localStorage.getItem('cart').split(',')
-        // let product_list_add = [...product_list, id_product]
-        // localStorage.setItem('cart', product_list_add);
-        // console.log(product_list.filter(i => i))
+     
     }
+
+    const size_quantiry_select = product?.inventory?.find(i => i.size === size_Order)?.quantity
+    
     
     return (
         <div >
-            <button onClick={() => {
-                console.log(paramToObject._id)
-                
-                }}>test</button>
-            
             <div className={cx("container")}>
                 <div className={cx("container_rounter")}>
                     <ul className={cx("rounter")}>
@@ -101,9 +96,20 @@ function DetailProduct_v2() {
 
                                 </div>
                                 {
-                                    !!product.price && <p className={cx("shoe_price")}>{formatPrice(product.price)}</p>
-
+                                    !!product.price && 
+                                    (
+                                        product?.discount_id ?
+                                        <>
+                                            <p className={cx("shoe_price_old")}>{formatPrice(product.price)}</p>
+                                            <p className={cx("shoe_price")}>{formatPrice(priceDiscount(product.price, product.discount_id))}</p>
+                                            <span className={cx("discount_tag")}>-{product.discount_id}%</span>
+                                        </>
+                                        :
+                                        <p className={cx("shoe_price")}>{formatPrice(product.price)}</p>
+                                    )
+                                    
                                 }
+
                                 {/* <p className={cx("shoe_price")}>{product.price}</p> */}
                             
                             </div>
@@ -133,7 +139,7 @@ function DetailProduct_v2() {
                                                             setSize_Order(item)
                                                         }}
                                                     >
-                                                            {item}
+                                                        {item}
                                                     </span>
                                                     :
                                                     <span noActive className={cx(["btn_size", "noActive"])} onClick={() => {}}><span>x</span></span>
@@ -157,9 +163,22 @@ function DetailProduct_v2() {
                                         >-</span>
                                         <span className={cx("num")}>{quantity_Order}</span>
                                         <span className={cx("plus")}
-                                            onClick={() => setQuantity_Order(pre => pre+1)}
+                                            onClick={() => {
+                                                setQuantity_Order(pre => {
+                                                    
+                                                    if(pre+1>size_quantiry_select) {
+                                                        alert(`Không thể tăng thêm vì chỉ còn ${size_quantiry_select} sản phẩm của size này`)
+                                                    }
+                                                    return pre<size_quantiry_select ? pre+1 : pre
+
+                                                })
+                                                console.log(product.inventory.find(i => i.size === size_Order))
+                                            }}
                                         >+</span>
                                     </div>
+
+                                    <p className={cx("mess_quantity_prod")}>{size_quantiry_select < quantity_Order ? `Size của sản phẩm này không đủ số lượng mà bạn cần. Hiện có ${product?.inventory?.find(i => i.size === size_Order).quantity} sản phẩm` : ""}</p>
+
                                 </div>
                             </div>
 
@@ -170,7 +189,15 @@ function DetailProduct_v2() {
                 
                                 <div className={cx("add_btn_grp")}
                                     onClick={() =>{
-                                        if(size_Order) {
+                                        if(size_quantiry_select<quantity_Order) {
+                                            toast.error("Sản phẩm không đủ số lượng", {
+                                                autoClose: 2000,
+                                                // theme: "colored",
+                                                theme: "light",
+                                                position: "bottom-right",
+                                            })
+                                        }
+                                        else if(size_Order) {
                                             addCart(product.id)
                                             toast.success("Đã thêm vào gỏi hàng", {
                                                 autoClose: 2000,
@@ -195,8 +222,11 @@ function DetailProduct_v2() {
                         </div>
                     </div>
                 </div>
-
-                <Slider imgs={product?.imgs}/>
+                
+                {
+                    product.imgs && <Slider imgs={product.imgs}/>
+                }
+                
                 <div className={cx("line")}></div>
                 <img className={cx('choose_size')} src={require('../../imgData/howto.png')} alt="shoe image"/>
                 <img className={cx('choose_size')} src={require('../../imgData/chart_size.png')} alt="shoe image"/>

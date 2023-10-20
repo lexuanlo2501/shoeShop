@@ -4,6 +4,7 @@
         top: 56px;
         margin-bottom: 17px;
         display: flex;
+        justify-content: center;
         background-color: #fff;
         box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
         border-radius: 8px;
@@ -97,7 +98,7 @@
 .card_order {
 
     
-    padding-top: 10px;
+    padding: 10px 0;
 
     .infor_product {
         display: flex;
@@ -120,8 +121,8 @@
 
         .size {
             display: inline;
-            border-radius: 9px;
-            padding:5px 10px;
+            border-radius: 6px;
+            padding:3px 7px;
             background-color: #333;
             color: #fff;
         }
@@ -131,6 +132,8 @@
         border-top: 1px solid #e7e7e7;
     }
 }
+
+
 
 // <button class="" role="button">Button 74</button>
 
@@ -170,6 +173,65 @@
 .button-74:active {
   box-shadow: #422800 2px 2px 0 0;
   transform: translate(2px, 2px);
+}
+
+// RATING
+
+// color: rgb(242, 230, 69);
+
+
+
+.rating_wrapper {
+    display: flex;
+
+    .rating_send_btn {
+        margin-left: 30px;
+        padding: 3px 10px;
+        color: #333;
+        border-radius: 10px;
+        border: 2px solid #d9c4c4;
+        background-color: #f9d1d1;
+        color: #5b5b5b;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 1px;
+
+        &:hover {
+            background-color: #f4d4d4;
+        }
+        &:active {
+            opacity: 0.8;
+        }
+    }
+}
+
+.stars {
+
+
+    .star {
+        cursor: pointer;
+        color: #8e8e8e;
+       
+    }
+    .star+.star {
+        margin-left: 5px;
+
+    }
+
+    .check {
+        color: rgb(232, 218, 27);
+    }
+}
+
+
+.shoe_price_old {
+    font-size: 15px;
+    text-decoration: line-through;
+    color: #6b6a6a;
+    margin-right: 5px;
+}
+.shoe_price {
+    font-size: 18px;
 }
 
 @media (min-width: 768px) {

@@ -902,6 +902,7 @@ p.price_product{
 
 
         .compleOrder_btn {
+            display: inline-block;
             margin-top: 10px;
             width: 100%;
             padding: 15px 0;
@@ -911,6 +912,8 @@ p.price_product{
             color: #fff;
             background-color: rgb(239, 125, 83);
             border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
 
             &:hover {
                 opacity: 0.9;
@@ -918,6 +921,15 @@ p.price_product{
             &:active {
                 opacity: 0.7;
             }
+
+
+            // prevent select
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
+
+
+
         }
 
     }

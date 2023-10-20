@@ -1,13 +1,11 @@
 import classNames from "classnames/bind";
 import style from "../SignInSignUp.module.scss"
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { MoonLoader } from 'react-spinners';
 
 import axios from "axios";
 import { limit } from "../../../../common";
-
-const md5 = require('md5');
 
 
 const cx = classNames.bind(style)
@@ -32,14 +30,13 @@ function SignIn({setLogin}) {
     const handleSignIn = () => {
         const data = {
             accName: accName,
-            // password: md5(password),
             password: password,
 
 
         }
         console.log(data)
         setLoading(true)
-        axios.post("http://localhost:8000/signin",data)
+        axios.post("http://localhost:5000/signin",data)
         .then(res => {
             console.log(res)
             localStorage.setItem("tokens", JSON.stringify(res.data));
@@ -47,7 +44,7 @@ function SignIn({setLogin}) {
             res.data.role === "client" && navigate(`/shoes?_page=1&_limit=${limit}`);
             res.data.role === "admin" && navigate("/admin");
             setLogin(res.data.role)
-            setErrMess(res.data.status)
+            setErrMess(res.data.message)
             setLoading(false)
             
         })
@@ -79,13 +76,14 @@ function SignIn({setLogin}) {
                 <div className={cx('inputField')}>
                     <input placeholder="mật khẩu" type='password' onChange={(e) => setPassword(e.target.value)}/>
                 </div>
-                {
+                {/* {
                     errMess === false && <p className='text-danger'>Tài khoản hoặc mật khẩu không chính xác</p>
-                }
-                <div className={cx('signUpAndForget')}>
+                } */}
+                <p className='text-danger'>{errMess}</p>
 
+                <div className={cx('signUpAndForget')}>
                     <Link className={cx("signUp_btn")} to="/signUp">đăng ký</Link>
-                    <Link to="/">quên mật khẩu</Link>
+                    <Link to="/forgotPassword">quên mật khẩu</Link>
                 </div>
                 <button className={cx('signIn_btn')}
                     onClick={handleSignIn}
@@ -107,7 +105,7 @@ function SignIn({setLogin}) {
                 </div>
             }
 
-                <input type="file"
+                {/* <input type="file"
                     onChange={e => {
                         setFile(e.target.files[0])
                         setFiles(pre => [...pre, e.target.files[0]])
@@ -118,7 +116,8 @@ function SignIn({setLogin}) {
                     console.log(file)
                     const formdata = new FormData()
                     formdata.append('file', file)
-                    axios.post("http://localhost:5000/upload/img", formdata)
+                    console.log(file)
+                    axios.post("http://localhost:5000/upload_img", formdata)
                     .then(res => console.log(res))
                     .catch(err => console.log(err))
                 }}>upload</button>
@@ -132,10 +131,10 @@ function SignIn({setLogin}) {
                         formData.append("files", files[i])
                     }
 
-                    axios.post("http://localhost:5000/upload/imgs", formData)
+                    axios.post("http://localhost:5000/upload_imgs", formData)
                     .then(res => console.log(res))
                     .catch(err => console.log(err))
-                }}>upload imgs</button>
+                }}>upload imgs</button> */}
 
 
             </div>

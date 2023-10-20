@@ -8,10 +8,7 @@ import Home from './page/Home';
 import {BrowserRouter as Router, Routes, Route, Navigate, json } from 'react-router-dom';
 
 import Confirming from './page/Confirming';
-import ProductList from './page/ProductList';
-import ProductList_v2 from './page/ProductList_v2';
 
-import DetailProduct from './page/DetailProduct';
 import DetailProduct_v2 from './page/DetailProduct_v2';
 
 
@@ -23,6 +20,8 @@ import Orders from './page/Orders';
 import SignInSignUp from './components/Layout/SignInSignUp/SignInSignUp';
 import SignIn from './components/Layout/SignInSignUp/SignIn';
 import SignUp from './components/Layout/SignInSignUp/SignUp';
+import ForgotPassword from './components/Layout/SignInSignUp/ForgotPassword';
+
 import OverView from './page/OverView';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -33,22 +32,26 @@ import LayoutUserInfor from './components/LayoutUserInfor';
 import History from './page/History';
 import ListAccount from './page/ListAccount';
 import ProductList_v3 from './page/ProductList_v3';
+import SuccessPay from './page/SuccessPay';
 
 
 function App() {
-
+  const token =  JSON.parse(localStorage.getItem("tokens"));
+  const cart = JSON.parse(localStorage.getItem("cart"))
+  if(!cart) {
+    localStorage.setItem("cart", JSON.stringify([]));
+  }
+  
   // handle login
   const [login, setLogin] = useState("")
   useEffect(() => {
-    const token = localStorage.getItem("tokens");
     if(!token) {
       localStorage.setItem("tokens", JSON.stringify({}));
       
     }
-    console.log( (JSON.parse(token)) )
+    // console.log( token )
 
-    setLogin(JSON.parse(token).role)
-    console.log(login)
+    setLogin(token?.role)
   }, [login])
 
 
@@ -56,6 +59,8 @@ function App() {
 
   // update CDIO 3 *********************************************************************************************
   const [brand_v2, setBrand_v2] = useState("")
+  const [re_render, setRe_render] = useState(false)
+
 
   
   // previous version above
@@ -115,7 +120,7 @@ function App() {
             />
           }
           
-
+        
 
           <Route
             path="signIn"
@@ -125,6 +130,11 @@ function App() {
             path="signUp"
             element={<SignInSignUp><SignUp/></SignInSignUp>}
           />
+          <Route
+            path="forgotPassword"
+            element={<SignInSignUp><ForgotPassword/></SignInSignUp>}
+          />
+          
 
           <Route
             path="home"
@@ -145,7 +155,7 @@ function App() {
             login === "client" &&
               <Route
                 path="PurchaseOrder"
-                element={<DefaultLayout> <LayoutUserInfor><PurchaseOrder/></LayoutUserInfor> </DefaultLayout>}
+                element={<DefaultLayout> <LayoutUserInfor><PurchaseOrder userID={token?.accName} /></LayoutUserInfor> </DefaultLayout>}
               />
           }
           
@@ -166,10 +176,16 @@ function App() {
 
           <Route
             path="shoes"
-            element={<DefaultLayout setBrand_v2={setBrand_v2}><ProductList_v3 brand_v2={brand_v2}  /></DefaultLayout>}
+            element={<DefaultLayout setBrand_v2={setBrand_v2} setRe_render={setRe_render}><ProductList_v3 re_render={re_render} /></DefaultLayout>}
 
           />
 
+          <Route
+            path="successPay"
+            DefaultLayout
+            element={<DefaultLayout><SuccessPay/></DefaultLayout>}
+
+          />
 
           
 

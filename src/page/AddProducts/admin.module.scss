@@ -202,22 +202,55 @@ ul {
     background-color: rgb(216, 208, 181);
 }
 
+// 
+.color_17 {
+    margin: 0 10px;
+    display: inline-block;
+    background-color: rgb(255, 139, 94);
+}
+.color_18 {
+    margin: 0 10px;
+    display: inline-block;
+    background-color: rgb(243, 206, 221);
+}
+.color_19 {
+    margin: 0 10px;
+    display: inline-block;
+    background-color: rgb(184, 238, 234);
+}
+.color_20 {
+    margin: 0 10px;
+    display: inline-block;
+    background-color: rgb(134, 176, 239);
+}
+.color_21 {
+    margin: 0 10px;
+    display: inline-block;
+    background-color: rgb(241, 248, 172);
+}
+.color_22 {
+    margin: 0 10px;
+    display: inline-block;
+    background-color: rgb(146, 245, 151);
+}
+
+
 
 
 
 .img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-35deg);
+    // position: absolute;
+    // top: 50%;
+    // left: 50%;
+    // transform: translate(-50%, -50%) rotate(-35deg);
     width: 350px;
     height: 194px;
     object-fit: cover;
     // transform: rotate(-35deg);
     transition: 0.4s ease;
-    filter: drop-shadow(22px 19px 77px rgba(12, 12, 12, 0.892));
+    filter: drop-shadow(10px 15px 30px rgba(68, 68, 68, 0.892));
 
-    object-position: 0 62%;
+    // object-position: 0 62%;
 }
 
 .product_img--sub {
@@ -288,7 +321,7 @@ ul {
         border: none;
         padding: 5px;
         text-transform: capitalize;
-
+        width: 105px;
         
     }
     .message_err {
@@ -397,6 +430,11 @@ ul {
     text-align: center;
     padding: 0 10px;
 
+     // prevent select
+     -webkit-user-select: none; /* Safari */
+     -ms-user-select: none; /* IE 10 and IE 11 */
+     user-select: none; /* Standard syntax */
+
     &:active {
         background-color: rgb(200, 198, 198);
     }
@@ -415,6 +453,10 @@ ul {
             color: #333;
             background-color: rgb(190, 245, 195);
         }
+    }
+
+    svg:active {
+        background-color: transparent;
     }
     
 }
@@ -442,6 +484,26 @@ ul {
         background-color: rgb(252, 131, 131);
 
     }
+
+    &.yes {
+        background-color: rgb(57, 159, 57);
+        color: #fff;
+    }
+    &.no {
+        background-color: rgb(162, 87, 87);
+    }
+
+    &.line {
+        background-color: transparent;
+        border-bottom: 2px solid #333;
+        border-radius: 0;
+
+    }
+
+}
+
+.btnModal+.btnModal {
+    margin-left: 10px;
 }
 
 .quantity_size {
@@ -478,6 +540,14 @@ ul {
     }
 }
 
+.modalQuantity_size {
+    display: inline-block;
+    background-color: #525151;
+    color: #fff;
+    padding: 2px 9px;
+    border-radius: 5px;
+}
+
 // modale update
 .wrapper_modal_update {
     display: flex;
@@ -504,6 +574,9 @@ ul {
     max-width: 100%;
     // height: 400px;
     // height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     // btn update img
     label {
@@ -525,7 +598,7 @@ ul {
 
     img {
         // width: 265px;
-        width: 100%;
+        width: 90%;
         // height: 161px;
         // height: 100%;
         height: auto;
@@ -654,6 +727,75 @@ ul {
 .input_quantity {
     border-bottom: 1px solid #333;
     margin-left: 10px;
+}
+
+.addAtribute_btn {
+    cursor: pointer;
+    color: rgb(89, 150, 89);
+    font-size: 20px;
+    margin-left: 10px;
+    &:hover {
+        transform: scale(1.3);
+    }
+}
+
+.modify_attrib {
+    min-height: 400px;
+    .navigate_attribProd {
+        display: flex;
+        margin-top: 5px;
+        margin-bottom: 15px; 
+
+    
+        li {
+            cursor: pointer;
+            width: 130px;
+            font-weight: 600;
+            color: #464545;
+            letter-spacing: 1px;
+            border-bottom: 3px solid;
+            border-color: transparent;
+            text-align: center;
+
+            &.active {
+                border-color: rgb(245, 127, 48);
+            }
+        }
+    
+        
+    }
+}
+
+.input_add {
+    font-size: 20px;
+    color: #585656;
+
+}
+
+.atrib_add_btn, .atrib_del_btn {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1;
+    padding: 3px;
+    background-color: transparent;
+
+    &:hover {
+        transition: 0.1s;
+        transform: scale(1.4);
+    }
+    &:active {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+}
+
+.atrib_add_btn {
+    color: rgb(69, 144, 50);
+}
+
+.atrib_del_btn {
+    color: rgb(208, 93, 93);
+
 }
 
 

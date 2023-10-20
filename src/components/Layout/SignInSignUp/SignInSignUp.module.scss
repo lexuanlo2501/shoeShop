@@ -78,6 +78,15 @@ margin-left: 10px
 .sign_up {
     background-color: #fff;
     // padding: 10px 0;
+
+    .mess_passW {
+        color: rgb(229, 90, 90);
+    
+        p {
+            margin: 0;
+        }
+    }
+
 }
 
 .gender_com {
@@ -88,37 +97,6 @@ margin-left: 10px
     }
     label {
         cursor: pointer;
-    }
-}
-
-.inputField {
-    position: relative;
-    color: #333;
-    // margin: 10px 0;
-
-    input {
-        cursor: pointer;
-        width: auto;
-        margin-bottom: 18px;
-    }
-
-    .label {
-        display: inline-block;
-        width: 88px;
-
-        &.err {
-            color: rgb(251, 79, 79);
-        }
-    }
-   
-
-    .err_mess {
-        position: absolute;
-        top: 4px;
-        right: 6px;
-        color:rgb(223, 95, 70);
-        margin: 0;
-        font-size: 15px;
     }
 }
 
@@ -144,23 +122,78 @@ margin-left: 10px
 
     }
 
-    .inputField {
-        input[type="text"],
-        input[type="email"],
-        input[type="password"]
-        {
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            border: 2px #d2d1d1 solid;
-            // text-transform: capitalize;
     
-            &:focus {
-                border-color: rgb(197, 129, 157);
-            }
+.inputField {
+    position: relative;
+    color: #333;
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+    // margin: 10px 0;
+
+    
+
+    .label {
+        display: inline-block;
+        width: 88px;
+
+        &.err {
+            color: rgb(251, 79, 79);
         }
     }
 
+    label {
+        min-width: 140px;
+    }
+    
+    .sendCode_email_btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 10px;
+        background-color: #333;
+        padding: 3px 8px;
+        border-radius: 7px;
+        text-transform: capitalize;
+        color: #fff;
+        font-size: 14px;
+    }
+   
+
+    .err_mess {
+        position: absolute;
+        top: 4px;
+        right: 6px;
+        color:rgb(223, 95, 70);
+        margin: 0;
+        font-size: 15px;
+    }
+
+    input {
+        cursor: pointer;
+        width: auto;
+        // margin-bottom: 18px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"]
+    {
+        width: 100%;
+        flex: 1;
+        padding: 10px;
+        border-radius: 10px;
+        border: 2px #d2d1d1 solid;
+        // text-transform: capitalize;
+
+        &:focus {
+            border-color: rgb(197, 129, 157);
+        }
+    }
+}
+
+
+
+    
    
 
     .signUpAndForget {

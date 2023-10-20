@@ -25,12 +25,13 @@ function ListAccount() {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/accounts')
+        axios.get('http://localhost:5000/accounts')
         .then(res => setAcc(res.data))
     }, [rr_lock])
 
     const handleLockAcc = (id, value) => {
-        axios.patch(`http://localhost:8000/accounts/${id}`, {"lock":value})
+        axios.patch(`http://localhost:5000/accounts/${id}`, {"isLock":value})
+        // .then(res => console.log(res))
         setRr_lock(pre => !pre)
     }
 
@@ -85,16 +86,16 @@ function ListAccount() {
                             </td>
                             <td>
                             {
-                                !item.lock ? 
+                                !item.isLock ? 
                                 <button className={cx(['status_btn','lock'])}
-                                    onClick={() => handleLockAcc(item._id, true)}
+                                    onClick={() => handleLockAcc(item.accName, 1)}
                                 >
                                     <FontAwesomeIcon icon={faLock}/>
                                     <span>Khóa</span>
                                 </button>
                                 :
                                 <button className={cx(['status_btn','unlock'])}
-                                    onClick={() => handleLockAcc(item._id, false)}
+                                    onClick={() => handleLockAcc(item.accName, 0)}
                                 >
                                     <FontAwesomeIcon icon={faUnlock}/>
                                     <span>Mở</span>
@@ -134,22 +135,22 @@ function ModalInforUser({show, handleClose, userSelect}) {
                     <div className={cx('body_modal')}>
                         <div className={cx('user_info')}>
                             <p><span>vai trò</span>: {userSelect.role}</p>
-                            <p><span>id</span>: {userSelect._id}</p>
                             <p><span>tài khoản</span>: {userSelect.accName}</p>
                             <p><span>email</span>: {userSelect.email}</p>
                             <p><span>tên</span>: {userSelect.fullName}</p>
                             <p><span>SĐT</span>: {userSelect.phoneNumber}</p>
                             <p><span>ngày sinh</span>: {userSelect.dateOfBirth}</p>
-                            <p><span>giới tính</span>: {userSelect.gender === "male" && "Nam"} {userSelect.gender === "female" && "Nữ"} {userSelect.gender === "female" && "Khác"}</p>
+                            <p><span>ngày đăng ký</span>: {userSelect.date_create}</p>
+                            <p><span>giới tính</span>: {userSelect.gender === "Male" && "Nam"} {userSelect.gender === "Female" && "Nữ"} {userSelect.gender === "female" && "Khác"}</p>
                         </div>
 
-                        <PurchaseOrder userID={userSelect._id}/>
+                        <PurchaseOrder userID={userSelect.accName}/>
 
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
                 <button className={cx("close_btn")} onClick={handleClose}>
-                    Close
+                    Đóng
                 </button>
                 
                 </Modal.Footer>
