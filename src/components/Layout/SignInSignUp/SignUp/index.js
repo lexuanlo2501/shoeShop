@@ -55,7 +55,7 @@ function SignUp() {
     
             // delete dataPost.passwordCF
 
-            axios.post("http://localhost:5000/signup", dataPost)
+            axios.post(process.env.REACT_APP_BACKEND_URL+"/signup", dataPost)
             .then(res => {
                 console.log(res)
                 setMessErr(res.data.message)

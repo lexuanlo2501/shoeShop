@@ -34,7 +34,7 @@ function PurchaseOrder({userID}) {
         const user = JSON.parse(localStorage.getItem("tokens"));
         console.log(user)
         // axios.get("http://localhost:5000/orders?_client_id="+user.accName,{signal: controller.signal})
-        axios.get("http://localhost:5000/orders?_client_id="+userID,{signal: controller.signal})
+        axios.get(process.env.REACT_APP_BACKEND_URL+"/orders?_client_id="+userID,{signal: controller.signal})
         // axios.get("http://localhost:4000/orders",{signal: controller.signal})
         .then(res => {
 
@@ -131,7 +131,7 @@ function Orders({orders, setRerender, userID}) {
 
 
     const cancleOrder = (id) => {
-        axios.delete(`http://localhost:5000/orders/`+id)
+        axios.delete(process.env.REACT_APP_BACKEND_URL+"/orders/"+id)
         .then(res => {
             console.log("xoa thanh cong don hang " + id)
         })
@@ -261,7 +261,7 @@ function CardOrder({data, status}) {
             <div className={cx('infor_product')}>
                 {/* <img src={require(`../../imgData/${data.product.img}`)} alt=""/> */}
             {
-              data?.img && <img src={`http://localhost:5000/imgs/${data?.img}`} alt=""/>
+              data?.img && <img src={`${process.env.REACT_APP_BACKEND_URL}/imgs/${data?.img}`} alt=""/>
 
             }
                 
@@ -314,7 +314,7 @@ const Rating = ({order_detail}) => {
                 onClick = {() => {
                     if(numberStar) {
                         const dataP = {rating:numberStar, detail_order_id:order_detail.detail_order_id}
-                        axios.post("http://localhost:5000/rating", dataP)
+                        axios.post(process.env.REACT_APP_BACKEND_URL+"/rating", dataP)
                         .then(() => {
                             toast.success("Gửi đánh giá thành công")
                         })

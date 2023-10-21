@@ -29,7 +29,7 @@ function DetailProduct_v2() {
 
 
     useEffect(() => {
-        axios.get("http://localhost:5000/shoes/"+paramToObject._id)
+        axios.get(process.env.REACT_APP_BACKEND_URL+"/shoes/"+paramToObject._id)
         .then(res => {
             setProduct(res.data)
             console.log(res.data)

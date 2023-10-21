@@ -40,7 +40,8 @@ function ProductList_v3({ re_render }) {
 
     useEffect(() => {
        
-        axios.get(`http://localhost:5000/shoes?${param}`)
+        // axios.get(`http://localhost:5000/shoes?${param}`)
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/shoes?${param}`)
         .then(res => {
             setProducts(res.data)
             setLoading(false)
@@ -193,7 +194,7 @@ function Card({product, listView}) {
             onClick={(e) => {window.scrollTo(0, 0)}}
         >
             <div className={cx(["card_thumnal", product.BC_color])}>
-                <img src={`http://localhost:5000/imgs/${product.img}`} a lt="" className={cx(["card-img"])}/>
+                <img src={`${process.env.REACT_APP_BACKEND_URL}/imgs/${product.img}`} a lt="" className={cx(["card-img"])}/>
                 <FontAwesomeIcon className={cx(['contact_product'], {"active":like})} icon={like ?faHeartSolid:faHeart}
                     onClick={(e) => {
                         e.preventDefault()
@@ -208,7 +209,7 @@ function Card({product, listView}) {
                         }
 
 
-                        axios.patch("http://localhost:5000/favorite_list/"+token.accName,{product_id:product.id})
+                        axios.patch(process.env.REACT_APP_BACKEND_URL+"/favorite_list/"+token.accName,{product_id:product.id})
                         .then(res => {
                            console.log(res.data)
                            localStorage.setItem("tokens", JSON.stringify({...token, favorite:res.data}))

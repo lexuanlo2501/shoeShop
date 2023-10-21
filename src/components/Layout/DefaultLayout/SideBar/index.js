@@ -30,18 +30,17 @@ function SideBar({setRe_render}) {
     useEffect(() => {
         // axios.get('http://localhost:4000/products')
         try {
-            axios.get('http://localhost:5000/brands')
+            axios.get(process.env.REACT_APP_BACKEND_URL+'/brands')
             .then((res) => {
                 setBrands(res.data)
             })
-            axios.get("http://localhost:5000/types")
+            axios.get(process.env.REACT_APP_BACKEND_URL+"/types")
             .then(res => {
                 setTypes(res.data)
             })
-
-        } catch (error) {
-            console.log(error)
-        }
+            } catch (error) {
+                console.log(error)
+            }
       
     }, [])
 
