@@ -25,12 +25,12 @@ function ListAccount() {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/accounts')
+        axios.get(process.env.REACT_APP_BACKEND_URL+'/accounts')
         .then(res => setAcc(res.data))
     }, [rr_lock])
 
     const handleLockAcc = (id, value) => {
-        axios.patch(`http://localhost:5000/accounts/${id}`, {"isLock":value})
+        axios.patch(process.env.REACT_APP_BACKEND_URL+`/accounts/${id}`, {"isLock":value})
         // .then(res => console.log(res))
         setRr_lock(pre => !pre)
     }

@@ -35,7 +35,7 @@ function ForgotPassword () {
         console.log(data)
        
         if(data.code === codeConfirm && data.code !== "" && data.password === data.password_CF) {
-            axios.patch("http://localhost:5000/forgotPassword/"+data.email,{newPass:data.password,pass_confirm:data.password_CF})
+            axios.patch(process.env.REACT_APP_BACKEND_URL+"/forgotPassword/"+data.email,{newPass:data.password,pass_confirm:data.password_CF})
             .then(res => {
                 toast.success("Đổi mật khẩu thành công", {
                     hideProgressBar: true,

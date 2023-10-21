@@ -16,19 +16,15 @@ import Modal from 'react-bootstrap/Modal';
 import { faCircle, faCircleInfo, faClipboardCheck, faClockRotateLeft, faTrashCan, faTruck} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import ConfirmModal from '../../components/ConfirmModal';
-import e from 'cors';
-import { object } from 'yup';
 
 const cx = classNames.bind(styles)
 
 function Confirming() {
  
-    const [idProduct_C, setIdProduct_C] = useState('')
     const [order_detail, setOrder_detail] = useState({})
 
 
     const [checkChange, setCheckChange] = useState(false)
-
     
 
     const [showDetail, setShowDetail] = useState(false);
@@ -45,14 +41,14 @@ function Confirming() {
     const [orders, setOrders] = useState([])
     
     useEffect(() => {
-        axios.get(`http://localhost:5000/orders?_status=${pagCurr}`)
+        axios.get(process.env.REACT_APP_BACKEND_URL+`/orders?_status=${pagCurr}`)
         .then(res => {
             setOrders(res.data)
         })
     },[pagCurr, checkChange])
 
     const handleCancel = (id) => {
-        axios.delete(`http://localhost:5000/orders/`+id)
+        axios.delete(process.env.REACT_APP_BACKEND_URL+`/orders/`+id)
         .then(res => {
             toast("Xóa đơn hàng thành công", {
                 theme: "light",
@@ -67,7 +63,7 @@ function Confirming() {
     }
 
     const confirm_product = (order_id, status) => {
-        axios.patch(`http://localhost:5000/orders/${order_id}`, {"status": status})
+        axios.patch(process.env.REACT_APP_BACKEND_URL+`/orders/${order_id}`, {"status": status})
         .then(res => {
             console.log("Xac thuc thanh cong")
         })
@@ -77,7 +73,7 @@ function Confirming() {
 
 
     const handleOrderDetail = (item) => {
-        axios.get("http://localhost:5000/accounts/"+item.client_id)
+        axios.get(process.env.REACT_APP_BACKEND_URL+"/accounts/"+item.client_id)
         .then(res => {
             setOrder_detail({...item, ...res.data})
         })
@@ -141,7 +137,6 @@ function Confirming() {
                             item_order.status !== 3 &&
                             <td className={cx(['btn_product','confirm'])}
                                 onClick={() => {
-                                    // setIdProduct_C(item_order.id)
                                     handleOrderDetail(item_order)
                                 }}
                             >
@@ -163,7 +158,6 @@ function Confirming() {
                                         setCheckChange(pre => !pre)
                                     }}
                                 />
-                                {/* <button><FontAwesomeIcon icon={item_order.status===2?faClipboardCheck:faTruck}/></button> */}
                             </td>
                         }
 
@@ -229,7 +223,6 @@ function Confirming() {
                                 order_detail.products.map((item, index) => 
                                     <div className={cx('infor_product__item')} key={index}>
                                         
-                                        {/* <img src={require('../../imgData/'+item.product.img)} alt="error"/> */}
                                         <img src={`http://localhost:5000/imgs/${item.img}`} alt="error"/>
 
                                         <div>

@@ -46,9 +46,9 @@ function AddProducts() {
 
     useEffect(() => {
         const handle_CallAIP = async () => {
-            const brands_data = await axios("http://localhost:5000/brands")
-            const types_data = await axios("http://localhost:5000/types")
-            const discount_data = await axios("http://localhost:5000/discounts")
+            const brands_data = await axios(process.env.REACT_APP_BACKEND_URL+"/brands")
+            const types_data = await axios(process.env.REACT_APP_BACKEND_URL+"/types")
+            const discount_data = await axios(process.env.REACT_APP_BACKEND_URL+"/discounts")
 
             const combineData = {brands: brands_data.data,types: types_data.data,discounts: discount_data.data}
             console.log(combineData)
@@ -144,7 +144,7 @@ function AddProducts() {
             console.log(imgs_v2)
 
     
-            axios.post("http://localhost:5000/shoes_add", infor)
+            axios.post(process.env.REACT_APP_BACKEND_URL+"/shoes_add", infor)
             .then(res => {
                 toast.success("Thêm thành công")
             })
@@ -157,14 +157,14 @@ function AddProducts() {
             for (let i = 0; i < imgs_v2.length; i++) {
                 formdata_imgs.append("files", imgs_v2[i])
             }
-            axios.post("http://localhost:5000/upload_imgs", formdata_imgs)
+            axios.post(process.env.REACT_APP_BACKEND_URL+"/upload_imgs", formdata_imgs)
             .then(res => console.log(res))
             .catch(err => console.log(err))
 
             // img
             const formdata_img = new FormData()
             formdata_img.append('file', img)
-            axios.post("http://localhost:5000/upload_img", formdata_img)
+            axios.post(process.env.REACT_APP_BACKEND_URL+"/upload_img", formdata_img)
             .then(res => console.log(res))
             .catch(err => console.log(err))
 
@@ -371,27 +371,27 @@ function AddProducts() {
                 }
                 </select>
                 <div>
-                    {
-                        quantity_size.map((item, index) => 
-                            <div key={index} className={cx('quantity_size')}>
-                                <span>{item}</span>
-                                <input placeholder="Số lượng"
-                                    onChange={(e) => {
+                {
+                    quantity_size.map((item, index) => 
+                        <div key={index} className={cx('quantity_size')}>
+                            <span>{item}</span>
+                            <input placeholder="Số lượng"
+                                onChange={(e) => {
 
-                                        let tmpList = [...inventory]
-                                        let newList = tmpList.map((item2, index2) => {
-                                            if(item === item2.size) return {...item2, "quantity" : +e.target.value}
-                                            return item2
+                                    let tmpList = [...inventory]
+                                    let newList = tmpList.map((item2, index2) => {
+                                        if(item === item2.size) return {...item2, "quantity" : +e.target.value}
+                                        return item2
 
-                                        })
-                                        setInventory(newList)
+                                    })
+                                    setInventory(newList)
 
-                                        console.log(newList)
-                                    }}  
-                                />
-                            </div>
-                        )
-                    }
+                                    console.log(newList)
+                                }}  
+                            />
+                        </div>
+                    )
+                }
                 </div>
             </div>
 
@@ -445,7 +445,7 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
     
 
     const handle_delete = (id) => {
-        axios.delete(`http://localhost:5000/${attrib}/${id}`)
+        axios.delete(process.env.REACT_APP_BACKEND_URL+`/${attrib}/${id}`)
         setTrigger_Atrib(pre => !pre)
 
     }
@@ -453,13 +453,13 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
     const handle_add = (value) => {
         setTrigger_Atrib(pre => !pre)
         if(attrib === "brands") {
-            axios.post(`http://localhost:5000/${attrib}`, {brand_id:value})
+            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {brand_id:value})
         }
         else if (attrib === "discounts") {
-            axios.post(`http://localhost:5000/${attrib}`, {per:+value})
+            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {per:+value})
         }
         else if (attrib === "types") {
-            axios.post(`http://localhost:5000/${attrib}`, {type_name:value})
+            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {type_name:value})
         }
         input_add.current.value = ""
     }
@@ -496,53 +496,50 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
                             </tr>
                         </thead>
                         <tbody>
-                        {
-                            attrib === "types" &&
-                            atri_prod[attrib].map((item, index) => (
-                                <tr key={item.id}>
-                                    <th scope="row">{index}</th>
-                                    <td>{item.type_name}</td>
-                                    <td>
-                                        {/* <button className={cx("atrib_del_btn")}
-                                            onClick={() => handle_delete(item.id)}
-                                        >x</button> */}
-                                        <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA LOẠI SẢN PHẨM" body={<div>Bạn có muốn xóa loại <b>{item.type_name}</b> không ?</div>}
-                                            accept={() => handle_delete(item.id)}
-                                        />
-                                    </td>
-                                </tr>
-                            ))
-                        }
-                        {
-                            attrib === "brands" &&
-                            atri_prod[attrib].map((item, index) => (
-                                <tr key={item.brand_id}>
-                                    <th scope="row">{index}</th>
-                                    <td>{item.brand_id}</td>
-                                    <td>
-                                        <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA HÃNG SẢN PHẨM" body={<div>Bạn có muốn xóa hãng <b>{item.brand_id}</b> ?</div>}
-                                            accept={() => handle_delete(item.brand_id)}
-                                        />
-                                    </td>
+                    {
+                        attrib === "types" &&
+                        atri_prod[attrib].map((item, index) => (
+                            <tr key={item.id}>
+                                <th scope="row">{index}</th>
+                                <td>{item.type_name}</td>
+                                <td>
+                                    <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA LOẠI SẢN PHẨM" body={<div>Bạn có muốn xóa loại <b>{item.type_name}</b> không ?</div>}
+                                        accept={() => handle_delete(item.id)}
+                                    />
+                                </td>
+                            </tr>
+                        ))
+                    }
+                    {
+                        attrib === "brands" &&
+                        atri_prod[attrib].map((item, index) => (
+                            <tr key={item.brand_id}>
+                                <th scope="row">{index}</th>
+                                <td>{item.brand_id}</td>
+                                <td>
+                                    <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA HÃNG SẢN PHẨM" body={<div>Bạn có muốn xóa hãng <b>{item.brand_id}</b> ?</div>}
+                                        accept={() => handle_delete(item.brand_id)}
+                                    />
+                                </td>
 
-                                </tr>
-                            ))
-                        }
-                        {
-                            attrib === "discounts" &&
-                            atri_prod[attrib].map((item, index) => (
-                                <tr key={item.id}>
-                                    <th scope="row">{index}</th>
-                                    <td>{item.per}</td>
-                                    <td>
-                                        <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA KHUYẾN MÃI SẢN PHẨM" body={<div>Bạn có muốn xóa mã khuyến mãi <b>{item.per}%</b> này không?</div>}
-                                            accept={() => handle_delete(item.id)}
-                                        />
-                                    </td>
+                            </tr>
+                        ))
+                    }
+                    {
+                        attrib === "discounts" &&
+                        atri_prod[attrib].map((item, index) => (
+                            <tr key={item.id}>
+                                <th scope="row">{index}</th>
+                                <td>{item.per}</td>
+                                <td>
+                                    <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA KHUYẾN MÃI SẢN PHẨM" body={<div>Bạn có muốn xóa mã khuyến mãi <b>{item.per}%</b> này không?</div>}
+                                        accept={() => handle_delete(item.id)}
+                                    />
+                                </td>
 
-                                </tr>
-                            ))
-                        }
+                            </tr>
+                        ))
+                    }
                             <tr >
                                 <th scope="row"></th>
                                 <td><input ref={input_add} className={cx("input_add")} placeholder="Nhập giá trị mới ..."/></td>

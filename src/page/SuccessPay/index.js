@@ -2,6 +2,10 @@ import axios from "axios";
 import classNames from "classnames/bind";
 import { useEffect } from "react";
 import styles from './SuccessPay.module.scss'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
+import { Link } from "react-router-dom";
 
 
 const cx = classNames.bind(styles)
@@ -17,7 +21,7 @@ function SuccessPay() {
         
             console.log(paramToObject)
     
-            if(paramToObject.vnp_TransactionStatus === "00") {
+            if(paramToObject?.vnp_TransactionStatus === "00") {
                 const user = JSON.parse(localStorage.getItem("tokens"))
                 const cart = JSON.parse(localStorage.getItem("cart"))
     
@@ -33,7 +37,7 @@ function SuccessPay() {
                         product_id: prod.id
                     })),
                 }
-                axios.post('http://localhost:5000/orders', order)
+                axios.post(process.env.REACT_APP_BACKEND_URL+'/orders', order)
             }
         }
        time_render++
@@ -45,7 +49,13 @@ function SuccessPay() {
    
     return (
         <div className={cx("wrapper")}>
-            <h2>THANH TOÁN THÀNH CÔNG</h2>
+            <div className={cx("nofication")}>
+                <FontAwesomeIcon icon={faCircleCheck} className={cx("success_icon")} />
+                <h2>THANH TOÁN THÀNH CÔNG</h2>
+                <p>Bạn có thể theo dõi trong <Link className={cx("navigate_purcha")}  to="/PurchaseOrder" replace>đơn hàng của tôi</Link>.</p>
+                <Link className={cx("navigate_prodList")}  to="/shoes?_page=1&_limit=16" replace>TIẾP TỤC MUA HÀNG</Link>
+
+            </div>
         </div>
     );
 }

@@ -38,7 +38,7 @@ function Orders() {
         setOptionPay(event.target.value)
         console.log(event.target.value)
         if(event.target.value === "credit") {
-            axios.post("http://localhost:5000/create_payment_url", {
+            axios.post(process.env.REACT_APP_BACKEND_URL+"/create_payment_url", {
                 "amount":total,
                 "language":"vn"
             })
@@ -61,7 +61,7 @@ function Orders() {
         let cart = JSON.parse(localStorage.getItem('cart'))
         let cart_prod_id = cart.map(i => i.id).toString()
 
-        axios.get("http://localhost:5000/shoesList/"+cart_prod_id)
+        axios.get(process.env.REACT_APP_BACKEND_URL+"/shoesList/"+cart_prod_id)
         .then(res => {
 
             let cart = JSON.parse(localStorage.getItem('cart'))
@@ -153,7 +153,7 @@ function Orders() {
                 }))
             }
 
-            axios.post('http://localhost:5000/orders', order)
+            axios.post(process.env.REACT_APP_BACKEND_URL+'/orders', order)
             .then(res => {
                 toast("Đặt hàng thành công", {
                     theme: "light",
@@ -475,7 +475,7 @@ function Item_order({order, setCheck}) {
         <div className={cx("content_description_wrapper")}>
             <i className="ti-close remove_product"></i>
             <a href="" className={cx("content_description_left")}>
-                <img src={`http://localhost:5000/imgs/${order?.product?.img}`} alt="" className={cx("content_product")}/>
+                <img src={process.env.REACT_APP_BACKEND_URL+`/imgs/${order?.product?.img}`} alt="" className={cx("content_product")}/>
 
             </a>
             <div className={cx("content_description_right")}>

@@ -6,6 +6,7 @@ import { MoonLoader } from 'react-spinners';
 
 import axios from "axios";
 import { limit } from "../../../../common";
+import ConfirmModal from "../../../ConfirmModal";
 
 
 const cx = classNames.bind(style)
@@ -92,8 +93,18 @@ function SignIn({setLogin}) {
 
                 <h1 className={cx('option_signIn')}>Hoặc</h1>
 
-                <button className={cx(['signIn_btn', 'other'])}> <img src={require("../google.png")}/>google</button>
-                <button className={cx(['signIn_btn', 'other'])}> <img src={require("../facebook.png")}/>facebook</button>
+                <ConfirmModal
+                    btnText={<button className={cx(['signIn_btn', 'other'])}> <img src={require("../google.png")}/>google</button>}
+                    title="COMING SOON"
+                    body="Hiện tại chưa có tính năng này"
+                />
+                <ConfirmModal
+                    btnText={<button className={cx(['signIn_btn', 'other'])}> <img src={require("../facebook.png")}/>facebook</button>}
+                    title="COMING SOON"
+                    body="Hiện tại chưa có tính năng này"
+                />
+
+                
             {
                 loading &&
                 <div className={cx('loadding_signIn')}>
@@ -104,38 +115,6 @@ function SignIn({setLogin}) {
                     />
                 </div>
             }
-
-                {/* <input type="file"
-                    onChange={e => {
-                        setFile(e.target.files[0])
-                        setFiles(pre => [...pre, e.target.files[0]])
-
-                    }}
-                />
-                <button onClick={() => {
-                    console.log(file)
-                    const formdata = new FormData()
-                    formdata.append('file', file)
-                    console.log(file)
-                    axios.post("http://localhost:5000/upload_img", formdata)
-                    .then(res => console.log(res))
-                    .catch(err => console.log(err))
-                }}>upload</button>
-                <br/>
-                <button onClick={() => {
-                    console.log(files)
-                    const formData = new FormData()
-                    // formData.append('files', files)
-
-                    for (let i = 0; i < files.length; i++) {
-                        formData.append("files", files[i])
-                    }
-
-                    axios.post("http://localhost:5000/upload_imgs", formData)
-                    .then(res => console.log(res))
-                    .catch(err => console.log(err))
-                }}>upload imgs</button> */}
-
 
             </div>
 

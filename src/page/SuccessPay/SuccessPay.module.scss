@@ -1,7 +1,48 @@
 .wrapper {
     height: 100vh;
+    display: flex;
+    justify-content: center;
+    position: relative;
+   
 
-    h2 {
-        text-align: center                          ;
+    .nofication {
+        position: absolute;
+        top: 40%;
+        transform: translateY(-50%);
+
+        text-align: center;
+
+        .success_icon {
+            font-size: 120px;
+            color: #8fe28b;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            text-align: center                          ;
+        }
+
+        .navigate_purcha {
+            color: #8adfdb;
+        }
+
+        .navigate_prodList {
+            display: inline-block;
+            margin-top: 15px;
+            background-color: #454545;
+            padding: 12px 20px;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 20px;
+            &:hover {
+                opacity: 0.9;
+            }
+            &:active {
+                opacity: 0.8;
+            }
+        }
+        
     }
 }
+
+

@@ -6,13 +6,11 @@ import './modifyProducts.scss'
 import 'bootstrap/dist/css/bootstrap.css';
 
 
-
 // boostrap
 import Modal from 'react-bootstrap/Modal';
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-
 
 
 import { faFileImage, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -21,8 +19,6 @@ import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import {toast } from 'react-toastify';
 import { SyncLoader } from 'react-spinners';
 import { formatPrice } from '../../common' 
-
-
 
 
 
@@ -83,10 +79,7 @@ function ModifyProducts() {
     const handleShow_upd = () => setShowUpd(true);
 
 
-    const [showM_Quantity, setShowM_Quantity] = useState(false);
-    const handleCloseM_Quantity = () => setShowM_Quantity(false);
-    const handleShowM_Quantity = () => setShowM_Quantity(true);
-
+    
 
     const [atri_prod, setAtri_prod] = useState({}) // {brands: [],types: [],discounts: []}
 
@@ -104,9 +97,9 @@ function ModifyProducts() {
         setAddmin(user)
 
         const handle_CallAIP = async () => {
-            const brands_data = await axios("http://localhost:5000/brands")
-            const types_data = await axios("http://localhost:5000/types")
-            const discount_data = await axios("http://localhost:5000/discounts")
+            const brands_data = await axios(process.env.REACT_APP_BACKEND_URL+"/brands")
+            const types_data = await axios(process.env.REACT_APP_BACKEND_URL+"/types")
+            const discount_data = await axios(process.env.REACT_APP_BACKEND_URL+"/discounts")
 
             const combineData = {brands: brands_data.data,types: types_data.data,discounts: discount_data.data}
             console.log(combineData)
@@ -118,7 +111,7 @@ function ModifyProducts() {
 
 
     useEffect(() => {
-        const url = !brand ? 'http://localhost:5000/shoes' : `http://localhost:5000/shoes?_brand=${brand}`
+        const url = !brand ? process.env.REACT_APP_BACKEND_URL+'/shoes' : process.env.REACT_APP_BACKEND_URL+`/shoes?_brand=${brand}`
 
         const controller = new AbortController()
         axios.get(url, {signal:controller.signal})
@@ -169,7 +162,7 @@ function ModifyProducts() {
 
     // func
     const handleDel = (id_product_v) => {
-        axios.delete(`http://localhost:5000/shoes_delete/${id_product_v}`)
+        axios.delete(process.env.REACT_APP_BACKEND_URL+`/shoes_delete/${id_product_v}`)
         .then(res => {
             toast.success("xóa thành công")
 
@@ -223,7 +216,7 @@ function ModifyProducts() {
 
 
         // update infor shoes
-        axios.patch(`http://localhost:5000/shoes_update/${product.id}`,data_patch)
+        axios.patch(process.env.REACT_APP_BACKEND_URL+`/shoes_update/${product.id}`,data_patch)
         .then(res => {
             console.log(res)
             toast.success("cập nhật thành công")
@@ -238,11 +231,11 @@ function ModifyProducts() {
         if(img_upd !== product.img) {
             const formdata_img = new FormData()
             formdata_img.append('file', img_upd)
-            axios.post("http://localhost:5000/upload_img", formdata_img)
+            axios.post(process.env.REACT_APP_BACKEND_URL+"/upload_img", formdata_img)
             .then(res => console.log(res))
             .catch(err => console.log(err))
            //  xóa ảnh img cũ
-           axios.delete("http://localhost:5000/delete_img/"+product.img)
+           axios.delete(process.env.REACT_APP_BACKEND_URL+"/delete_img/"+product.img)
             
 
         }
@@ -254,7 +247,7 @@ function ModifyProducts() {
             for (let i = 0; i < imgs_upd_add.length; i++) {
                 formdata_imgs.append("files", imgs_upd_add[i])
             }
-            axios.post("http://localhost:5000/upload_imgs", formdata_imgs)
+            axios.post(process.env.REACT_APP_BACKEND_URL+"/upload_imgs", formdata_imgs)
             .then(res => console.log(res))
             .catch(err => console.log(err))
 
@@ -264,22 +257,11 @@ function ModifyProducts() {
         // delete imgs (files)
         if(imgs_upd_del.length) {
             imgs_upd_del.forEach(i => {
-                axios.delete("http://localhost:5000/delete_img/"+i)
+                axios.delete(process.env.REACT_APP_BACKEND_URL+"/delete_img/"+i)
             })
         }
 
     }
-
-    // const check2Array_equal = (arr1, arr2) => {
-        
-    //     if(arr1.length !== arr2.length) return false
-        
-    //     if(arr1.every((item, index) => {
-    //         return item === arr2[index]
-    //     })) return true
-    //     else return false
-        
-    // }
 
     const check2Array_equal = (arr1, arr2) => {
         if(arr1.length !== arr2.length) return false
@@ -291,24 +273,6 @@ function ModifyProducts() {
     }
 
 
-    const funcHandleShowInfor_upd = () => {
-        let {brand_id,name, price, quantity, description, inventory} = product
-        let listValue_product = [name, price, quantity,brand_id]
-        let listInputValue = document.querySelectorAll('.inputClass')
-        
-        Array.from(listInputValue).map((item, index) => {
-            item.value = listValue_product[index]
-        })
-
-        document.querySelector('.selectClass_value').value = brand_id
-        document.querySelector('#descriptionUpdate_value').value = description 
-        
-        // inventory
-        let listInputQuantity = document.querySelectorAll('.quantityInventory_input')
-        Array.from(listInputQuantity).map((item, index) => {
-            item.value = inventory[index].quantity
-        })
-    }
 
     return (
         <div className={cx('wrapper')}>
@@ -340,7 +304,7 @@ function ModifyProducts() {
                                     let id = document.querySelector('.getID_search').value
                                     id = id.replace(/ /gi, "")
                                     id &&
-                                    axios.get(`http://localhost:5000/shoes/${id}`)
+                                    axios.get(process.env.REACT_APP_BACKEND_URL+`/shoes/${id}`)
                                     .then(res => {
                                         setProducts([res.data])
                                         setIsErrSearch(false)
@@ -393,7 +357,7 @@ function ModifyProducts() {
                                 </td>
 
                                 <td>
-                                    <img src={`http://localhost:5000/imgs/${item?.img}`} alt="error"/>
+                                    <img src={process.env.REACT_APP_BACKEND_URL+`/imgs/${item?.img}`} alt="error"/>
                                 </td>
                                 
                                 <td className={cx('tdClass_BCcolor')}>
@@ -504,7 +468,7 @@ function ModifyProducts() {
                                 {/*  */}
                                 {/* src={require('../../imgData/'+img_upd)} */}
                             
-                                {<img className={cx('img')} src={  typeof img_upd === 'string'  ? `http://localhost:5000/imgs/${img_upd}`: img_upd.preview }  alt="error"/>}
+                                {<img className={cx('img')} src={  typeof img_upd === 'string'  ? process.env.REACT_APP_BACKEND_URL+`/imgs/${img_upd}`: img_upd.preview }  alt="error"/>}
 
                             
                             </div>
@@ -512,7 +476,7 @@ function ModifyProducts() {
                             <div className={cx('container_imgSub_update')}>
                                 {Boolean(imgs_upd.length) && imgs_upd.map((item, index) => 
                                     <div key={index} className={cx('imgsSub_update_modal')}>
-                                        <img src={'http://localhost:5000/imgs/'+item} alt="error"/>
+                                        <img src={process.env.REACT_APP_BACKEND_URL+'/imgs/'+item} alt="error"/>
                                         <button
                                             onClick={() => {
                                                 let preImgs = [...imgs_upd]
@@ -700,7 +664,7 @@ function QuantityModal({size,idPro, quantity, inventory}) {
             "size": size
         }
         console.log(dataPost)
-        axios.post(`http://localhost:5000/import_prod`,dataPost)
+        axios.post(process.env.REACT_APP_BACKEND_URL+`/import_prod`,dataPost)
 
        
         console.log(inventory)
