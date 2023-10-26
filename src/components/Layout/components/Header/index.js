@@ -3,14 +3,15 @@ import styles from './Header.module.scss'
 
 import axios from "axios";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart, faHome, faPercent } from "@fortawesome/free-solid-svg-icons";
 // import Tippy from '@tippyjs/react';
 // import 'tippy.js/dist/tippy.css'; // optional
 
 import Tippy from '@tippyjs/react/headless';
 import { formatPrice, limit } from "../../../../common";
+import { faShopify } from "@fortawesome/free-brands-svg-icons";
 
 
 
@@ -75,7 +76,9 @@ function Header({setRe_render}) {
                 </li>
 
                 <li className={cx(["men","menu"])}>
-                    <Link to="/home" onClick={() => {window.scrollTo(0, 0)}}>trang chủ</Link>
+                    <Link to="/home" onClick={() => {window.scrollTo(0, 0)}}>
+                        <span className={cx("nav_desktop")}>trang chủ</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faHome}/></span>
+                    </Link>
                 </li>
 
                 <li className={cx(["men","menu"])}>
@@ -85,12 +88,17 @@ function Header({setRe_render}) {
                             window.scrollTo(0, 0)
                             // setRe_render(pre => !pre)
                         }}
-                    >sản phẩm</Link>
+                    >
+                        <span className={cx("nav_desktop")}>sản phẩm</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faShopify}/></span>
+                        
+                    </Link>
                    
                 </li>
 
                 <li className={cx(["men","menu"])}>
-                    <Link to="/home" onClick={() => {window.scrollTo(0, 0)}}>giảm giá</Link>
+                    <Link to={`/shoes?_page=1&_limit=${limit}&_isDiscount=true`} onClick={() => {window.scrollTo(0, 0)}}>
+                        <span className={cx("nav_desktop")}>giảm giá</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faPercent}/></span>
+                    </Link>
                 </li>
                 
 

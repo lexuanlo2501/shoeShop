@@ -179,7 +179,7 @@ function AddProducts() {
         
     }
 
-    return ( <div className={cx('wrapper')}>
+    return ( <div className={cx(['wrapper', "add_product"])}>
 
         <div className={cx('left_side')}>
 

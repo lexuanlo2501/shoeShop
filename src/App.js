@@ -137,7 +137,11 @@ function App() {
           
 
           <Route
-            path="home"
+            path={"home"}
+            element={<HeaderOnly> <Home></Home> </HeaderOnly>}
+          />
+          <Route
+            path={""}
             element={<HeaderOnly> <Home></Home> </HeaderOnly>}
           />
 
@@ -179,6 +183,8 @@ function App() {
             element={<DefaultLayout setBrand_v2={setBrand_v2} setRe_render={setRe_render}><ProductList_v3 re_render={re_render} /></DefaultLayout>}
 
           />
+
+         
 
           <Route
             path="successPay"

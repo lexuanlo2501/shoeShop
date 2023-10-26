@@ -20,7 +20,6 @@ function ProductList_v3({ re_render }) {
     let param = currentUrl.split("?")[1]
     let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
     // console.log(currentUrl)
-    let [favorite_list, setFavorite_list] = useState([])
 
     const [products, setProducts] = useState([])
     const [pageChange, setPageChange] = useState(+paramToObject._page)
@@ -35,8 +34,7 @@ function ProductList_v3({ re_render }) {
     }
 
     
-    useEffect(() => {
-    }, [])
+    const [trigger, setTrigger] = useState(false)
 
     useEffect(() => {
        
@@ -54,7 +52,7 @@ function ProductList_v3({ re_render }) {
         return () => {
 
         }
-    }, [re_render, pageChange])
+    }, [re_render, pageChange, trigger])
 
     const previousPage = () => {
         setPageChange(pre => pre>1 ? pre-1 : pre )
@@ -77,26 +75,15 @@ function ProductList_v3({ re_render }) {
     
     return ( 
         <div id='scrollTo' className={cx('wrapper')}>
-            {/* TEST CONSOLE.LOG PARAM */}
-            {/* <button
-                onClick={() => {
-                    // console.log(para_query_value)
-                    console.log(param);
-                    console.log(paramToObject)
-
-                }}
-            >show param</button> */}
 
             <div  className={cx('route')}>
                 <div>
                     <span >sản phẩm</span>
-                    {
-                        Boolean(paramToObject._brand) && <span > &#8594; </span>
-                    }
+                        {Boolean(paramToObject._brand) && <span > &#8594; </span>}
                     <span>{paramToObject._brand}</span>
                 </div>
 
-                <SearchItem/>
+                <SearchItem setTrigger={setTrigger}/>
 
                 <div>
                     <FontAwesomeIcon className={cx(['viewProd_btn', {'active':listView}])} icon={faList}
@@ -195,13 +182,15 @@ function Card({product, listView}) {
         >
             <div className={cx(["card_thumnal", product.BC_color])}>
                 <img src={`${process.env.REACT_APP_BACKEND_URL}/imgs/${product.img}`} a lt="" className={cx(["card-img"])}/>
+            {
+                token?.status &&
                 <FontAwesomeIcon className={cx(['contact_product'], {"active":like})} icon={like ?faHeartSolid:faHeart}
                     onClick={(e) => {
                         e.preventDefault()
                         // sự kiện xủi bọt
                         e.stopPropagation()
 
-                         console.log(token)
+                        console.log(token)
 
                         const handleFavorite = (arr, id) => {
                             let result = arr.includes(id) ? arr.filter(i => i!==id):[...arr, id]
@@ -211,8 +200,8 @@ function Card({product, listView}) {
 
                         axios.patch(process.env.REACT_APP_BACKEND_URL+"/favorite_list/"+token.accName,{product_id:product.id})
                         .then(res => {
-                           console.log(res.data)
-                           localStorage.setItem("tokens", JSON.stringify({...token, favorite:res.data}))
+                            console.log(res.data)
+                            localStorage.setItem("tokens", JSON.stringify({...token, favorite:res.data}))
                         })
                         
                         setLike(pre => !pre)
@@ -220,6 +209,8 @@ function Card({product, listView}) {
 
                     }}
                 />
+            }
+               
             </div>
 
             <div className={cx("card-data")}>

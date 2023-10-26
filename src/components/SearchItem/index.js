@@ -2,43 +2,83 @@ import classNames from "classnames/bind";
 import style  from "./searchIem.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { limit } from "../../common";
+import { BeatLoader } from 'react-spinners';
+
 
 const cx = classNames.bind(style)
 
-function SearchItem() {
+function SearchItem({setTrigger}) {
     const [products, setProducts] = useState([])
     const [input, setInput] = useState('')
-    const [filterSearch, setFilterSearch] = useState('')
-
-    const [isLoading, startTransition] = useTransition()
-
+    const [loading, setLoading] = useState(false)
+    const [showResult, setShowResult] = useState(false)
 
     useEffect(() => {
-        axios.get('http://localhost:5000/shoes')
-        .then(res => setProducts(res.data))
-    }, [])
+        const delay = 1000;
+        let timeoutId;
+        setLoading(true)
 
-    const handleSearchInput = (e) => {
-        setInput(e.target.value)
-        startTransition(() => {
-            setFilterSearch(e.target.value)
-        })
-    }
+        const debounceFetchData = () => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                axios.get(process.env.REACT_APP_BACKEND_URL+`/shoes?_string=${input}`)
+                .then(res => {
+                    setProducts(res.data)
+                    setLoading(false)
+                })
+            }, delay);
+        };
+      
+        debounceFetchData();
+
+        return () => {
+            clearTimeout(timeoutId);
+        };
+
+        
+    }, [input])
+
+
+    let currentUrl = window.location.href;
+    let param = currentUrl.split("?")[1]
+    let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
+    // console.log(currentUrl)
 
     return ( 
         <div className={cx('wrapper')}>
-            <FontAwesomeIcon icon={faSearch}/>
             <input placeholder="Tìm kiếm"
-                onChange={handleSearchInput}
+                onChange={e => setInput(e.target.value)}
+                onBlur={() => {
+                    setShowResult(false)
+                }}
+                onFocus={() => {
+                    setShowResult(true)
+                }}
             />
+            <Link to={input ?`/shoes?_page=1&_limit=${limit}&_string=${input}`:`/shoes?_page=1&_limit=${limit}`}
+                onClick={() => setTrigger(pre => !pre)}
+            >
+                <FontAwesomeIcon className={cx('search_icon')} icon={faSearch}/>
+            </Link>
+
 
             {
-                input && 
+                input && showResult && 
                 <div className={cx('result')}>
-                    <FilterDataSearch products={products} input={input} filterSearch={filterSearch}/>
+                {
+                    loading ?
+                    <div>
+                        <BeatLoader color="#1c1e1d"  width={50} />
+                    </div>
+                    :
+                    products.length ? <FilterDataSearch products={products} input={input} /> : <div>Không có sản phẩm nào</div>
+                    
+
+                }
                 </div>
             }
 
@@ -47,20 +87,14 @@ function SearchItem() {
     );
 }
 
-function FilterDataSearch({products, filterSearch}) {
+function FilterDataSearch({products}) {
 
-    const data = useMemo(() => {
-        return products.filter(item => {
-            let indexItem = item.name.toLowerCase().includes(filterSearch.toLowerCase())
-            return indexItem
-        })
-
-    }, [filterSearch])
+   
 
     return (
         <div>
         {
-            data.map(i => <Item key={i.id}  data={i}/>)
+            products?.map(i => <Item key={i.id}  data={i}/>)
         }
         </div>
     )
@@ -74,7 +108,7 @@ function Item({data}) {
             className={cx("link_item")}
         >
             <div className={cx('wrapper_item')}>
-                <img src={`http://localhost:5000/imgs/${data.img}`}/>
+                <img src={process.env.REACT_APP_BACKEND_URL+`/imgs/${data.img}`}/>
                 <p>{data.name}</p>
             </div>
         </Link>

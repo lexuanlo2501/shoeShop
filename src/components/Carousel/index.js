@@ -11,7 +11,7 @@ import styles from './Carousel.module.scss'
 const cx = classNames.bind(styles)
 
 
-const Carousel = ({brand, setTrigger}) => {
+const Carousel = ({brand, setTrigger, nameProd}) => {
   const [products, setProducts] = useState([])
   
   const handleDragStart = (e) => e.preventDefault();
@@ -24,11 +24,12 @@ const Carousel = ({brand, setTrigger}) => {
 
   useEffect(() => {
     let brand_paraQuery =  brand ? `brand/${brand}` : ''
+    
         // http://localhost:4000/products/adidas/data?_page=1&_limit=2
         // axios.get(`http://localhost:4000/data?_page=${page}&_limit=${limit}`)
         // axios.get(`http://localhost:4000/${route_}data?_page=1&_limit=8`)
         // axios.get(`http://localhost:4000/${route_}data`)
-        axios.get(`http://localhost:5000/shoes/${brand_paraQuery}?_limit=10&_page=1`)
+        axios.get(process.env.REACT_APP_BACKEND_URL+`/shoes/${brand_paraQuery}?_limit=10&_page=1&_string=${nameProd||""}`)
         .then(res => {
             setProducts(res.data)
         })
@@ -37,7 +38,7 @@ const Carousel = ({brand, setTrigger}) => {
   const items = products.map((item, index) =>
     <Link 
       // to={`shoes/detail_product?_id=${item.id}`}
-      to={`?_id=${item.id}`}
+      to={`/shoes/detail_product?_id=${item.id}`}
 
       onClick={() => {
         setTrigger(pre => !pre)
@@ -51,10 +52,11 @@ const Carousel = ({brand, setTrigger}) => {
         onDragStart={handleDragStart} 
         role="presentation"
         // src={require(`../../imgData/${item.img}`)}
-        src={`http://localhost:5000/imgs/${item.img}`}
+        src={process.env.REACT_APP_BACKEND_URL+`/imgs/${item.img}`}
       />
     </Link>
   )
+
   return (
     <AliceCarousel 
         disableDotsControls='false' 

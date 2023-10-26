@@ -9,7 +9,7 @@ const cx = classNames.bind(styles)
 function Footer() {
     return (
         <div className={cx('wrapper')}>
-            <h1 className={cx('credit')}>CREDIT</h1>
+            {/* <h1 className={cx('credit')}>CREDIT</h1>
             <div className={cx('credit')}>
                 <div className={cx('CRE_content_1')}>
                     <p>Nguyễn Đăng Thiên An</p>
@@ -27,7 +27,7 @@ function Footer() {
 
                 </div>
 
-            </div>
+            </div> */}
 
             <div className={cx('contact')}>
                 <h1>contact us</h1>

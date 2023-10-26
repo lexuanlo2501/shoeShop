@@ -1,1 +1,0 @@
-            // <img src={require(`../../../../imgData/${order.product.img}`)} alt="dd" className={cx("header_cart-img")}/>

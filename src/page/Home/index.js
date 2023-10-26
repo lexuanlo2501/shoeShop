@@ -8,16 +8,10 @@ import Carousel from "../../components/Carousel";
 const cx = classNames.bind(style)
 
 function Home({}) {
-    const [shoes, setShoes] = useState([])
 
     const brands = ['adidas','nike','converse', 'vans']
 
-
-    useEffect(() => {
-        axios.get("http://localhost:4000/data")
-        .then(res => setShoes(res.data))
-    }, [])
-
+   
     return ( 
         <div className={cx("wrapper")}>
             <SliderHome/>
@@ -32,24 +26,24 @@ function Home({}) {
             <div>
                 <h1>AIR JORDAN/NIKE COLLECTION</h1>
                 <img className={cx('img_nikeBrand')} src={require("./news_img/news1.webp")}/>
-                <Carousel brand={"nike"}/>
+                <Carousel brand={"nike"} nameProd="jordan"/>
                 <img className={cx('img_nikeBrand')} src={require("./news_img/news2.webp")}/>
             </div>
 
 
             <div className={cx('display')}>
-                {
-                    brands.map((item) => {
-                        return <div className={cx('list')} key={item}>
-                            <div className={cx('brand_box')}>
-                                <img src={require(`../../imgData/box/${item}.png`)} alt="box"/>
-                                <h2>{item}</h2>
-                            </div>
-                            <Carousel brand={item}/>
-
+            {
+                brands.map((item) => {
+                    return <div className={cx('list')} key={item}>
+                        <div className={cx('brand_box')}>
+                            <img src={require(`../../imgData/box/${item}.png`)} alt="box"/>
+                            <h2>{item}</h2>
                         </div>
-                    })
-                }
+                        <Carousel brand={item}/>
+
+                    </div>
+                })
+            }
             </div>
 
            

@@ -51,15 +51,25 @@ function DetailProduct_v2() {
             localStorage.setItem('cart', JSON.stringify([]))
         }
 
-        let product_list = localStorage.getItem('cart')
-        let json = [...JSON.parse(product_list), productAdd]
+        let product_list = JSON.parse(localStorage.getItem('cart'))
 
-        localStorage.setItem('cart', JSON.stringify(json));
-        console.log(JSON.parse(product_list))
+        // TÌM INDEX CỦA SẢN PHẨM ĐÓ MÀ CÙNG SIZE ĐÃ TỒN TẠI TRONG CART
+        let indexProd = product_list?.findIndex(i => { return  i.size=== productAdd.size})
+        
+        let newCart = []
+        if(indexProd !== -1) {
+            // THÊM SỐ LƯỢNG VÀO SẢN PHẨM MÀ ĐÃ TỒN TẠI TRONG CART
+            product_list[indexProd] = {...product_list[indexProd], quantity:product_list[indexProd].quantity+quantity_Order}
+            console.log(product_list[indexProd])
+            newCart = product_list
+        }
+        else {
+            newCart = [...product_list, productAdd]
+        }
 
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        // console.log(JSON.parse(product_list))
 
-
-     
     }
 
     const size_quantiry_select = product?.inventory?.find(i => i.size === size_Order)?.quantity

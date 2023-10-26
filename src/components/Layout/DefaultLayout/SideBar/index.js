@@ -9,7 +9,7 @@ import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import {limit} from "../../../../common"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles)
 
@@ -53,10 +53,10 @@ function SideBar({setRe_render}) {
 
     return (
         <div className={cx('wrapper')}>
-            <FontAwesomeIcon icon={faBars} className={cx("showBar_btn")}
+            <FontAwesomeIcon icon={isBars ? faXmark : faBars} className={cx("showBar_btn")}
                 onClick={() => setIsBars(pre => !pre)}
             />
-            <img className={cx(["thumbnail",isBars?"":"off"])} src="https://wallpapercave.com/wp/wp5866497.jpg" alt=""/> 
+            {/* <img className={cx(["thumbnail",isBars?"":"off"])} src="https://wallpapercave.com/wp/wp5866497.jpg" alt=""/>  */}
             <div className={cx(['menu',isBars ? "showBar":"offBar"])}>
                 <ul className={cx("nav-bar")}>
                     <li>hãng</li>

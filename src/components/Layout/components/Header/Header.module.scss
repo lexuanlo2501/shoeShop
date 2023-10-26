@@ -430,10 +430,10 @@ html{
 .cart_btn::after{
     content: "";
     position: absolute;
-    top: 21px;
+    top: 19px;
     right: 0;
-    width: 95px;
-    height: 36px;
+    width: 57px;
+    height: 29px;
     background-color: transparent;
     
     // background-color: red;
@@ -625,6 +625,10 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
 
 // 
 
+.nav_mobile {
+    display: none;
+}
+
 // tablet
 @media only screen and (min-width: 46.25em) and (max-width: 78.25em){
     .wrapper {
@@ -700,6 +704,14 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         display: block;
     }
 
+    .nav_desktop {
+        display: none;
+    }
+    .nav_mobile {
+        font-size: 17px;
+        color: #424141;
+        display: inline-block;
+    }
    
 
 }
