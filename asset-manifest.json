@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/shoeShop/static/css/main.5be943dd.css",
-    "main.js": "/shoeShop/static/js/main.ebc572b6.js",
+    "main.js": "/shoeShop/static/js/main.1457392c.js",
     "static/js/787.6414b22a.chunk.js": "/shoeShop/static/js/787.6414b22a.chunk.js",
     "static/media/yeezys.webp": "/shoeShop/static/media/yeezys.3102a5e06c4f85d3c2d8.webp",
     "static/media/Reuters.jpg": "/shoeShop/static/media/Reuters.a4be49376c6f97b138b4.jpg",
@@ -26,11 +26,11 @@
     "static/media/nike.png": "/shoeShop/static/media/nike.4818401ee0ef3078085e.png",
     "index.html": "/shoeShop/index.html",
     "main.5be943dd.css.map": "/shoeShop/static/css/main.5be943dd.css.map",
-    "main.ebc572b6.js.map": "/shoeShop/static/js/main.ebc572b6.js.map",
+    "main.1457392c.js.map": "/shoeShop/static/js/main.1457392c.js.map",
     "787.6414b22a.chunk.js.map": "/shoeShop/static/js/787.6414b22a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.5be943dd.css",
-    "static/js/main.ebc572b6.js"
+    "static/js/main.1457392c.js"
   ]
 }
