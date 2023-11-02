@@ -78,7 +78,7 @@ function DetailProduct_v2() {
 
     const size_quantiry_select = product?.inventory?.find(i => i.size === size_Order)?.quantity
     
-    let user = JSON.parse(localStorage.getItem('tokens'))
+    let user = JSON.parse(localStorage.getItem('tokens')) || {}
 
     
     return (
@@ -205,7 +205,7 @@ function DetailProduct_v2() {
 
                                 <div className={cx("buy_btn_grp")}>
                                     <h2 className={cx("buy")}>
-                                        YÊU THÍCH {user.favorite.includes(product.id) ?<FontAwesomeIcon icon={faHeartSolid}/>:<FontAwesomeIcon icon={faHeart}/>}
+                                        YÊU THÍCH {user?.favorite?.includes(product?.id) ?<FontAwesomeIcon icon={faHeartSolid}/>:<FontAwesomeIcon icon={faHeart}/>}
                                     </h2>
                                 </div>
                 
@@ -248,7 +248,7 @@ function DetailProduct_v2() {
                 </div>
                 
                 {
-                    product.imgs && <Slider imgs={product.imgs}/>
+                    product.imgs && <Slider imgs={product?.imgs}/>
                 }
                 
                 <div className={cx("line")}></div>
