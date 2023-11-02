@@ -8,6 +8,10 @@ import styles from './DetailProduct.module.scss'
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import {priceDiscount, formatPrice} from "../../common"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as faHeartSolid  } from '@fortawesome/free-solid-svg-icons';
+
 
 
 const cx = classNames.bind(styles)
@@ -74,6 +78,8 @@ function DetailProduct_v2() {
 
     const size_quantiry_select = product?.inventory?.find(i => i.size === size_Order)?.quantity
     
+    let user = JSON.parse(localStorage.getItem('tokens'))
+
     
     return (
         <div >
@@ -91,7 +97,7 @@ function DetailProduct_v2() {
                 <div className={cx("row")}>
                     <div className={cx("row_grp1")}>
                         <div className={cx("container_imgs_shoe")}>
-                            <img className={cx(["shoe_img", "_shoe"])} src={`http://localhost:5000/imgs/${product.img}`} alt="shoe image"/>
+                            <img className={cx(["shoe_img", "_shoe"])} src={process.env.REACT_APP_BACKEND_URL+`/imgs/${product.img}`} alt="shoe image"/>
                         </div>
                     </div>
 
@@ -196,6 +202,12 @@ function DetailProduct_v2() {
                                 <div className={cx("buy_btn_grp")}>
                                     <h2 className={cx("buy")}>MUA HÀNG</h2>
                                 </div>
+
+                                <div className={cx("buy_btn_grp")}>
+                                    <h2 className={cx("buy")}>
+                                        YÊU THÍCH {user.favorite.includes(product.id) ?<FontAwesomeIcon icon={faHeartSolid}/>:<FontAwesomeIcon icon={faHeart}/>}
+                                    </h2>
+                                </div>
                 
                                 <div className={cx("add_btn_grp")}
                                     onClick={() =>{
@@ -228,6 +240,8 @@ function DetailProduct_v2() {
                                 >
                                     <h2 className={cx("add")}>THÊM VÀO GIỎ HÀNG</h2>
                                 </div>
+
+                              
                             </div>
                         </div>
                     </div>

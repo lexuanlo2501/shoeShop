@@ -115,6 +115,10 @@ function ProductList_v3({ re_render }) {
             {   
                 products.map((item, index) => <Card listView={listView} key={item.id} product={item}/>)
             }
+
+            {
+                loading === false && products.length === 0 && <div className={cx("not_found")}>Không tìm thấy sản phẩm</div>
+            }
             </div>
 
             {/* pagination */}
@@ -168,19 +172,19 @@ function Card({product, listView}) {
     const [token, setToken] = useState(inforUser)
 
 
-
-
-
-
     // useEffect(() => {
     //     setToken(JSON.parse(localStorage.getItem("tokens")))
     // }, [like])
+
+    const checkSoldOut = [...product.inventory].every(i => i.quantity===0)
+
+
 
     return (
         <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx(["card", {"active":listView}])}
             onClick={(e) => {window.scrollTo(0, 0)}}
         >
-            <div className={cx(["card_thumnal", product.BC_color])}>
+            <div className={cx(["card_thumnal", product.BC_color, checkSoldOut && "sold_out"])}>
                 <img src={`${process.env.REACT_APP_BACKEND_URL}/imgs/${product.img}`} a lt="" className={cx(["card-img"])}/>
             {
                 token?.status &&

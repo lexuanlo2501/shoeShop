@@ -1,0 +1,72 @@
+
+
+button {
+  background-color: transparent;
+}
+
+.button-74 {
+    background-color: #fbeee0;
+    border: 2px solid #422800;
+    border-radius: 30px;
+    box-shadow: #422800 4px 4px 0 0;
+    color: #422800;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 0 18px;
+    line-height: 30px;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  
+  .button-74:hover {
+    background-color: #fff;
+  }
+  
+  .button-74:active {
+    box-shadow: #422800 2px 2px 0 0;
+    transform: translate(2px, 2px);
+  }
+  
+  @media (min-width: 768px) {
+    .button-74 {
+      min-width: 120px;
+      padding: 0 25px;
+    }
+  }
+
+.modal_body {
+  margin: 15px 0;;
+}
+
+.btnModal+.btnModal {
+  margin-left: 10px;
+}
+.btnModal {
+    padding: 5px;
+    width: 100px;
+    border-radius: 5px;
+    color: #fff;
+    text-transform: capitalize;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    
+
+
+
+    &:active{opacity: 0.8}
+
+    &.yes {
+      background-color: rgb(147, 100, 172);
+    }
+    &.no {
+      background-color: rgb(229, 229, 229);
+      color: #0d0d0d;
+    }
+
+    
+
+}

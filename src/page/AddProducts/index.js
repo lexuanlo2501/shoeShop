@@ -3,14 +3,14 @@ import classNames from "classnames/bind";
 import styles from "./admin.module.scss"
 import {toast } from 'react-toastify';
 import Modal from 'react-bootstrap/Modal';
-
+// import "../../components/GlobalStyles"
 
 import { faClose, faCross, faFileImage, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-
+import {listColorBC} from "../../common"
 
 
 import axios from "axios";
@@ -75,12 +75,7 @@ function AddProducts() {
 
 
 
-    const listColorBC = ['color_1','color_19','color_2','color_20','color_3','color_7','color_4','color_5',
-    'color_18','color_13','color_14',
-    'color_6','color_21','color_9', 'color_8','color_17','color_10','color_11','color_12'
-    ,'color_15','color_22','color_16'
-    ]
-
+    
     const [quantity_size, setQuantity_size] = useState([])
 
     useEffect(() => {
@@ -167,16 +162,8 @@ function AddProducts() {
             axios.post(process.env.REACT_APP_BACKEND_URL+"/upload_img", formdata_img)
             .then(res => console.log(res))
             .catch(err => console.log(err))
-
-
-
         } 
 
-
-       
-
-       
-        
     }
 
     return ( <div className={cx(['wrapper', "add_product"])}>

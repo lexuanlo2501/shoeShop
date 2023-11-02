@@ -37,7 +37,7 @@ export default function Slider({imgs = []}) {
               className='vh-100 mx-auto d-block'
               itemId={index+1}
               // src={require('../../imgData/'+item)}
-              src={`http://localhost:5000/imgs/${item}`}
+              src={process.env.REACT_APP_BACKEND_URL+`/imgs/${item}`}
               alt='...'
           />
         )

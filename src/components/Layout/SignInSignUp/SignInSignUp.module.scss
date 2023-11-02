@@ -235,6 +235,7 @@ margin-left: 10px
     
 
     .signIn_btn {
+        display: inline-block;
         width: 100%;
         background-color: #333;
         padding: 10px 0;
@@ -243,6 +244,7 @@ margin-left: 10px
         text-transform: uppercase;
         font-size: 17px;
         margin-top: 20px;
+        text-align: center;
 
         &:hover {
             opacity: 0.8;
@@ -262,6 +264,25 @@ margin-left: 10px
             margin-right: 5px;
         }
     }
+
+    
+             
+    .to_Shop {
+        background-image: linear-gradient(to right, #BE93C5 0%, #7BC6CC  51%, #BE93C5  100%);
+        text-transform: uppercase;
+        transition: 0.5s;
+        background-size: 200% auto;
+        color: white;            
+        box-shadow: 0 0 20px #eee;
+        display: block;
+      }
+
+    .to_Shop:hover {
+        background-position: right center; /* change the direction of the change here */
+        color: #fff;
+        text-decoration: none;
+    }
+     
 
 }
 
@@ -308,5 +329,19 @@ margin-left: 10px
                 font-size:  40px;
             }
         }
+
+        .inputField {
+            margin-bottom: 13px;
+       }
    }
+
+   .wrapper {
+       .logo {
+        font-size: 30px;
+       }
+
+   }
+
+   
+
 }

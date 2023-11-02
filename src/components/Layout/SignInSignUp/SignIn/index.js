@@ -104,6 +104,8 @@ function SignIn({setLogin}) {
                     body="Hiện tại chưa có tính năng này"
                 />
 
+                <Link className={cx(['signIn_btn', 'other', 'to_Shop'])} to={`/shoes?_page=1&_limit=${limit}`}>Đến cửa hàng</Link>
+
                 
             {
                 loading &&

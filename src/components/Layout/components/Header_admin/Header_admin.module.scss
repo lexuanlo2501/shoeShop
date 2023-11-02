@@ -59,6 +59,35 @@
     }
 }
 
+.alert-chat.avatar_admin {
+    background-color: rgb(187, 136, 201);
+    color: #fff
+}
+
+
+.menu_avatar {
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    width: 170px;
+    font-size: 17px;
+    ul {
+
+        li {
+            padding: 6px 15px;
+
+            &:hover {
+                background-color: #bcbaba;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .logout_icon {
+        margin-left: 20px;
+    }
+}
+
+
 
 
 // tablet

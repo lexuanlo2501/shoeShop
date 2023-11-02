@@ -13,28 +13,20 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 
-import { faFileImage, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faFileImage, faFilter, faSearch } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import {toast } from 'react-toastify';
 import { SyncLoader } from 'react-spinners';
-import { formatPrice } from '../../common' 
+import { formatPrice } from '../../common';
+import ConfirmModal from '../../components/ConfirmModal'
+import ConfirmModal_v2 from '../../components/ConfirmModal_v2'
+import {listColorBC} from "../../common"
+
 
 
 
 const cx = classNames.bind(styles)
-
-const createHistory = () => {
-    let date = new Date()
-    let splitDate = date.toJSON().slice(0, 10).split('-')
-    let result = `${splitDate[2]}/${splitDate[1]}/${splitDate[0]} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
-    return result
-}
-const createID = () => {
-    let date = new Date()
-    let id = `${date.toJSON().slice(0, 10).replace(/-/g,'')}${date.getHours()}${date.getMinutes()}${date.getSeconds()}${date.getMilliseconds()}`
-    return Number(id)
-}
 
 function ModifyProducts() {
 
@@ -65,6 +57,9 @@ function ModifyProducts() {
 
     const [checkUpd, setCheckUpd] = useState(true)
     const [isErrSearch, setIsErrSearch] = useState(false)
+
+    const [colorBCImg_main, setColorBCImg_main] = useState("")
+
 
     
 
@@ -159,6 +154,7 @@ function ModifyProducts() {
 
     }, [])
 
+   
 
     // func
     const handleDel = (id_product_v) => {
@@ -186,7 +182,9 @@ function ModifyProducts() {
             'description': description_upd,
             'quantity': quantity_upd,
             'brand_id': productId_upd,
-            'inventory': inventory_upd
+            'inventory': inventory_upd,
+            'BC_color' : colorBCImg_main
+
 
         }
         console.log(inforUpdate)
@@ -277,28 +275,11 @@ function ModifyProducts() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('list_product')}>
-                <div className={cx('search_bar')}>
-                    <div>
-                        <label>hãng</label>
-                        <br/>
-                        <select
-                            className={cx('search_products')}
-                            onChange={e => setBrand(e.target.value)}
-                        >
-                            <option value="">tất cả</option>
-                            <option value="nike">nike</option>
-                            <option value="adidas">adidas</option>
-                            <option value="converse">converse</option>
-                            <option value="puma">puma</option>
-                            <option value="vans">vans</option>
-                        </select>
-                    </div>
-
-                    
-                    <div className={cx('search_product_byID')}>
+                <div className={cx(['search_bar'])}>
+                    <div className={cx(['search_product_byID',"option"])}>
                         <label>mã SP</label>
-                        <div >
-                            <input type='text' className='getID_search'/>
+                        <div className={cx("input_search")}>
+                            <input placeholder='01010100100101110000111010111' type='text' className='getID_search'/>
                             <button
                                 onClick={() => {
                                     let id = document.querySelector('.getID_search').value
@@ -324,7 +305,41 @@ function ModifyProducts() {
                         }
                     </div>
 
+                    <div className={cx(["option","mb_2_custom"])}>
+                        <label>hãng</label>
+                        <br/>
+                        <select
+                            className={cx('search_brand')}
+                            onChange={e => setBrand(e.target.value)}
+                        >
+                            <option value="">tất cả</option>
+                            <option value="nike">nike</option>
+                            <option value="adidas">adidas</option>
+                            <option value="converse">converse</option>
+                            <option value="puma">puma</option>
+                            <option value="vans">vans</option>
+                        </select>
+                    </div>
+                    
+                    <ConfirmModal_v2
+                        title="TÌM KIẾM NÂNG CAO"
+                        body={<div>
+                            <h1>....</h1>
+                            <h1>....</h1>
+                            <h1>....</h1>
+                            <h1>....</h1>
+
+                        </div>}
+                    >
+                        <button className={cx(["filter_btn","option","mb_2_custom"])}>
+                            <span>NÂNG CAO</span>
+                            <FontAwesomeIcon icon={faFilter}/>
+                        </button>
+                    </ConfirmModal_v2>
+
+
                 </div>
+               
 
                 {
                 loading ? 
@@ -334,8 +349,10 @@ function ModifyProducts() {
                     <thead>
                         <tr className="table-primary">
                             <th scope="col" >STT</th>
+                            <th scope="col" >ID</th>
                             <th scope="col"  className='product_name'>tên SP</th>
                             <th scope="col" >giá</th>
+                            <th scope="col" >giảm giá</th>
                             <th scope="col" >mô tả</th>
                             <th scope="col" >ảnh</th>
                             <th scope="col" >màu nền</th>
@@ -348,8 +365,10 @@ function ModifyProducts() {
                         Boolean(products.length) && products.map((item, index) => 
                             <tr key={index}>
                                 <th scope="row">{index+1}</th>
+                                <td>{item.id}</td>
                                 <td>{item.name}</td>
                                 <td>{formatPrice(item.price)}</td>
+                                <td>{item.discount_id ? <span className={cx("discount_tag")}>{item.discount_id}%</span> : <span>0</span>} </td>
                                 <td >
                                     <div className='description'>
                                         {item.description}
@@ -378,6 +397,7 @@ function ModifyProducts() {
                                         let Prod_filter_imgInImgs = {...item}
                                         Prod_filter_imgInImgs.imgs = item.imgs.filter(i => i !== item.img)
                                         setProduct(Prod_filter_imgInImgs)
+                                        setColorBCImg_main(Prod_filter_imgInImgs?.BC_color)
                                         console.log('product:', Prod_filter_imgInImgs)
 
                                         setImg_upd(item.img)
@@ -451,7 +471,23 @@ function ModifyProducts() {
 
                     <div className={cx('wrapper_modal_update')}>
                         <div className={cx('modal_update__leftSide')}>
-                            <div className={cx(['product_img', product.BC_color, 'img_update'])}>
+                            
+                            <div className={cx('backGround_color_imgMain')}>
+                                <div className={cx(['backGround_list'])}>
+                                {
+                                    listColorBC.map((item, index) => 
+                                        <span key={index} className={cx(['backGround_item', item])}
+                                            onClick={() => {
+                                                setColorBCImg_main(item)
+                                            }}
+                                        ></span>
+                                    )
+                                }
+                                </div>
+                            </div>
+
+
+                            <div className={cx(['product_img', colorBCImg_main, 'img_update'])}>
                                 <label htmlFor="img_update">
                                     <FontAwesomeIcon icon={faFileImage}/>
                                     <input type='file'

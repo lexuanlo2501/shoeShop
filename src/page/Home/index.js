@@ -14,7 +14,7 @@ function Home({}) {
    
     return ( 
         <div className={cx("wrapper")}>
-            <SliderHome/>
+            {/* <SliderHome/> */}
             <div className={cx('brand')}>
                 <img src={require("./logoBrand/Sneaker-Brand-Logos-2.png")}/>
                 <img src={require("./logoBrand/Sneaker-Brand-Logos-4.png")}/>
