@@ -843,6 +843,62 @@ ul {
 }
 
 
+// pagination
+.not_found {
+    font-size: 30px;
+    color: #5e5d5d;
+    text-transform: uppercase;
+    margin: 50px 0;
+}
+.pagination {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.pagination_container {
+    display: inline-block;
+
+    .page_number {
+        display: inline-block;
+        width: 38px;
+        padding: 3px 0;
+        text-align: center;
+        font-size: 23px;
+        // background-color: rgb(190, 157, 202);
+        margin: 7px;
+        border-radius: 12px;
+        font-weight: 500;
+        font-family: 'kanit';
+        -ms-user-select: none;
+        user-select: none;
+
+        &:hover {
+            // background-color: #f3c8e5;
+            cursor: pointer;
+            transform: scale(1.3);
+        }
+        
+    }
+
+    .active {
+        color: rgb(255, 255, 255);
+        background-color: #a38a9b;
+    }
+}
+
+.direction_Page {
+    margin: 0 10px;
+    font-size: 20px;
+    padding: 0 5px;
+    cursor: pointer;    
+    &:hover {
+        color: #da7fb2;
+        transform: scale(1.4);
+    }
+}
+
+
+
 
 // tablet
 @media only screen and (min-width: 46.25em) and (max-width: 78.25em){

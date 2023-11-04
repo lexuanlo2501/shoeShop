@@ -17,7 +17,7 @@ const Carousel = ({brand, setTrigger, nameProd}) => {
   const handleDragStart = (e) => e.preventDefault();
   
   const responsive = {
-      0: { items: 1 },
+      0: { items: 2 },
       568: { items: 3 },
       1024: { items: 4 },
   };

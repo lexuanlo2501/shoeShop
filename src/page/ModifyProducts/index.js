@@ -4,6 +4,8 @@ import classNames from "classnames/bind"
 import styles from '../AddProducts/admin.module.scss'
 import './modifyProducts.scss'
 import 'bootstrap/dist/css/bootstrap.css';
+import { Link, useNavigate } from "react-router-dom"
+
 
 
 // boostrap
@@ -22,13 +24,29 @@ import { formatPrice } from '../../common';
 import ConfirmModal from '../../components/ConfirmModal'
 import ConfirmModal_v2 from '../../components/ConfirmModal_v2'
 import {listColorBC} from "../../common"
-
-
+import RangeSlider from 'react-range-slider-input';
 
 
 const cx = classNames.bind(styles)
 
+const limit = 20
+
+const arrPage = (n) => {
+    let arr = Array(Math.ceil(n/limit)).fill(0).map((_, index) => index+1)
+    return arr
+}
+
+const handleClickScroll = () => {
+    const element = document.getElementById('scrollTo');
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+
+
 function ModifyProducts() {
+    const navigate = useNavigate()
 
     const [loading, setLoading] = useState(true)
     const [brand, setBrand] = useState("")
@@ -52,13 +70,17 @@ function ModifyProducts() {
     const [productId_upd, setProductId_upd] = useState("")
     const [type_upd, setType_upd] = useState("")
     const [discount_upd, setDiscount_upd] = useState("")
+    const [colorBCImg_main, setColorBCImg_main] = useState("")
 
     const [inventory_upd, setInventory_upd] = useState([])
 
     const [checkUpd, setCheckUpd] = useState(true)
     const [isErrSearch, setIsErrSearch] = useState(false)
 
-    const [colorBCImg_main, setColorBCImg_main] = useState("")
+
+    const [numberOfPage, setNumberOfPage] = useState([])
+
+    const [price, setprice] = useState([0, 30000000])
 
 
     
@@ -85,6 +107,24 @@ function ModifyProducts() {
         setImgs_upd_del([])
     }
 
+        
+    let currentUrl = window.location.href;
+    let param = currentUrl?.split("?")[1]
+    let paramToObject = param && JSON.parse('{"' + decodeURI(param?.replace(/&/g, "\",\"")?.replace(/=/g,"\":\"")) + '"}') || {}
+
+    // check nếu url ko có tham số page thì gán mặc định là page 1
+    if(!paramToObject?._page) {
+        paramToObject._page='1'
+        if(param) {
+            param+="&_page=1&_limit="+limit
+        }
+        else {
+            param="_page=1&_limit="+limit
+        }
+    }
+
+    
+
     // ADMIN
     const [addmin, setAddmin] = useState({})
     useEffect(() => {
@@ -106,7 +146,12 @@ function ModifyProducts() {
 
 
     useEffect(() => {
-        const url = !brand ? process.env.REACT_APP_BACKEND_URL+'/shoes' : process.env.REACT_APP_BACKEND_URL+`/shoes?_brand=${brand}`
+        // const url = !brand ? process.env.REACT_APP_BACKEND_URL+'/shoes' : process.env.REACT_APP_BACKEND_URL+`/shoes?_brand=${brand}`
+        const url =process.env.REACT_APP_BACKEND_URL+ `/shoes?${param}`
+        console.log(url)
+        console.log(param)
+
+
 
         const controller = new AbortController()
         axios.get(url, {signal:controller.signal})
@@ -115,6 +160,12 @@ function ModifyProducts() {
             setProducts(res.data)
             setLoading(false)
             setIsErrSearch(false)
+
+            
+            const xTotalCount = res.headers['x-total-count']
+            setNumberOfPage(arrPage(xTotalCount))
+            console.log(arrPage(xTotalCount))
+
         })
         .catch(err => {
             setLoading(true)
@@ -150,10 +201,7 @@ function ModifyProducts() {
         
     }, [showUpd])
 
-    useEffect(() => {
-
-    }, [])
-
+    
    
 
     // func
@@ -310,26 +358,61 @@ function ModifyProducts() {
                         <br/>
                         <select
                             className={cx('search_brand')}
-                            onChange={e => setBrand(e.target.value)}
+                            onChange={e => {
+                                setBrand(e.target.value)
+                                navigate("/admin/modifyProducts?_brand="+e.target.value)
+                            }}
                         >
                             <option value="">tất cả</option>
-                            <option value="nike">nike</option>
-                            <option value="adidas">adidas</option>
-                            <option value="converse">converse</option>
-                            <option value="puma">puma</option>
-                            <option value="vans">vans</option>
+                        {
+                            atri_prod?.brands?.map(brand =>  <option value={brand.brand_id}>{brand.brand_id}</option>)
+                        }
                         </select>
                     </div>
                     
                     <ConfirmModal_v2
                         title="TÌM KIẾM NÂNG CAO"
-                        body={<div>
-                            <h1>....</h1>
-                            <h1>....</h1>
-                            <h1>....</h1>
-                            <h1>....</h1>
+                        body={
+                            <div>
+                                <div>
+                                    <input id="isDiscount" type='checkbox'/>
+                                    <label htmlFor="isDiscount">Đang khuyến mãi</label>
+                                </div>
+                                <div>
+                                    <input placeholder='Tên sản phẩm'/>
+                                  
+                                </div>
+                                <div>
+                                    <p>Loại</p>
+                                    <ul>
+                                    {
+                                        atri_prod?.types?.map(type => (
+                                            <li className={cx('select_type-Brand')} key={type.id}>
+                                            <input id={"t"+type.id} name="type_prod" value={type.id} type="radio"
+                                                // onChange={e=> setType(`&_type=${e.target.value}`)}
+                                            /> <label htmlFor={"t"+type.id}>{type.type_name}</label>
+                                            </li>
+                                        ))
+                                    }
+                                    </ul>
+                               
+                                </div>
+                                <div>
+                                    <div>
+                                        <p className={cx('price_slice')}>Lọc Theo Giá:</p>
+                                        <span>{price[0].toLocaleString('vi', {style : 'currency', currency : 'VND'})}</span> - <span>{price[1].toLocaleString('vi', {style : 'currency', currency : 'VND'})}</span>
+                                    </div>
+                                    <RangeSlider 
+                                        id="range-slider-yellow"
+                                        value={price} onInput={setprice}
+                                        min={0}
+                                        max={10000000}
+                                        step={10000}
+                                    />
+                                </div>
 
-                        </div>}
+                            </div>
+                        }
                     >
                         <button className={cx(["filter_btn","option","mb_2_custom"])}>
                             <span>NÂNG CAO</span>
@@ -424,6 +507,34 @@ function ModifyProducts() {
                     
                 </table>
                 }
+
+                <div className={cx('pagination')}>
+                    <div className={cx('pagination_container')}>
+                {
+                    numberOfPage.map((item, index) => 
+                    {
+                        let active = +paramToObject?._page  === item ? 'active' : ''
+                        return (
+                            <Link 
+                                key={index} 
+                                onClick={ () => { 
+                                    // 
+                                    setCheckUpd(pre => !pre)
+                                    handleClickScroll()
+                                }}
+                                className={cx(['page_number', active])}
+                                // to={`/shoes?${param?.replace(`page=${paramToObject._page}`,`page=${item}`)}`} 
+                                to={`/admin/modifyProducts?${param?.replace(`page=${paramToObject._page}`,`page=${item}`)}`} 
+                                
+                            >
+                                {item}
+                            </Link>
+                        )
+                    })
+                }
+                    </div>
+                </div>
+
 
             </div>
 

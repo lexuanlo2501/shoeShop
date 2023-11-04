@@ -1,4 +1,5 @@
 import React from 'react';
+import "./slider.scss"
 import {
   MDBCarousel,
   MDBCarouselItem,
@@ -34,7 +35,7 @@ export default function Slider({imgs = []}) {
         imgs.map((item, index) => 
           <MDBCarouselItem 
               key={index}
-              className='vh-100 mx-auto d-block'
+              className='mx-auto d-block imgSlider'
               itemId={index+1}
               // src={require('../../imgData/'+item)}
               src={process.env.REACT_APP_BACKEND_URL+`/imgs/${item}`}

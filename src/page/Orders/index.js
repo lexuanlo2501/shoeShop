@@ -448,6 +448,8 @@ function Item_order({order, setCheck}) {
     const handleChangeSize = (product, size) => {
         let cart = JSON.parse(localStorage.getItem('cart'))
 
+       
+
         // tìm ra sản phẩm đang select
         let tmp = cart.find(i => i.id === product.id && i.size === product.size)
 
@@ -489,8 +491,19 @@ function Item_order({order, setCheck}) {
                     <select
                         value={size}
                         onChange={(e) => {
-                            setSize(e.target.value)
-                            handleChangeSize(order, e.target.value)
+                            let cart = JSON.parse(localStorage.getItem('cart'))
+
+                             // xử lý nếu trùng size với cùng là 1 sản phẩm (giỏ hàng có 2 sản phẩm mã giống nhưng khác size)
+                            if( cart.map(i=>i.id+i.size).includes(order?.id+e.target.value) ) {
+                                toast.error(`Sản phẩm ${order?.product?.name} size ${e.target.value} đã tồn tại trong giỏ hàng`, {
+                                    position: "top-center",
+                                })
+                            }
+                            else {
+                                setSize(e.target.value)
+                                handleChangeSize(order, e.target.value)
+                            }
+                           
                         }}
                     >
                     {

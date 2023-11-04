@@ -55,10 +55,11 @@ function DetailProduct_v2() {
             localStorage.setItem('cart', JSON.stringify([]))
         }
 
+        // product in cart
         let product_list = JSON.parse(localStorage.getItem('cart'))
 
         // TÌM INDEX CỦA SẢN PHẨM ĐÓ MÀ CÙNG SIZE ĐÃ TỒN TẠI TRONG CART
-        let indexProd = product_list?.findIndex(i => { return  i.size=== productAdd.size})
+        let indexProd = product_list?.findIndex(i => { return i.id + i.size=== productAdd.id + productAdd.size})
         
         let newCart = []
         if(indexProd !== -1) {
