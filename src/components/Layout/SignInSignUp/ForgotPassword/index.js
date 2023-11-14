@@ -59,7 +59,7 @@ function ForgotPassword () {
     });
 
     return (
-        <div >
+        <div className={cx("forgot_password")}>
             <div className={cx("form")}>
                 <h1>QUÊN MẬT KHẨU</h1>
                 <div className={cx('inputField')}>

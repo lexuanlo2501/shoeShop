@@ -11,6 +11,7 @@ import {priceDiscount, formatPrice} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { faHeart as faHeartSolid  } from '@fortawesome/free-solid-svg-icons';
+import { HashLoader } from 'react-spinners';
 
 
 
@@ -97,9 +98,23 @@ function DetailProduct_v2() {
 
                 <div className={cx("row")}>
                     <div className={cx("row_grp1")}>
+                    {
+                        product.img ?
                         <div className={cx("container_imgs_shoe")}>
                             <img className={cx(["shoe_img", "_shoe"])} src={process.env.REACT_APP_BACKEND_URL+`/imgs/${product.img}`} alt="shoe image"/>
                         </div>
+                        :
+                         <div style={{ textAlign: '-webkit-center' }}>
+                            <HashLoader
+                                color="rgba(138, 138, 138, 1)"
+                                size={280}
+                            />          
+                        </div> 
+
+                    }
+                        
+
+                       
                     </div>
 
                     <div className={cx("row_grp2")}>
@@ -118,7 +133,7 @@ function DetailProduct_v2() {
                                         product?.discount_id ?
                                         <>
                                             <p className={cx("shoe_price_old")}>{formatPrice(product.price)}</p>
-                                            <p className={cx("shoe_price")}>{formatPrice(priceDiscount(product.price, product.discount_id))}</p>
+                                            <p className={cx("shoe_price")}>{formatPrice(priceDiscount(product?.price, product?.discount_id))}</p>
                                             <span className={cx("discount_tag")}>-{product.discount_id}%</span>
                                         </>
                                         :
@@ -201,13 +216,22 @@ function DetailProduct_v2() {
 
                             <div id="btn_grp">
                                 <div className={cx("buy_btn_grp")}>
-                                    <h2 className={cx("buy")}>MUA HÀNG</h2>
+                                    <button className={cx("buy")}>MUA HÀNG</button>
                                 </div>
 
                                 <div className={cx("buy_btn_grp")}>
-                                    <h2 className={cx("buy")}>
+                                    <button className={cx("buy")}
+                                        onClick={() => {
+                                            const user = JSON.parse(localStorage.getItem("tokens"));
+                                            axios.patch(process.env.REACT_APP_BACKEND_URL+"/favorite_list/"+user.accName,{product_id:product.id})
+                                            .then(res => {
+                                                setTrigger(pre => !pre)
+                                                localStorage.setItem("tokens", JSON.stringify({...user, favorite:res.data}))
+                                            })
+                                        }}
+                                    >
                                         YÊU THÍCH {user?.favorite?.includes(product?.id) ?<FontAwesomeIcon icon={faHeartSolid}/>:<FontAwesomeIcon icon={faHeart}/>}
-                                    </h2>
+                                    </button>
                                 </div>
                 
                                 <div className={cx("add_btn_grp")}
@@ -239,7 +263,7 @@ function DetailProduct_v2() {
                                     }}
 
                                 >
-                                    <h2 className={cx("add")}>THÊM VÀO GIỎ HÀNG</h2>
+                                    <button className={cx("add")}>THÊM VÀO GIỎ HÀNG</button>
                                 </div>
 
                               

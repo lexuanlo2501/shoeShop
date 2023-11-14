@@ -38,8 +38,16 @@ function ProductList_v3({ re_render }) {
 
     useEffect(() => {
        
+        const inforUser = JSON.parse(localStorage.getItem("tokens"));
+
+
         // axios.get(`http://localhost:5000/shoes?${param}`)
-        axios.get(`${process.env.REACT_APP_BACKEND_URL}/shoes?${param}`)
+        axios.get(
+            paramToObject._favorite === "true" ? 
+            `${process.env.REACT_APP_BACKEND_URL}/shoesList/${inforUser.favorite.toString()}?${param}`
+            :
+            `${process.env.REACT_APP_BACKEND_URL}/shoes?${param}`
+        )
         .then(res => {
             setProducts(res.data)
             setLoading(false)
@@ -78,9 +86,16 @@ function ProductList_v3({ re_render }) {
 
             <div  className={cx('route')}>
                 <div>
-                    <span >sản phẩm</span>
-                        {Boolean(paramToObject._brand) && <span > &#8594; </span>}
-                    <span>{paramToObject._brand}</span>
+                    <span >sản phẩm </span>
+                {
+                    paramToObject._brand && <><span>&#8594; {paramToObject._brand}</span></>
+                }
+                {
+                    paramToObject._isDiscount && <><span>&#8594; Giảm Giá</span> </>
+                }
+                 {
+                    paramToObject._favorite && <><span>&#8594; Yêu Thích</span> </>
+                }
                 </div>
 
                 <SearchItem setTrigger={setTrigger}/>

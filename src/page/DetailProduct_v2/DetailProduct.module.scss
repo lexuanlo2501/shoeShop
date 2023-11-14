@@ -319,12 +319,18 @@ p.btn_size-link:hover {
     width:  100%;
 }
 
-.add_btn_grp h2,
-.buy_btn_grp h2{
+.add_btn_grp button,
+.buy_btn_grp button{
+    width: 100%;
     font-size: 28px;
     color: #fff;
     line-height: 64px;
     display: block;
+}
+
+.buy_btn_grp button,
+.add_btn_grp button {
+    text-align: center;
 }
 
 .buy_btn_grp:hover {
@@ -341,10 +347,7 @@ p.btn_size-link:hover {
     background-color: #fa5e33;
 }
 
-.buy_btn_grp h2,
-.add_btn_grp h2 {
-    text-align: center;
-}
+
 
 .mess_quantity_prod {
   color: rgb(237, 99, 99);

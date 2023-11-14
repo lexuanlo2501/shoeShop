@@ -22,7 +22,7 @@ function PurchaseOrder({userID}) {
     const [rerender, setRerender] = useState(false)
     const [loading, setLoading] = useState(true)
 
-    const pagName = ['tất cả','chờ xác nhận','đang giao','hoàn thành','đã hủy',]
+    const pagName = ['chờ xác nhận','đang giao','hoàn thành','đã hủy',]
     const [pagCurr, setPagCurr] = useState(0)
     
     let [deliAmount, setDeliAmount] = useState()
@@ -33,9 +33,7 @@ function PurchaseOrder({userID}) {
         
         const user = JSON.parse(localStorage.getItem("tokens"));
         console.log(user)
-        // axios.get("http://localhost:5000/orders?_client_id="+user.accName,{signal: controller.signal})
         axios.get(process.env.REACT_APP_BACKEND_URL+"/orders?_client_id="+userID,{signal: controller.signal})
-        // axios.get("http://localhost:4000/orders",{signal: controller.signal})
         .then(res => {
 
             let orderUser = [...res.data]
@@ -49,28 +47,20 @@ function PurchaseOrder({userID}) {
 
                 setLoading(false)
                 if(pagCurr === 0) {
-
-                }
-                else if(pagCurr === 1) {
-                    // orderUser = res.data.filter(i => i.id_client === user._id)
                     orderUser = orderUser.filter(i => i.status === 1)
                 }
-                else if(pagCurr === 2) {
-                    // orderUser = res.data.filter(i => i.id_client === user._id)
+                else if(pagCurr === 1) {
                     orderUser = orderUser.filter(i => i.status === 2)
-    
                 }
-                else if(pagCurr === 3) {
-                    // orderUser = res.data.filter(i => i.id_client === user._id)
+                else if(pagCurr === 2) {
                     orderUser = orderUser.filter(i => i.status === 3)
                 }
-                else if(pagCurr === 4) {
-                    // orderUser = res.data.filter(i => i.id_client === user._id)
+                else if(pagCurr === 3) {
                     orderUser = orderUser.filter(i => i.status === 4)
                 }
                 setOrders(orderUser.reverse())
     
-                console.log(orderUser)
+                // console.log(orderUser)
                 setDeliAmount(res.data.filter(i => i.status===2).length)
             }
 
@@ -178,11 +168,11 @@ function Orders({orders, setRerender, userID}) {
                                     expectedDate(item.date_order)
                                 }}
                             >
-                                {item.date_order }  
+                                Ngày đặt: {item.date_order }  
                                 {item.status === 2 && '   |   Ngày dự kiến giao hàng: ' + expectedDate(item.date_order)}
                             </p>
                         {
-                            item.status === 1 && <p className={cx('mess_status')}><span className={cx('status1')}>Đang chuẩn bị hàng</span> | <span className={cx('status2')}>Chờ xác nhận</span></p>
+                            item.status === 1 && <p className={cx('mess_status')}><span className={cx('status1')}>Chuẩn bị hàng</span> | <span className={cx('status2')}>Chờ xác nhận</span></p>
                         }
                         {
                             item.status === 4 && <p className={cx('mess_status')}><span className={cx('status2')}>Đã hủy</span></p>
@@ -254,7 +244,7 @@ function Orders({orders, setRerender, userID}) {
 
 
 
-function CardOrder({data, status}) {
+export function CardOrder({data, status}) {
     // console.log(data)
     return (
         <div className={cx('card_order')}>
@@ -270,10 +260,10 @@ function CardOrder({data, status}) {
                     <div className={cx('size_price')}>
                         <p><span className={cx('size')}>size: {data?.size}</span> x {data?.quantity}</p>
                     {
-                        data.discount_id ?
+                        data.discount ?
                          <p>
                              <span className={cx("shoe_price_old")}>{formatPrice(data.price)}</span>
-                             <span className={cx("shoe_price")}>{formatPrice(priceDiscount(data.price, data.discount_id))}</span>
+                             <span className={cx("shoe_price")}>{formatPrice(priceDiscount(data.price, data.discount))}</span>
                          </p>
                          :
                         <p >{formatPrice(data?.price)}</p>

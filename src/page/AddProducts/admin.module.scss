@@ -407,7 +407,7 @@ ul {
 
 // MODIFY PRODUCTS
 
-.filter_btn {
+.filter_btn, .removeDiscount_btn {
     margin-left: 20px;
     display: inline-block;
     background-color: #e9b571;
@@ -457,6 +457,13 @@ ul {
     font-weight: 700;
     letter-spacing: 1px;
 
+
+}
+
+.non_discount_tag {
+    display: inline-block;
+    font-size: 20px;
+    color: rgb(255, 111, 0);
 }
 
 .btn_modify {
@@ -497,7 +504,119 @@ ul {
     
 }
 
+.filter_wrapper {
 
+    .filter_option+.filter_option {
+        border-top: 1px solid rgb(223, 219, 219);
+    }
+
+    .filter_option {
+        margin-bottom: 5px;
+        padding:10px;
+        
+        p {
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        &.prod_name input {
+            width: 100%;
+        }
+
+        & ul {
+            display: flex;
+            flex-wrap: wrap;
+
+            li {
+                width: 33%;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+// text box
+:root {
+    --form-control-color: rebeccapurple;
+    --form-control-disabled: #959495;
+  }
+
+  
+  .form-control + .form-control {
+    margin-top: 1em;
+  }
+  
+  .form-control--disabled {
+    color: var(--form-control-disabled);
+    cursor: not-allowed;
+  }
+
+  .form-control {
+    font-family: system-ui, sans-serif;
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1.1;
+    display: grid;
+    grid-template-columns: 1em auto;
+    gap: 0.5em;
+    margin: 5px;
+
+
+    input[type="checkbox"] {
+        /* Add if not using autoprefixer */
+        -webkit-appearance: none;
+        /* Remove most all native input styles */
+        appearance: none;
+        /* For iOS < 15 */
+        background-color: rgb(249, 241, 252);
+        /* Not removed via appearance */
+        margin: 0;
+      
+        font: inherit;
+        color: currentColor;
+        width: 1.15em;
+        height: 1.15em;
+        border: 2.3px solid currentColor;
+        border-radius: 0.15em;
+        transform: translateY(-0.075em);
+        cursor: pointer;
+        display: grid;
+        place-content: center;
+      }
+      
+      input[type="checkbox"]::before {
+        content: "";
+        width: 0.65em;
+        height: 0.65em;
+        clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        transform: scale(0);
+        transform-origin: bottom left;
+        transition: 120ms transform ease-in-out;
+        box-shadow: inset 1em 1em var(--form-control-color);
+        /* Windows High Contrast Mode */
+        background-color: rgb(199, 117, 241);
+      }
+      
+      input[type="checkbox"]:checked::before {
+        transform: scale(1);
+      }
+      
+      input[type="checkbox"]:focus {
+        outline: max(2px, 0.15em) solid currentColor;
+        outline-offset: max(2px, 0.15em);
+      }
+      
+      input[type="checkbox"]:disabled {
+        --form-control-color: var(--form-control-disabled);
+      
+        color: var(--form-control-disabled);
+        cursor: not-allowed;
+      }
+  }
+  
+  
+
+// 
 
 // module
 
@@ -765,7 +884,7 @@ ul {
 }
 
 .list_product {
-    overflow-x: scroll;
+    // overflow-x: scroll;
 }
 
 .input_quantity {
@@ -898,6 +1017,48 @@ ul {
 }
 
 
+.tabel_product {
+    overflow-x: scroll;
+
+}
+
+
+.body_modifyDiscount {
+    text-align: center;
+
+        
+    .option_discount {
+        display: flex;
+        justify-content: space-evenly;
+        button {
+            padding: 6px 0;
+            background-color: #e1e0e0;
+            width: 45%;
+            border-radius: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .option_active {
+            background-color: rgb(237, 207, 229);
+        }
+        
+    }
+
+    .select_ModifyDiscount {
+        width: 50%;
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 20px;
+        font-size: 20px;
+    }
+
+
+
+}
+
+
+
 
 
 // tablet
@@ -983,9 +1144,7 @@ ul {
             margin-left: 0;
         }
 
-        & .option.mb_2_custom {
-            // width: 45%;
-        }
+        
 
 
     }

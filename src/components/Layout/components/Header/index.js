@@ -5,7 +5,7 @@ import axios from "axios";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart, faHome, faPercent } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart, faHome, faPercent, faBell } from "@fortawesome/free-solid-svg-icons";
 // import Tippy from '@tippyjs/react';
 // import 'tippy.js/dist/tippy.css'; // optional
 
@@ -21,17 +21,22 @@ const cx = classNames.bind(styles)
 function Header({setRe_render}) {
 
     const [orderItem, setOrderItem] = useState([])
-    const [check, setCheck] = useState(false)
+    const [notify, setNotify] = useState([])
 
+    const [check, setCheck] = useState(false)
+    const [login, setLogin] = useState("")
+
+    const token = localStorage.getItem("tokens");
 
     const navigate = useNavigate();
 
 
     useEffect(() => {
-        
-        axios.get("http://localhost:5000/shoes")
+        let cart = JSON.parse(localStorage.getItem('cart'))
+        let cart_prod_id = cart.map(i => i.id).toString()
+
+        axios.get(process.env.REACT_APP_BACKEND_URL+"/shoesList/"+cart_prod_id)
         .then(res => {
-            let cart = JSON.parse(localStorage.getItem('cart'))
             let newCart = cart.map(item => {
                 return {
                     ...item,
@@ -41,17 +46,32 @@ function Header({setRe_render}) {
             setOrderItem(newCart.sort(function(a, b){return a.id - b.id}))
         })
 
+        if(JSON.parse(token).status) {
+            axios.get(process.env.REACT_APP_BACKEND_URL+"/notify?_accName="+JSON.parse(token).accName)
+            .then(res => {
+                setNotify(res.data)
+                console.log(res.data)
+            })
+        }
+        else {
+            axios.get(process.env.REACT_APP_BACKEND_URL+"/notify?_accName=all")
+            .then(res => {
+                setNotify(res.data)
+                console.log(res.data)
+            })
+        }
+
+        
+
+
+
     }, [])
 
-    const [login, setLogin] = useState("")
     useEffect(() => {
-        const token = localStorage.getItem("tokens");
         if(!token) {
-        localStorage.setItem("tokens", JSON.stringify({}));
-        
+            localStorage.setItem("tokens", JSON.stringify({}));
         }
         console.log( (JSON.parse(token)) )
-
         setLogin(JSON.parse(token)?.role)
     }, [])
 
@@ -86,7 +106,7 @@ function Header({setRe_render}) {
                         to={`/shoes?_page=1&_limit=${limit}`} 
                         onClick={() => {
                             window.scrollTo(0, 0)
-                            // setRe_render(pre => !pre)
+                            setRe_render(pre => !pre)
                         }}
                     >
                         <span className={cx("nav_desktop")}>sản phẩm</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faShopify}/></span>
@@ -96,7 +116,13 @@ function Header({setRe_render}) {
                 </li>
 
                 <li className={cx(["men","menu"])}>
-                    <Link to={`/shoes?_page=1&_limit=${limit}&_isDiscount=true`} onClick={() => {window.scrollTo(0, 0)}}>
+                    <Link to={`/shoes?_page=1&_limit=${limit}&_isDiscount=true`} 
+                        onClick={() => {
+                            window.scrollTo(0, 0)
+                            setRe_render(pre => !pre)
+                            
+                        }}
+                    >
                         <span className={cx("nav_desktop")}>giảm giá</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faPercent}/></span>
                     </Link>
                 </li>
@@ -107,43 +133,85 @@ function Header({setRe_render}) {
 
 
             <ul id={styles["nav"]}>
-                <li className={cx('favorite')}>
-                    <FontAwesomeIcon icon={faHeart}/>
+                <li>
+                    <Tippy
+                        trigger="click"
+                        interactive
+                        placement="bottom-end"	
+                        render={attrs => (
+                            <div className={cx("wapper_notify")}  tabIndex="-1" {...attrs}>
+                            {
+                                notify.map(i => (
+                                    <div className={cx("notify_item")}>
+                                        <div>
+                                            <h3>{i.name}</h3>
+                                            <p>{i.date}</p>
+                                        </div>
+                                        <p>{i.content}</p>
+                                    </div>
+                                ))
+                            }
+                               
+                            </div>
+                        )}
+                    >
+                        <button>
+                            <FontAwesomeIcon icon={faBell} className={cx(["notify_btn","btn_header"])}/>
+                        </button>
+                    </Tippy>
+                {
+                    !!notify.length && <span className={cx("header_cart-notice")}></span>
+                }
+                    
                 </li>
                 {
                     login ?
-                    <li className={cx('avatar')}>
-                        <Tippy
-                            trigger="click"
-                            interactive
-                            placement="bottom-end"	
-                            render={attrs => (
-                                <div className={cx('menu_avatar')} tabIndex="-1" {...attrs}>
-                                    <ul>
-                                        <li onClick={(e) => {window.scrollTo(0, 0)}}>
-                                            <Link to='/infor' >Thông tin cá nhân</Link>
-                                        </li>
-                                        <li onClick={(e) => {window.scrollTo(0, 0)}}>
-                                            <Link to='/purchaseOrder'>Đơn mua</Link>
-                                        </li>
-                                        <li
-                                            onClick={() => {
-                                                localStorage.setItem("tokens", JSON.stringify({}));
-                                                navigate("/signin")
-                                            }}
-                                        >
-                                            Đăng xuất
-                                            <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
-                        >
-                            <button >
-                                <FontAwesomeIcon className={cx('avatar_icon')}  icon={faUser}/>
-                            </button>
-                        </Tippy>
-                    </li>
+                    <>
+                        
+                        <li className={cx(['favorite',"btn_header"])}>
+                            <Link to={`/shoes?_favorite=true&_page=1&_limit=${limit}`}
+                                onClick={() => {
+                                    window.scrollTo(0, 0)
+                                    setRe_render(pre => !pre)
+                                    
+                                }}
+                            >
+                                <FontAwesomeIcon icon={faHeart}/>
+                            </Link>
+                        </li>
+                        <li className={cx(['avatar',"btn_header"])}>
+                            <Tippy
+                                trigger="click"
+                                interactive
+                                placement="bottom-end"	
+                                render={attrs => (
+                                    <div className={cx('menu_avatar')} tabIndex="-1" {...attrs}>
+                                        <ul>
+                                            <li onClick={(e) => {window.scrollTo(0, 0)}}>
+                                                <Link to='/infor' >Thông tin cá nhân</Link>
+                                            </li>
+                                            <li onClick={(e) => {window.scrollTo(0, 0)}}>
+                                                <Link to='/purchaseOrder'>Đơn mua</Link>
+                                            </li>
+                                            <li
+                                                onClick={() => {
+                                                    localStorage.setItem("tokens", JSON.stringify({}));
+                                                    navigate("/signin")
+                                                }}
+                                            >
+                                                Đăng xuất
+                                                <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                )}
+                            >
+                                <button >
+                                    <FontAwesomeIcon className={cx('avatar_icon')}  icon={faUser}/>
+                                </button>
+                            </Tippy>
+                        </li>
+                    </>
                     :
                     <li className={cx("login")}>
                         <span  >
@@ -157,13 +225,16 @@ function Header({setRe_render}) {
                 }
                 
 
-                <li className={cx("cart_btn")}>
+                <li className={cx(["cart_btn", "btn_header"])}>
                     <div className={cx("header_cart-wrap")}>
                         <Link to="/order" className={cx("header_cart")}>
                             <FontAwesomeIcon className={cx('header_cart-icon')} icon={faCartShopping}/>
                         </Link>
                         {/* <span className={cx("header_cart-notice")}>{orderItem.length}</span> */}
-                        <span className={cx("header_cart-notice")}></span>
+                    {
+                        Boolean(orderItem.length) && <span className={cx("header_cart-notice")}></span>
+                    }
+                        {/* <span className={cx("header_cart-notice")}></span> */}
 
                         
                         <div className={cx("header_cart-list")}>

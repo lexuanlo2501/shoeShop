@@ -25,8 +25,7 @@ function Header_admin() {
             </div>
 
             <div className={cx('right_side')}>
-                <FontAwesomeIcon className={cx('alert-chat')} icon={faCommentDots}/>
-                <FontAwesomeIcon className={cx('alert-chat')} icon={faBell}/>
+                <FontAwesomeIcon className={cx(['header_action_btn',"notify"])} icon={faBell}/>
                 {/* <FontAwesomeIcon className={cx('alert-chat')} icon={faUserAstronaut}/> */}
                 <Tippy
                     trigger="click"
@@ -51,7 +50,7 @@ function Header_admin() {
                         </div>
                     )}
                 >
-                    <button className={cx(['alert-chat','avatar_admin'])}>
+                    <button className={cx(['header_action_btn',"avatar",'avatar_admin'])}>
                         <FontAwesomeIcon   icon={faUserAstronaut}/>
                     </button>
                 </Tippy>

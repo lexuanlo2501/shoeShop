@@ -17,7 +17,6 @@ function SearchItem({setTrigger}) {
     const [products, setProducts] = useState([])
     const [input, setInput] = useState('')
     const [loading, setLoading] = useState(false)
-    const [showResult, setShowResult] = useState(false)
 
     useEffect(() => {
         const delay = 1000;
@@ -40,8 +39,6 @@ function SearchItem({setTrigger}) {
         return () => {
             clearTimeout(timeoutId);
         };
-
-        
     }, [input])
 
 
@@ -49,9 +46,10 @@ function SearchItem({setTrigger}) {
     // let param = currentUrl.split("?")[1]
     // let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
 
-
     const parentRef = useRef(null);
     const childRef = useRef(null);
+
+    const [showResult, setShowResult] = useState(false)
   
     const handleBlur = () => {
     //   console.log('Focus ra');

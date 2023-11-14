@@ -24,7 +24,7 @@ import ForgotPassword from './components/Layout/SignInSignUp/ForgotPassword';
 
 import OverView from './page/OverView';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import InforUser from './page/InforUser';
 import PurchaseOrder from './page/PurchaseOrder';

@@ -78,6 +78,10 @@ margin-left: 10px
 .sign_up {
     background-color: #fff;
     // padding: 10px 0;
+    h1 {
+        font-size: 25px;
+        margin-bottom: 15px;
+    }
 
     .mess_passW {
         color: rgb(229, 90, 90);
@@ -100,8 +104,25 @@ margin-left: 10px
     }
 }
 
+.forgot_password {
+    padding: 10px;
+
+    h1 {
+        font-size: 25px;
+        margin-bottom: 20px;
+    }
+
+    .inputField {
+        label {
+            width: 100px;
+        }
+    }
+
+}
+
 .form {
     margin: auto;
+    padding: 10px 0;
     width: 60%;
     display: flex;
     flex-direction: column;
@@ -121,6 +142,9 @@ margin-left: 10px
         margin-bottom: 30px;
 
     }
+
+
+
 
     
 .inputField {
@@ -143,7 +167,7 @@ margin-left: 10px
     }
 
     label {
-        min-width: 140px;
+        // min-width: 140px;
     }
     
     .sendCode_email_btn {
@@ -243,7 +267,7 @@ margin-left: 10px
         color: #fff;
         text-transform: uppercase;
         font-size: 17px;
-        margin-top: 20px;
+        margin-top: 15px;
         text-align: center;
 
         &:hover {
@@ -320,7 +344,7 @@ margin-left: 10px
    }
 
    .form {
-        width: 80%;
+        width: 90%;
 
         .title {
             margin-bottom: 15px;
@@ -331,16 +355,21 @@ margin-left: 10px
         }
 
         .inputField {
-            margin-bottom: 13px;
+            margin-bottom: 11px;
        }
    }
 
    .wrapper {
        .logo {
         font-size: 30px;
+        margin: 5px;
        }
 
    }
+
+   .forgot_password {
+        background-color: #fff;
+    } 
 
    
 

@@ -38,81 +38,83 @@ function ListAccount() {
     return (
         <div className={cx('wrapper')}>
             <h2>Quản lý tài khoản</h2>
-            <table className="table table-hover">
-                <thead>
-                    <tr className="table-info">
-                        <th scope="col">#</th>
-                        <th scope="col"></th>
-                        <th scope="col" className={cx('fullName')}>Tên</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">SĐT</th>
-                        <th scope="col">Vai trò</th>
-                        <th scope="col">Chi tiết</th>
-                        <th scope="col"></th>
-
-
-
-                    </tr>
-                </thead>
-                <tbody>
-                {
-                    acc.map((item, index) => (
-                        <tr key={item.id}>
-                            <th scope="row">
-                                <p className={cx('padding_row')}>{index+1}</p>
-                            </th>
-                            <td>
-                            <AvatarAuto nameU={item.fullName}/>
-                            </td>
-                            <td>{item.fullName}</td>
-                            <td>{item.email}</td>
-                            <td>{item.phoneNumber}</td>
-                            <td>
-                            {
-                                item.role === "admin" ? <span className={cx(['role', 'i'])}>Admin</span> : <span className={cx(['role', 'ii'])}>Client</span>
-                            }
-                            </td>
-                            <td 
-                                onClick={() => {
-                                    handleShow()
-                                    setUserSelect(item)
-                                }}
-                            >
-                                <button className={cx(['status_btn'])}>
-                                    <FontAwesomeIcon icon={faInfo}/>
-                                    <span>Info</span>
-
-                                </button>
-                            </td>
-                            <td>
-                            {
-                                !item.isLock ? 
-                                <button className={cx(['status_btn','lock'])}
-                                    onClick={() => handleLockAcc(item.accName, 1)}
-                                >
-                                    <FontAwesomeIcon icon={faLock}/>
-                                    <span>Khóa</span>
-                                </button>
-                                :
-                                <button className={cx(['status_btn','unlock'])}
-                                    onClick={() => handleLockAcc(item.accName, 0)}
-                                >
-                                    <FontAwesomeIcon icon={faUnlock}/>
-                                    <span>Mở</span>
-                                </button>
-
-                            }
-                                
-                            </td>
+            <div className={cx("table_accounts")}>
+                <table className="table table-hover">
+                    <thead>
+                        <tr className="table-info">
+                            <th scope="col">#</th>
+                            <th scope="col"></th>
+                            <th scope="col" className={cx('fullName')}>Tên</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">SĐT</th>
+                            <th scope="col">Vai trò</th>
+                            <th scope="col">Chi tiết</th>
+                            <th scope="col"></th>
 
 
 
                         </tr>
-                    ))
-                }
-                    
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {
+                        acc.map((item, index) => (
+                            <tr key={item.id}>
+                                <th scope="row">
+                                    <p className={cx('padding_row')}>{index+1}</p>
+                                </th>
+                                <td>
+                                <AvatarAuto nameU={item.fullName}/>
+                                </td>
+                                <td>{item.fullName}</td>
+                                <td>{item.email}</td>
+                                <td>{item.phoneNumber}</td>
+                                <td>
+                                {
+                                    item.role === "admin" ? <span className={cx(['role', 'i'])}>Admin</span> : <span className={cx(['role', 'ii'])}>Client</span>
+                                }
+                                </td>
+                                <td 
+                                    onClick={() => {
+                                        handleShow()
+                                        setUserSelect(item)
+                                    }}
+                                >
+                                    <button className={cx(['status_btn'])}>
+                                        <FontAwesomeIcon icon={faInfo}/>
+                                        <span>Info</span>
+
+                                    </button>
+                                </td>
+                                <td>
+                                {
+                                    !item.isLock ? 
+                                    <button className={cx(['status_btn','lock'])}
+                                        onClick={() => handleLockAcc(item.accName, 1)}
+                                    >
+                                        <FontAwesomeIcon icon={faLock}/>
+                                        <span>Khóa</span>
+                                    </button>
+                                    :
+                                    <button className={cx(['status_btn','unlock'])}
+                                        onClick={() => handleLockAcc(item.accName, 0)}
+                                    >
+                                        <FontAwesomeIcon icon={faUnlock}/>
+                                        <span>Mở</span>
+                                    </button>
+
+                                }
+                                    
+                                </td>
+
+
+
+                            </tr>
+                        ))
+                    }
+                        
+                    </tbody>
+                </table>
+            </div>
             <ModalInforUser show={show} handleClose={handleClose} userSelect={userSelect}/>
 
         </div>

@@ -37,3 +37,24 @@
         }
     }
 }
+
+
+
+
+
+/* Tablet-specific styles */
+@media only screen and (min-width: 46.1875em) and (max-width: 63.9375em) {
+    .sideBar {
+        display: none;
+    }
+}
+  
+@media only screen and (max-width: 46.1875em) {
+    .sideBar {
+        display: none;
+    }
+    .wrapper {
+        padding: 15px 15px;
+        
+    }
+}

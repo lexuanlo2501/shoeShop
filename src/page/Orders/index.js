@@ -16,7 +16,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { faCreditCard, faCreditCardAlt, faTrashCan, faTruckFast } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {formatPrice, limit} from "../../common"
+import {formatPrice, limit, priceDiscount} from "../../common"
 
 const cx = classNames.bind(styles)
 
@@ -90,15 +90,23 @@ function Orders() {
 
     const total = useMemo(() => {
         let result = orderItem.reduce((pre, cur) => {
-            return pre + cur?.product?.price * cur.quantity
+            return pre + priceDiscount(cur?.product?.price, cur?.product?.discount_id) * cur.quantity
 
         }, 0)
-
         // console.log(result)
-
         return result
-      
     })
+
+    const total_reduce = useMemo(() => {
+        let result = orderItem.reduce((pre, cur) => {
+            return pre + cur?.product?.price * (cur?.product?.discount_id/100) * cur.quantity
+
+        }, 0)
+        // console.log(result)
+        return result
+    })
+
+    console.log({total,total_reduce})
 
     const handleOrder = (data) => {
 
@@ -226,6 +234,7 @@ function Orders() {
                                                 <span style={{marginTop: 5, fontWeight:500, fontSize:14}}>Thành tiền :</span>
                                                 <p className={cx(["price_product", "box_2"])}>{formatPrice(total)}</p>
                                             </p>
+                                            <p>Tiết kiệm: {formatPrice(total_reduce)}</p>
                                         </div>
                                         <button className={cx("btn_payment")}
                                             onClick={(e) => {
@@ -350,7 +359,7 @@ function Orders() {
                             </div>
                             <div className={cx('infor_fee')}>
                                 <span>Gỉam</span>
-                                <span>-0 VND</span>
+                                <span>-{formatPrice(total_reduce)}</span>
                             </div>
                             <div className={cx('infor_fee')}>
                                 <span>Phí vận chuyển</span>
@@ -478,14 +487,16 @@ function Item_order({order, setCheck}) {
     
     return (
         <div className={cx("content_description_wrapper")}>
-            <i className="ti-close remove_product"></i>
-            <a href="" className={cx("content_description_left")}>
+            {/* <i className="ti-close remove_product"></i> */}
+            <Link to={`/shoes/detail_product?_id=${order?.product?.id}`} className={cx("content_description_left")}>
                 <img src={process.env.REACT_APP_BACKEND_URL+`/imgs/${order?.product?.img}`} alt="" className={cx("content_product")}/>
-
-            </a>
+            </Link>
             <div className={cx("content_description_right")}>
                 <div className={cx("product_name_and_remove")}>
-                    <p className={cx("content_description_name")}>{order?.product?.name}</p>
+                    <Link to={`/shoes/detail_product?_id=${order?.product?.id}`}>
+                        <p className={cx("content_description_name")}>{order?.product?.name}</p>
+                    </Link>
+                    
                     {/* <p>Size {order.size}</p> */}
                     <span>Size: </span>
                     <select
@@ -511,7 +522,20 @@ function Item_order({order, setCheck}) {
                     }
                     </select>
                 </div>
+            {
+                order?.product?.discount_id ?
+                <div>
+                    <p className={cx("shoe_price_old")}>{formatPrice(order?.product?.price)}</p>
+                    <p className={cx("shoe_price_new")}>{formatPrice(priceDiscount(order?.product?.price, order?.product?.discount_id))}</p>
+                    <span className={cx("discount_tag")}>-{order?.product?.discount_id}%</span>
+                </div>
+
+                :
                 <p className={cx("content_description_cost")}>{formatPrice(order?.product?.price)}</p>
+            }
+
+                {/* <p className={cx("content_description_cost")}>{formatPrice(order?.product?.price)}</p> */}
+                
                 <div id={styles["content_quantity_product_3"]} className={cx('quantity_delete')}>
                     <div className={cx("wrapper")}>
                         <span className={cx("minus")}

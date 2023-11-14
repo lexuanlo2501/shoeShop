@@ -18,7 +18,7 @@
 
     .left_side {
 
-        margin-left: 45px;
+        margin-left: 40px;
         
         
         .calendarCurr {
@@ -39,7 +39,7 @@
         // margin-right: 10px;
     }
     
-    .alert-chat {
+    .header_action_btn {
         // float: right;
         font-size: 20px;
         line-height: 100%;
@@ -49,12 +49,27 @@
         color: #434445;
         background-color: #eae6e6;
         font-weight: 600;
+        cursor: pointer;
 
+        &.notify:hover {
+            animation: shake 500ms ease-in;
+
+        }
        
     }
 
-    .alert-chat+.alert-chat  {
-        margin-left: 10px;
+    
+
+    .header_action_btn+.header_action_btn {
+        margin-left: 8px;
+
+    }
+
+    @keyframes shake {
+        0% {rotate: 0deg}
+        30% {rotate: 25deg}
+        60% {rotate: -25deg}
+        0% {rotate: 0deg}
 
     }
 }

@@ -31,9 +31,6 @@
 }
 
 .bill {
-
-
-
     .order {
         margin-bottom: 13px;
         background-color: #fff;
@@ -106,11 +103,15 @@
         img {
             width: 100px;
             margin-right: 20px;
+            object-fit: contain;
         }
 
         .infor_detail {
             flex: 1;
 
+            &>p {
+                text-align: end;
+            }
             .size_price {
                 display: flex;
                 justify-content: space-between;
@@ -183,6 +184,8 @@
 
 .rating_wrapper {
     display: flex;
+    align-items: center;
+    justify-content: end;
 
     .rating_send_btn {
         margin-left: 30px;
@@ -239,4 +242,114 @@
     min-width: 120px;
     padding: 0 25px;
   }
+}
+
+
+/* Tablet-specific styles */
+@media only screen and (min-width: 46.1875em) and (max-width: 63.9375em) {
+    .wrapper {
+        .navigate {
+
+            li {
+                width: 100px;
+            }
+        }
+    }
+}
+  
+@media only screen and (max-width: 46.1875em) {
+    .wrapper {
+        .navigate {
+            padding: 5px 2px;
+            li {
+                width: auto;
+                padding: 0 10px;
+                font-size: 14px;
+            }
+        }
+    }
+
+        
+    .card_order {
+
+        
+        padding: 10px 0;
+
+        .infor_product {
+
+            img {
+                width: 100px;
+                margin-right: 10px;
+            }
+
+            .infor_detail {
+                .size_price {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: end;
+                }
+
+            
+            }
+
+            .size {
+            
+            }
+        }
+
+    }
+
+    
+    .bill {
+
+        .header_bill {
+            padding: 10px;
+            font-size: 14px;
+
+            p {
+                margin: 0;
+            }
+
+        }
+        .body_bill {
+            padding: 0 13px;
+
+            p {
+
+            }
+        }
+    }
+
+        
+    .rating_wrapper {
+       
+
+
+        .rating_send_btn {
+            margin-left: 5px;
+            padding: 2px 5px;
+        }
+    }
+
+
+    .stars {
+        font-size: 14px;
+    }
+
+
+}
+
+
+// IPHONE SE
+@media only screen and (max-width: 375px) {
+    .wrapper {
+        width: 345px;
+        .navigate {
+            li {
+                width: 70px;
+                padding: 0 3px;
+                font-size: 14px;
+            }
+        }
+    }
 }

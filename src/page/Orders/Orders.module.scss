@@ -489,8 +489,23 @@ li.cart_btn:hover .header_cart-list {
 
 }
 
-.content_description_right .content_description_cost{
+.shoe_price_old {
     font-size: 16px;
+    text-decoration: line-through;
+    color: #6b6a6a;
+}
+
+.discount_tag {
+    display: inline-block;
+    padding: 2px 0;
+    width: 65px;
+    text-align: center;
+    background-color: rgb(247, 174, 143);
+    border-radius: 5px;
+}
+
+.content_description_right .content_description_cost, .shoe_price_new{
+    font-size: 18px;
     margin-bottom: 5px;
     font-weight: 600;
     padding-top: 0;
@@ -532,7 +547,7 @@ li.cart_btn:hover .header_cart-list {
     font-size: 15px;
 }
 
-.product_name_and_remove > .content_description_name:hover{
+ .content_description_name:hover{
     color: var(--text-color-hover);
     cursor: pointer;
 }
@@ -1070,6 +1085,10 @@ p.price_product{
             margin-top: 20px;
             width: 100%;
         }
+    }
+
+    .content_description_wrapper {
+        justify-content: space-between;
     }
     
 }

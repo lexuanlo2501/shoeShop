@@ -25,6 +25,7 @@ import ConfirmModal from '../../components/ConfirmModal'
 import ConfirmModal_v2 from '../../components/ConfirmModal_v2'
 import {listColorBC} from "../../common"
 import RangeSlider from 'react-range-slider-input';
+import { set } from 'react-hook-form';
 
 
 const cx = classNames.bind(styles)
@@ -42,6 +43,16 @@ const handleClickScroll = () => {
         element.scrollIntoView({ behavior: 'smooth' });
     }
 }
+
+
+// object into string
+function objectToQueryString(obj) {
+    const queryString = Object.keys(obj)
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
+      .join('&');
+    
+    return queryString;
+  }
 
 
 
@@ -80,10 +91,16 @@ function ModifyProducts() {
 
     const [numberOfPage, setNumberOfPage] = useState([])
 
+
+    // search
     const [price, setprice] = useState([0, 30000000])
+    const [adv_option, setAdv_option] = useState({_type:"",_string:"",_isDiscount:""})
+    const [select_prod, setSelect_prod] = useState([])
 
+    // 
+    const [optionDiscount, setOptionDiscount] = useState("remove")
+    const  [optionDiscount_id, setOptionDiscount_id] = useState(0)
 
-    
 
     const [showDel, setShowDel] = useState(false);
     const [showUpd, setShowUpd] = useState(false);
@@ -148,10 +165,8 @@ function ModifyProducts() {
     useEffect(() => {
         // const url = !brand ? process.env.REACT_APP_BACKEND_URL+'/shoes' : process.env.REACT_APP_BACKEND_URL+`/shoes?_brand=${brand}`
         const url =process.env.REACT_APP_BACKEND_URL+ `/shoes?${param}`
-        console.log(url)
+        // console.log(url)
         console.log(param)
-
-
 
         const controller = new AbortController()
         axios.get(url, {signal:controller.signal})
@@ -164,7 +179,7 @@ function ModifyProducts() {
             
             const xTotalCount = res.headers['x-total-count']
             setNumberOfPage(arrPage(xTotalCount))
-            console.log(arrPage(xTotalCount))
+            // console.log(arrPage(xTotalCount))
 
         })
         .catch(err => {
@@ -373,33 +388,36 @@ function ModifyProducts() {
                     <ConfirmModal_v2
                         title="TÌM KIẾM NÂNG CAO"
                         body={
-                            <div>
-                                <div>
-                                    <input id="isDiscount" type='checkbox'/>
-                                    <label htmlFor="isDiscount">Đang khuyến mãi</label>
+                            <div className={cx("filter_wrapper")}>
+                                <div className={cx("filter_option")}>
+                                    <input id="isDiscount" type='checkbox'
+                                        onChange={(e) => setAdv_option(pre => ({...pre, _isDiscount:e.target.checked}))}
+                                    />
+                                    <label className='mx-3' htmlFor="isDiscount">Đang khuyến mãi</label>
                                 </div>
-                                <div>
-                                    <input placeholder='Tên sản phẩm'/>
-                                  
+                                <div className={cx(["filter_option","prod_name"])}>
+                                    <input placeholder='Nhập tên sản phẩm . . . . . .'
+                                        onChange={e => setAdv_option(pre => ({...pre,_string:e.target.value}))}
+                                    />
                                 </div>
-                                <div>
-                                    <p>Loại</p>
+                                <div className={cx("filter_option")}>
+                                    <p>- Loại</p>
                                     <ul>
                                     {
                                         atri_prod?.types?.map(type => (
                                             <li className={cx('select_type-Brand')} key={type.id}>
-                                            <input id={"t"+type.id} name="type_prod" value={type.id} type="radio"
-                                                // onChange={e=> setType(`&_type=${e.target.value}`)}
-                                            /> <label htmlFor={"t"+type.id}>{type.type_name}</label>
+                                                <input id={"t"+type.id} name="type_prod" value={type.id} type="radio"
+                                                    onChange={e => setAdv_option(pre => ({...pre,_type:e.target.value}))}
+                                                /> <label className='mx-3' htmlFor={"t"+type.id}>{type.type_name}</label>
                                             </li>
                                         ))
                                     }
                                     </ul>
                                
                                 </div>
-                                <div>
+                                <div className={cx("filter_option")}>
                                     <div>
-                                        <p className={cx('price_slice')}>Lọc Theo Giá:</p>
+                                        <p className={cx('price_slice')}>- Lọc Theo Giá:</p>
                                         <span>{price[0].toLocaleString('vi', {style : 'currency', currency : 'VND'})}</span> - <span>{price[1].toLocaleString('vi', {style : 'currency', currency : 'VND'})}</span>
                                     </div>
                                     <RangeSlider 
@@ -413,12 +431,67 @@ function ModifyProducts() {
 
                             </div>
                         }
+                        accept={() => {
+                            const params_option = {...adv_option, _min:price[0], _max:price[1]}
+                            console.log(objectToQueryString(params_option))
+                            console.log(param)
+                            navigate("/admin/modifyProducts?"+objectToQueryString(params_option))
+                            setAdv_option({_type:"",_string:"",_isDiscount:""})
+                            setCheckUpd(pre => !pre)
+                        }}
                     >
                         <button className={cx(["filter_btn","option","mb_2_custom"])}>
                             <span>NÂNG CAO</span>
                             <FontAwesomeIcon icon={faFilter}/>
                         </button>
                     </ConfirmModal_v2>
+
+               
+
+                {
+                    !!select_prod.length &&
+                    <ConfirmModal_v2
+                        accept={() => {
+                            console.log(select_prod)
+                            axios.post(process.env.REACT_APP_BACKEND_URL+"/modify_discount", {
+                                "list": select_prod,
+                                "action":optionDiscount,
+                                "discount_id": optionDiscount_id
+                            })
+                            .then(_ => toast.success("Thay đổi khuyến mãi thành công"))
+
+                            setOptionDiscount_id(0)
+                            setSelect_prod([])
+                            var x = document.getElementsByClassName("checkbox");
+                            for(let i=0; i<x.length; i++) {
+                                x[i].checked = false;
+                            }
+                            setCheckUpd(pre => !pre)
+                        }}
+                        body={
+                            <div className={cx("body_modifyDiscount")}>
+                            
+                                <div className={cx("option_discount")}>
+                                    <button onClick={() => setOptionDiscount("remove")} className={cx({"option_active":optionDiscount==="remove"})}>Gỡ</button>
+                                    <button onClick={() => setOptionDiscount("add")} className={cx({"option_active":optionDiscount==="add"})}>Đổi</button>
+                                </div>
+                            {
+                                optionDiscount === "add"
+                                &&
+                                <select className={cx('select_ModifyDiscount')} onChange={(pre) => setOptionDiscount_id(pre.target.value)}>
+                                {
+                                    atri_prod?.discounts?.map(i => <option key={i.id} value={i.id}>{i.per}%</option>)
+                                }
+                                </select>
+                            }
+
+                            </div>
+                        }
+                    >
+                        <button className={cx(["removeDiscount_btn","option","mb_2_custom"])} >Thay đổi khuyến mãi</button>
+                    </ConfirmModal_v2>
+                }
+                    
 
 
                 </div>
@@ -428,84 +501,104 @@ function ModifyProducts() {
                 loading ? 
                 <SyncLoader color="rgba(54, 215, 183, 1)" /> 
                 :
-                <table className='table table-hover'>
-                    <thead>
-                        <tr className="table-primary">
-                            <th scope="col" >STT</th>
-                            <th scope="col" >ID</th>
-                            <th scope="col"  className='product_name'>tên SP</th>
-                            <th scope="col" >giá</th>
-                            <th scope="col" >giảm giá</th>
-                            <th scope="col" >mô tả</th>
-                            <th scope="col" >ảnh</th>
-                            <th scope="col" >màu nền</th>
-                            <th scope="col" >xóa</th>
-                            <th scope="col" >sửa</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        Boolean(products.length) && products.map((item, index) => 
-                            <tr key={index}>
-                                <th scope="row">{index+1}</th>
-                                <td>{item.id}</td>
-                                <td>{item.name}</td>
-                                <td>{formatPrice(item.price)}</td>
-                                <td>{item.discount_id ? <span className={cx("discount_tag")}>{item.discount_id}%</span> : <span>0</span>} </td>
-                                <td >
-                                    <div className='description'>
-                                        {item.description}
-                                    </div>
-                                </td>
-
-                                <td>
-                                    <img src={process.env.REACT_APP_BACKEND_URL+`/imgs/${item?.img}`} alt="error"/>
-                                </td>
-                                
-                                <td className={cx('tdClass_BCcolor')}>
-                                    <span className={cx(item.BC_color)}></span>
-                                </td>
-                                <td className={cx(['btn_modify','del'])}
-                                    onClick={() => {
-                                        handleShow()
-                                        setId_product(item.id)
-                                    }}
-
-                                >
-                                    <FontAwesomeIcon className={cx('btn_modify')} icon={faTrashCan}/>
-                                </td>
-                                <td className={cx(['btn_modify','upd'])}
-                                    onClick={() => {
-                                        handleShow_upd()
-                                        let Prod_filter_imgInImgs = {...item}
-                                        Prod_filter_imgInImgs.imgs = item.imgs.filter(i => i !== item.img)
-                                        setProduct(Prod_filter_imgInImgs)
-                                        setColorBCImg_main(Prod_filter_imgInImgs?.BC_color)
-                                        console.log('product:', Prod_filter_imgInImgs)
-
-                                        setImg_upd(item.img)
-                                        setImgs_upd(item.imgs.filter(i => i !== item.img))
-                                        setName_upd(item.name)
-                                        setPrice_upd(item.price)
-                                        setQuantity_upd(item.quantity)
-                                        setDescription_upd(item.description)
-                                        setProductId_upd(item.brand_id)
-                                        setType_upd(item.type)
-                                        setDiscount_upd(+item.discount_id)
-
-                                        setInventory_upd(item.inventory)
-                                    }}
-                                >
-                                    <FontAwesomeIcon className={cx('btn_modify')} icon={faPenToSquare}/>
-                                </td>
+                <div className={cx("tabel_product")}>
+                    <table className='table table-hover'>
+                        <thead>
+                            <tr className="table-primary">
+                                <th scope="col" >Chọn</th>
+                                <th scope="col" >STT</th>
+                                <th scope="col" >ID</th>
+                                <th scope="col"  className='product_name'>tên SP</th>
+                                <th scope="col" >giá</th>
+                                <th scope="col" >giảm giá</th>
+                                <th scope="col" >mô tả</th>
+                                <th scope="col" >ảnh</th>
+                                <th scope="col" >màu nền</th>
+                                <th scope="col" >xóa</th>
+                                <th scope="col" >sửa</th>
                             </tr>
-                        )
-                    }
+                        </thead>
+                        <tbody>
+                        {
+                            Boolean(products.length) && products.map((item, index) => 
+                                <tr key={item.id}>
+                                    <td scope="col" >
+                                        <label className={cx("form-control")}>
+                                            <input type="checkbox" name="checkbox" value={item.id} className='checkbox'
+                                                
+                                                onChange={(e) => {
+                                                    setSelect_prod(pre => {
+                                                        if([...pre].includes(e.target.value)) {
+                                                            return pre.filter(i => i !== e.target.value)
+                                                        }
+                                                        else {
+                                                            return [...pre, e.target.value]
+                                                        }
+                                                    })
+                                                }}
+                                            />
+                                        </label>
+                                    </td>
+                                    <th scope="row">{index+1}</th>
+                                    <td>{item.id}</td>
+                                    <td>{item.name}</td>
+                                    <td>{formatPrice(item.price)}</td>
+                                    <td>{item.discount_id ? <span className={cx("discount_tag")}>{item.discount_id}%</span> : <span className={cx("non_discount_tag")}>__</span>} </td>
+                                    <td >
+                                        <div className='description'>
+                                            {item.description}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <img src={process.env.REACT_APP_BACKEND_URL+`/imgs/${item?.img}`} alt="error"/>
+                                    </td>
+                                    
+                                    <td className={cx('tdClass_BCcolor')}>
+                                        <span className={cx(item.BC_color)}></span>
+                                    </td>
+                                    <td className={cx(['btn_modify','del'])}
+                                        onClick={() => {
+                                            handleShow()
+                                            setId_product(item.id)
+                                        }}
+
+                                    >
+                                        <FontAwesomeIcon className={cx('btn_modify')} icon={faTrashCan}/>
+                                    </td>
+                                    <td className={cx(['btn_modify','upd'])}
+                                        onClick={() => {
+                                            handleShow_upd()
+                                            let Prod_filter_imgInImgs = {...item}
+                                            Prod_filter_imgInImgs.imgs = item.imgs.filter(i => i !== item.img)
+                                            setProduct(Prod_filter_imgInImgs)
+                                            setColorBCImg_main(Prod_filter_imgInImgs?.BC_color)
+                                            console.log('product:', Prod_filter_imgInImgs)
+
+                                            setImg_upd(item.img)
+                                            setImgs_upd(item.imgs.filter(i => i !== item.img))
+                                            setName_upd(item.name)
+                                            setPrice_upd(item.price)
+                                            setQuantity_upd(item.quantity)
+                                            setDescription_upd(item.description)
+                                            setProductId_upd(item.brand_id)
+                                            setType_upd(item.type)
+                                            setDiscount_upd(+item.discount_id)
+
+                                            setInventory_upd(item.inventory)
+                                        }}
+                                    >
+                                        <FontAwesomeIcon className={cx('btn_modify')} icon={faPenToSquare}/>
+                                    </td>
+                                </tr>
+                            )
+                        }
 
 
-                    </tbody>
-                    
-                </table>
+                        </tbody>
+                        
+                    </table>
+                </div>
                 }
 
                 <div className={cx('pagination')}>

@@ -32,10 +32,8 @@ function SignIn({setLogin}) {
         const data = {
             accName: accName,
             password: password,
-
-
         }
-        console.log(data)
+        
         setLoading(true)
         axios.post(process.env.REACT_APP_BACKEND_URL+"/signin",data)
         .then(res => {

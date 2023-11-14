@@ -23,16 +23,10 @@ const Carousel = ({brand, setTrigger, nameProd}) => {
   };
 
   useEffect(() => {
-    let brand_paraQuery =  brand ? `brand/${brand}` : ''
-    
-        // http://localhost:4000/products/adidas/data?_page=1&_limit=2
-        // axios.get(`http://localhost:4000/data?_page=${page}&_limit=${limit}`)
-        // axios.get(`http://localhost:4000/${route_}data?_page=1&_limit=8`)
-        // axios.get(`http://localhost:4000/${route_}data`)
-        axios.get(process.env.REACT_APP_BACKEND_URL+`/shoes/${brand_paraQuery}?_limit=10&_page=1&_string=${nameProd||""}`)
-        .then(res => {
-            setProducts(res.data)
-        })
+    axios.get(process.env.REACT_APP_BACKEND_URL+`/shoes?_limit=10&_page=1&_brand=${brand}&_string=${nameProd||""}`)
+    .then(res => {
+        setProducts(res.data)
+    })
   }, [])
   
   const items = products.map((item, index) =>
