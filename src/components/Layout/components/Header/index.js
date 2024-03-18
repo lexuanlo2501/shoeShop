@@ -2,7 +2,7 @@ import classNames from "classnames/bind";
 import styles from './Header.module.scss'
 
 import axios from "axios";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart, faHome, faPercent, faBell } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +12,8 @@ import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, 
 import Tippy from '@tippyjs/react/headless';
 import { formatPrice, limit } from "../../../../common";
 import { faShopify } from "@fortawesome/free-brands-svg-icons";
+import { createAxios } from "../../../../createInstance";
+import { CartContext } from "../../../../App";
 
 
 
@@ -19,17 +21,20 @@ import { faShopify } from "@fortawesome/free-brands-svg-icons";
 const cx = classNames.bind(styles)
 
 function Header({setRe_render}) {
-
+    
+    
     const [orderItem, setOrderItem] = useState([])
     const [notify, setNotify] = useState([])
 
-    const [check, setCheck] = useState(false)
+    const [trigger, setTrigger] = useState(false)
     const [login, setLogin] = useState("")
 
     const token = localStorage.getItem("tokens");
 
     const navigate = useNavigate();
 
+
+    const cart_123 = useContext(CartContext);
 
     useEffect(() => {
         let cart = JSON.parse(localStorage.getItem('cart'))
@@ -46,41 +51,61 @@ function Header({setRe_render}) {
             setOrderItem(newCart.sort(function(a, b){return a.id - b.id}))
         })
 
+        
+    }, [cart_123.cart_context])
+
+    useEffect(() => {
+        let cart = JSON.parse(localStorage.getItem('cart'))
+        let cart_prod_id = cart.map(i => i.id).toString()
         if(JSON.parse(token).status) {
             axios.get(process.env.REACT_APP_BACKEND_URL+"/notify?_accName="+JSON.parse(token).accName)
             .then(res => {
                 setNotify(res.data)
-                console.log(res.data)
             })
         }
         else {
             axios.get(process.env.REACT_APP_BACKEND_URL+"/notify?_accName=all")
             .then(res => {
                 setNotify(res.data)
-                console.log(res.data)
             })
         }
-
-        
-
-
-
-    }, [])
+    }, [trigger])
 
     useEffect(() => {
         if(!token) {
             localStorage.setItem("tokens", JSON.stringify({}));
         }
-        console.log( (JSON.parse(token)) )
+        // console.log( (JSON.parse(token)) )
         setLogin(JSON.parse(token)?.role)
     }, [])
 
+    const handleDelete_notify = (id) => {
+        axios.delete(process.env.REACT_APP_BACKEND_URL+"/notify/"+id)
+    }
 
+
+    let axiosJWT = createAxios()
+
+    const handleLogout = async () => {
+        try {
+            const infor_user = JSON.parse(localStorage.getItem("tokens"))
+            await axiosJWT.post(process.env.REACT_APP_BACKEND_URL+"/logout/"+ infor_user.accName, 25,{
+                headers: {Authorization: infor_user.accessToken}
+            })
+    
+            localStorage.setItem("tokens", JSON.stringify({}));
+            navigate("/signin")
+
+    
+        }
+        catch(err) {
+            console.log(err)
+        }
+
+    }
 
     return ( 
         <div className={cx('wrapper')}>
-           
-
 
             <ul className={cx(["nav_dropdown"])} id={styles["nav-menu"]} >
                 
@@ -135,17 +160,25 @@ function Header({setRe_render}) {
             <ul id={styles["nav"]}>
                 <li>
                     <Tippy
-                        trigger="click"
-                        interactive
-                        placement="bottom-end"	
+                        trigger="click" interactive placement="bottom-end"	
                         render={attrs => (
-                            <div className={cx("wapper_notify")}  tabIndex="-1" {...attrs}>
+                            <div className={cx(["wapper_notify", "shape_Tippy"])}  tabIndex="-1" {...attrs}>
+                            {!notify.length && <h2 className="text-center">Không có thông báo nào</h2>}
                             {
                                 notify.map(i => (
-                                    <div className={cx("notify_item")}>
+                                    <div className={cx("notify_item")} key={i.id}>
                                         <div>
                                             <h3>{i.name}</h3>
                                             <p>{i.date}</p>
+                                            <button
+                                                onClick={() => {
+                                                    handleDelete_notify(i.id)
+                                                    setTrigger(pre => !pre)
+                                                    console.log("delete")
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faClose}/>
+                                            </button>
                                         </div>
                                         <p>{i.content}</p>
                                     </div>
@@ -168,7 +201,7 @@ function Header({setRe_render}) {
                     login ?
                     <>
                         
-                        <li className={cx(['favorite',"btn_header"])}>
+                        <li className={cx(['favorite'])}>
                             <Link to={`/shoes?_favorite=true&_page=1&_limit=${limit}`}
                                 onClick={() => {
                                     window.scrollTo(0, 0)
@@ -176,16 +209,16 @@ function Header({setRe_render}) {
                                     
                                 }}
                             >
-                                <FontAwesomeIcon icon={faHeart}/>
+                                <FontAwesomeIcon className={cx("btn_header")} icon={faHeart}/>
                             </Link>
                         </li>
-                        <li className={cx(['avatar',"btn_header"])}>
+                        <li className={cx(['avatar'])}>
                             <Tippy
                                 trigger="click"
                                 interactive
                                 placement="bottom-end"	
                                 render={attrs => (
-                                    <div className={cx('menu_avatar')} tabIndex="-1" {...attrs}>
+                                    <div className={cx(['menu_avatar', "shape_Tippy"])} tabIndex="-1" {...attrs}>
                                         <ul>
                                             <li onClick={(e) => {window.scrollTo(0, 0)}}>
                                                 <Link to='/infor' >Thông tin cá nhân</Link>
@@ -193,7 +226,7 @@ function Header({setRe_render}) {
                                             <li onClick={(e) => {window.scrollTo(0, 0)}}>
                                                 <Link to='/purchaseOrder'>Đơn mua</Link>
                                             </li>
-                                            <li
+                                            {/* <li
                                                 onClick={() => {
                                                     localStorage.setItem("tokens", JSON.stringify({}));
                                                     navigate("/signin")
@@ -201,13 +234,19 @@ function Header({setRe_render}) {
                                             >
                                                 Đăng xuất
                                                 <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
+                                            </li> */}
+
+                                            <li onClick={handleLogout}>
+                                                Đăng xuất
+                                                <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
                                             </li>
+
                                         </ul>
                                     </div>
                                 )}
                             >
                                 <button >
-                                    <FontAwesomeIcon className={cx('avatar_icon')}  icon={faUser}/>
+                                    <FontAwesomeIcon className={cx(["btn_header"])}  icon={faUser}/>
                                 </button>
                             </Tippy>
                         </li>
@@ -217,7 +256,7 @@ function Header({setRe_render}) {
                         <span  >
                             TÀI KHOẢN
                         </span>
-                        <ul className={cx(["sub_nav","the_first"])}>
+                        <ul className={cx(["sub_nav","the_first","shape_Tippy"])}>
                             <li><Link to="/signIn">ĐĂNG NHẬP</Link></li>
                             <li><Link to="/signUp">ĐĂNG KÝ</Link></li>
                         </ul>
@@ -225,15 +264,17 @@ function Header({setRe_render}) {
                 }
                 
 
-                <li className={cx(["cart_btn", "btn_header"])}>
+                <li className={cx(["cart_btn"])}>
                     <div className={cx("header_cart-wrap")}>
                         <Link to="/order" className={cx("header_cart")}>
-                            <FontAwesomeIcon className={cx('header_cart-icon')} icon={faCartShopping}/>
+                            <FontAwesomeIcon className={cx(["btn_header"])} icon={faCartShopping}/>
                         </Link>
                         {/* <span className={cx("header_cart-notice")}>{orderItem.length}</span> */}
-                    {
+                        <span className={cx("header_cart_quantity")}><span>{orderItem.length}</span></span>
+
+                    {/* {
                         Boolean(orderItem.length) && <span className={cx("header_cart-notice")}></span>
-                    }
+                    } */}
                         {/* <span className={cx("header_cart-notice")}></span> */}
 
                         
@@ -277,10 +318,10 @@ function CartItem_subnav({order}) {
     return (
         <li className={cx("header_cart-item")}>
             {/* <img src={require(`../../../../imgData/${order.product.img}`)} alt="dd" className={cx("header_cart-img")}/> */}
-            <img src={`http://localhost:5000/imgs/${order?.product?.img}`} alt="dd" className={cx("header_cart-img")}/>
+            <img src={process.env.REACT_APP_BACKEND_URL+`/imgs/${order?.product?.img}`} alt="img" className={cx("header_cart-img")}/>
             
             
-            <i className={cx("header_cart-icon-close")}>x</i>
+            {/* <i className={cx("header_cart-icon-close")}>x</i> */}
             <div className={cx("header_cart-item-infor")}>
                 <a href="" className={cx("header_cart-item-name")}>{order?.product?.name}</a>
                 <span className={cx("header_cart-item-price")}>{formatPrice(order?.product?.price)}</span>

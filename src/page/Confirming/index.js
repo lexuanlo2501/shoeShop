@@ -17,10 +17,18 @@ import { faCircle, faCircleInfo, faClipboardCheck, faClockRotateLeft, faTrashCan
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import ConfirmModal from '../../components/ConfirmModal';
 import { CardOrder } from '../PurchaseOrder';
+import { createAxios } from '../../createInstance';
+import ConfirmModal_v2 from '../../components/ConfirmModal_v2';
+import { faCalendar, faCalendarDays } from '@fortawesome/free-regular-svg-icons';
+import { date } from 'yup';
+
+
+let axiosJWT = createAxios()
 
 const cx = classNames.bind(styles)
 
 function Confirming() {
+    let infor_user = JSON.parse(localStorage.getItem("tokens"))
  
     const [order_detail, setOrder_detail] = useState({})
 
@@ -74,7 +82,10 @@ function Confirming() {
 
 
     const handleOrderDetail = (item) => {
-        axios.get(process.env.REACT_APP_BACKEND_URL+"/accounts/"+item.client_id)
+        axiosJWT.get(process.env.REACT_APP_BACKEND_URL+"/accounts/"+item.client_id, {
+            headers: {Authorization: infor_user.accessToken}
+
+        })
         .then(res => {
             setOrder_detail({...item, ...res.data})
         })
@@ -86,14 +97,18 @@ function Confirming() {
     return ( 
         <div className={cx('wrapper')}>
             <h1>QUẢN LÝ ĐƠN HÀNG</h1>
-             <ul className={cx('navigate')} >
+            <ConfirmModal_v2 fullscreen={true} body={<Find_order/>}>
+                <button className={cx("find_order")}>Tìm kiếm đơn <FontAwesomeIcon icon={faCalendarDays}/></button>
+            </ConfirmModal_v2>
+
+            <ul className={cx('navigate')} >
             {
                 pagName.map((item,index) => <li key={item} className={ cx({"li_active":index+1 ===pagCurr}) }
                     onClick={() => {
                         setPagCurr(index+1)
                     }}
                 >
-                    {item}
+                    {item} 
                 </li>)
             }
             </ul>
@@ -127,7 +142,7 @@ function Confirming() {
                     <tbody>
                     {
                         orders.map((item_order, index) =>
-                            <tr key={index}>
+                            <tr key={index} className={cx("row_order")}>
                                 <td >{item_order.id}</td>
                                 <td>{item_order?.client_id}</td>
                                 <td>{item_order.date_order}</td>
@@ -246,6 +261,108 @@ function Confirming() {
 
         </div>
     );
+}
+
+const Find_order = ({}) => {
+    const [orders, setOrders] = useState([])
+    const [inputDate, setInputDate] = useState({day:0, month:0, year:0})
+
+    const onChange = (e)=> {
+        setInputDate( pre => ({...pre, [e.target.name]:e.target.value}) )
+    }
+
+    useEffect(() => {
+
+    }, [])
+
+    const day_option = 31, month_option = 12, year_option=(new Date()).getFullYear()
+    const selectYear = (begin, end) => {
+        let arrYear = []
+        for(let i = begin; i<=end; i++) {
+           arrYear.push(i) 
+        }
+        return arrYear
+    }
+    const handleFind = async () => {
+        try {
+            let api = process.env.REACT_APP_BACKEND_URL+"/orders?"
+            if(+inputDate.day) {
+                api+=`&_day=${inputDate.day}`
+            }
+            if(+inputDate.month) {
+                api+=`&_month=${inputDate.month}`
+            }
+            if(+inputDate.year) {
+                api+=`&_year=${inputDate.year}`
+            }
+
+            const orders_callAPI = await axios.get(api)
+            setOrders(orders_callAPI.data)
+            
+        } catch (error) {
+            throw new Error('Đã xảy ra lỗi khi gọi API: ' + error.message);
+        }
+    }
+
+
+    return (
+        <div>
+            <div className={cx("input_Date")}>
+                <select onChange={onChange} name="day">
+                    <option value={0} >Ngày</option>
+                    {Array(day_option).fill(0).map((_, index) => <option key={index+1} value={index+1}>{index+1}</option>)}
+                </select>
+
+                <select onChange={onChange} name="month">
+                    <option value={0} >Tháng</option>
+                    {Array(month_option).fill(0).map((_, index) => <option key={index+1} value={index+1}>{index+1}</option>)}
+                </select>
+
+                <select onChange={onChange} name="year">
+                    <option value={0} >Năm</option>
+
+                {
+                    selectYear(2020, year_option).map((i) => <option key={i} value={i}>{i}</option>)
+                }
+                </select>
+                <button onClick={handleFind}>Tìm Kiếm</button>
+
+            </div>
+
+            <table className="table table-hover">
+                <thead>
+                    <tr className='table-info'>
+                        <th scope="col">mã đơn hàng</th>
+                        <th scope="col">tài khoản</th>
+                        <th scope="col">ngày đặt</th>
+                        <th scope="col">địa chỉ</th>
+                        <th scope="col">trạng thái</th>
+                        <th scope="col">tổng tiền</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {
+                    orders.map((item_order, index) =>
+                        <tr key={index} className={cx("row_order")}>
+                            <td >{item_order.id}</td>
+                            <td>{item_order?.client_id}</td>
+                            <td>{item_order.date_order}</td>
+                            <td>{item_order.address}</td>
+                            {/* <td>{item_order.description}</td> */}
+                            <td>{item_order?.status}</td>
+                            <td>{formatPrice(item_order?.amount)}</td>
+                        </tr>
+                    )
+                }
+                </tbody>
+            </table>
+            {
+                !orders.length && 
+                <h1 className={cx("messagge_not_found")}>Không Có Đơn Hàng nào</h1>
+            }
+        </div>
+    )
 }
 
 export default Confirming;

@@ -298,32 +298,20 @@ ul {
 }
 
 
-.avatar {
-    // margin-right: 8px;
-    cursor: pointer;
 
+.shape_Tippy {
+    background-color: #fff;
+    box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+    border-radius: 10px;
+    padding: 10px 0px;
 
-
-    button {
-        background-color: transparent;
-    }
-   
-
-    .avatar_icon {
-        color: #4d4c4c;
-    }
-
-    &:hover {
-        // opacity: 0.8;
-    }
 }
 
 .wapper_notify {
-    padding: 10px 0px;
     width: 360px;
-    background-color: #fff;
-    box-shadow: rgba(81, 23, 23, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-    
+    height: 450px;
+    overflow-y: scroll;
+  
     .notify_item+.notify_item {
         border-top: 0.7px solid #d6d3d3;
 
@@ -356,10 +344,12 @@ ul {
 }
 
 .menu_avatar {
-    background-color: #fff;
-    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    // box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
     width: 170px;
     font-size: 17px;
+
+ 
+
     ul {
 
         li {
@@ -443,6 +433,7 @@ ul {
 .btn_header {
     font-size: 20px;
     color: #4b4a4a;
+    // color: red;
     cursor: pointer;
 
     &:hover {
@@ -593,6 +584,23 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
     font-size: 14px;
 }
 
+.header_cart_quantity {
+    position: absolute;
+    background-color: #fa5d6f;
+    font-size: 0.9rem;
+    color: var(--white-color);
+    border-radius: 50%;
+    top: -10px;
+    right: 4px;
+    font-size: 14px; 
+    width: 19px;
+    height: 19px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .header_cart-list-item{
     padding: 10px;
     list-style: none;
@@ -632,11 +640,6 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
     
 }
 
-.header_cart-icon {
-    // font-size: 16px;
-    margin-left: 3px;
-    color: #333;
-}
 
 .header_cart-icon-close{
     position: absolute;
@@ -698,6 +701,12 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
 @media only screen and (min-width: 46.25em) and (max-width: 78.25em){
     .wrapper {
         top: 58px;
+
+
+        #nav-menu li{
+            padding: 0 15px;
+            
+        }
     }
 
     .box_logo {
@@ -707,6 +716,9 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
     .logo_title {
         display: none;
     }
+
+
+
 
     // #nav {
     //     margin-right: 40px;
@@ -721,6 +733,8 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
             padding: 0 10px;
             
         }
+
+
 
        #nav li {
         font-size: 17px;

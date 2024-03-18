@@ -8,6 +8,8 @@ import axios from "axios";
 import { limit } from "../../../../common";
 import ConfirmModal from "../../../ConfirmModal";
 
+import { jwtDecode } from "jwt-decode";
+
 
 const cx = classNames.bind(style)
 
@@ -51,6 +53,42 @@ function SignIn({setLogin}) {
 
     }
 
+    const handleSignIn_v2 = () => {
+        const data = {
+            accName: accName,
+            password: password,
+        }
+        setLoading(true)
+
+        // axios.post(process.env.REACT_APP_BACKEND_URL+"/signin_2",data, { withCredentials: true})
+        axios.post(process.env.REACT_APP_BACKEND_URL+"/signin_2",data)
+        .then(res => {
+            console.log(res)
+            if(res.data.status) {
+                const inforUser = jwtDecode(res.data.accessToken)
+                const toLocalStorage = {...inforUser.data, accessToken:res.data.accessToken}
+                // console.log(toLocalStorage)
+    
+                localStorage.setItem("tokens", JSON.stringify(toLocalStorage));
+                setLogin(toLocalStorage.role)
+    
+                toLocalStorage.role === "client" && navigate(`/shoes?_page=1&_limit=${limit}`);
+                toLocalStorage.role === "admin" && navigate("/admin");
+                setLoading(false)
+
+            }
+            else {
+                setErrMess(res.data.message)
+                setLoading(false)
+            }
+            
+           
+
+
+        })
+        
+    }
+
 
 
 
@@ -58,7 +96,7 @@ function SignIn({setLogin}) {
         <div className={cx('sign_in')}
             onKeyDown={(e) => {
                 if(e.key==="Enter") {
-                    handleSignIn()
+                    handleSignIn_v2()
                 }
 
             }}
@@ -84,8 +122,12 @@ function SignIn({setLogin}) {
                     <Link className={cx("signUp_btn")} to="/signUp">đăng ký</Link>
                     <Link to="/forgotPassword">quên mật khẩu</Link>
                 </div>
-                <button className={cx('signIn_btn')}
+                {/* <button className={cx('signIn_btn')}
                     onClick={handleSignIn}
+                >đăng nhập</button> */}
+
+                <button className={cx('signIn_btn')}
+                    onClick={handleSignIn_v2}
                 >đăng nhập</button>
 
 

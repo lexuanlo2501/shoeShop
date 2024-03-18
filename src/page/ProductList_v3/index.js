@@ -3,19 +3,27 @@ import classNames from 'classnames/bind';
 import { useEffect, useState, CSSProperties, useMemo  } from 'react';
 import styles from './ProductList.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faGrip, faList, faHeart as faHeartSolid} from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight, faGrip, faList, faHeart as faHeartSolid, faCartShopping, faEye} from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { Link } from 'react-router-dom';
 import { Placeholder, Spinner } from 'react-bootstrap';
-import { BeatLoader } from 'react-spinners';
+import { BeatLoader, FadeLoader, MoonLoader } from 'react-spinners';
 import SearchItem from '../../components/SearchItem';
 import {limit, formatPrice, priceDiscount} from "../../common"
+import { createAxios } from '../../createInstance';
+import ConfirmModal_v2 from "../../components/ConfirmModal_v2"
+import QuickProduct from '../../components/QuickProduct';
+import DetailProduct_v2 from '../DetailProduct_v2';
 
 const cx = classNames.bind(styles)
+let axiosJWT = createAxios()
 
 
 
 function ProductList_v3({ re_render }) {
+    let infor_user = JSON.parse(localStorage.getItem("tokens"))
+
+
     let currentUrl = window.location.href;
     let param = currentUrl.split("?")[1]
     let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
@@ -24,6 +32,8 @@ function ProductList_v3({ re_render }) {
     const [products, setProducts] = useState([])
     const [pageChange, setPageChange] = useState(+paramToObject._page)
     const [loading, setLoading] = useState(true)
+    const [loading_page, setLoading_page] = useState(false)
+
     const [numberOfPage, setNumberOfPage] = useState([])
 
     const [listView, setListView] = useState(false)
@@ -39,7 +49,7 @@ function ProductList_v3({ re_render }) {
     useEffect(() => {
        
         const inforUser = JSON.parse(localStorage.getItem("tokens"));
-
+        setLoading_page(true)
 
         // axios.get(`http://localhost:5000/shoes?${param}`)
         axios.get(
@@ -51,6 +61,7 @@ function ProductList_v3({ re_render }) {
         .then(res => {
             setProducts(res.data)
             setLoading(false)
+            setLoading_page(false)
 
             const xTotalCount = res.headers['x-total-count']
             setNumberOfPage(arrPage(xTotalCount))
@@ -80,10 +91,10 @@ function ProductList_v3({ re_render }) {
             element.scrollIntoView({ behavior: 'smooth' });
         }
     }
+
     
     return ( 
         <div id='scrollTo' className={cx('wrapper')}>
-
             <div  className={cx('route')}>
                 <div>
                     <span >sản phẩm </span>
@@ -120,8 +131,11 @@ function ProductList_v3({ re_render }) {
                 
             </div>
             
-            
             <div className={cx('container')}>
+            {
+                loading_page && <LoadingPage/>
+            }
+
             {
                 loading && 
                 Array(limit).fill(0).map((item, index) => <CardLoading key={index}/>)
@@ -182,17 +196,13 @@ function ProductList_v3({ re_render }) {
 
 function Card({product, listView}) {
     const inforUser = JSON.parse(localStorage.getItem("tokens"));
-    // const [like, setLike] = useState(false)
     const [like, setLike] = useState(inforUser?.favorite?.includes(product.id))
     const [token, setToken] = useState(inforUser)
 
 
-    // useEffect(() => {
-    //     setToken(JSON.parse(localStorage.getItem("tokens")))
-    // }, [like])
+    
 
     const checkSoldOut = [...product.inventory].every(i => i.quantity===0)
-
 
 
     return (
@@ -216,10 +226,12 @@ function Card({product, listView}) {
                             return result
                         }
 
-
-                        axios.patch(process.env.REACT_APP_BACKEND_URL+"/favorite_list/"+token.accName,{product_id:product.id})
+                        axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+"/favorite_list/"+token.accName,{product_id:product.id}, {
+                            headers: {Authorization: inforUser.accessToken}
+                        })
                         .then(res => {
                             console.log(res.data)
+
                             localStorage.setItem("tokens", JSON.stringify({...token, favorite:res.data}))
                         })
                         
@@ -231,9 +243,33 @@ function Card({product, listView}) {
             }
                
             </div>
+            {/* listView */}
+            <div className={cx("card-data", {"listView": listView})}>
 
-            <div className={cx("card-data")}>
-                <a href="" className={cx("card-button")}>Mua</a>
+                <div href="" className={cx("card-button")}
+                    onClick={(e) => {
+                        e.preventDefault()
+
+                    }}
+                >
+                    <button className={cx("detail_vew_btn")} 
+                        onClick={() => {
+                            
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faCartShopping}/>
+                    </button>
+                    <ConfirmModal_v2
+                        size="lg"
+                        body={<DetailProduct_v2 product_prop={product}/>}
+                        // accept = {() => {console.log("click")}}
+                    >
+                        <button className={cx("prev_vew_btn")}>
+                            <FontAwesomeIcon icon={faEye}/>
+                        </button>
+                    </ConfirmModal_v2>
+                </div>
+
             </div>
             <div className={cx("card-items")}>
                 <div className={cx("card-title")}>{product.name}</div>
@@ -249,20 +285,11 @@ function Card({product, listView}) {
                 <div className={cx("card-preci")}>{formatPrice(product.price)}</div>
             }
             </div>
-            {/* <div className={cx("icon")}>
-                <i className="fa-sharp fa-solid fa-star"></i>
-                <i className="fa-sharp fa-solid fa-star"></i>
-                <i className="fa-sharp fa-solid fa-star"></i>
-                <i className="fa-sharp fa-solid fa-star"></i>
-                <i className="fa-regular fa-star"></i>
-            </div> */}
         </Link>
     )
 }
 
 function CardLoading() {
-
-    
 
     return (
         <div className={cx(['card', 'card_loading'])}>
@@ -278,6 +305,16 @@ function CardLoading() {
             <Placeholder  as="p" animation="glow">
                 <Placeholder className="rounded-4 mt-3" bg='dark' xs={12} size='lg'/>
             </Placeholder>
+        </div>
+    )
+}
+
+const LoadingPage = () => {
+    return (
+        <div className={cx("wrapper_LoadingPage")}>
+            <div className={cx("loading")}>
+                <MoonLoader  size={120} color="rgba(109, 246, 236, 1)" />
+            </div>
         </div>
     )
 }

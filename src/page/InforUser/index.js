@@ -9,25 +9,50 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarAuto from "../../components/AvatarAuto";
 import ConfirmModal from "../../components/ConfirmModal";
+import { createAxios } from "../../createInstance";
 
 
 const cx = classNames.bind(style)
+const axiosJWT = createAxios()
 
 function InforUser() {
-    
+    let infor_user = JSON.parse(localStorage.getItem("tokens"))
     const [inforUser, setInforUser] = useState({})
+    const [trigger, setTrigger] = useState(false)
+
+    // useEffect(() => {
+    //     const user = JSON.parse(localStorage.getItem("tokens"));
+    //     // console.log(user)
+    //     setInforUser(user)
+    //     reset({
+    //         fullName: user.fullName,
+    //         gender: user.gender,
+    //         dateOfBirth: fomatDate(user.dateOfBirth, 1)
+    //     })
+    // }, [])
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("tokens"));
-        console.log(user)
-        setInforUser(user)
-        reset({
-            fullName: user.fullName,
-            gender: user.gender,
-            dateOfBirth: fomatDate(user.dateOfBirth, 1)
+        axiosJWT.get(process.env.REACT_APP_BACKEND_URL+`/accounts/${infor_user.accName}`, {
+            headers: {Authorization: infor_user.accessToken}
         })
-    }, [])
+        .then(res => {
+            setInforUser(res.data)
 
+            reset({
+                fullName: res.data.fullName,
+                gender: res.data.gender,
+                // dateOfBirth: fomatDate(res.data.dateOfBirth, 1)
+
+                dateOfBirth: res.data.dateOfBirth
+
+            })
+
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
+    }, [])
     
 
     const fomatDate =  (d = "", type) => {
@@ -56,17 +81,21 @@ function InforUser() {
     });
 
     const handleSave =  (data) => {
+        console.log(data)
         data = {
             ...data,
-            dateOfBirth: fomatDate(data.dateOfBirth, 2)
+            fullName: data.fullName.trim(),
+            // dateOfBirth: fomatDate(data.dateOfBirth, 2)
         }
-        console.log(data)
+        // console.log(data)
 
 
-        axios.patch(`http://localhost:5000/accounts/${inforUser['accName']}`, data)
+        axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/accounts/${inforUser['accName']}`, data, {
+            headers: {Authorization: infor_user.accessToken}
+        })
         .then(res => {
-            console.log(res)
-            localStorage.setItem('tokens', JSON.stringify({...inforUser, ...data}))
+            // console.log(res)
+            // localStorage.setItem('tokens', JSON.stringify({...inforUser, ...data}))
             toast("Cập nhật thông tin thành công", {
                 theme: "light",
                 position: "top-center",
@@ -129,7 +158,11 @@ function InforUser() {
                                         pass_confirm : data.pass_confirm,
                                     }
                                     console.log(pass)
-                                    // axios.patch("http://localhost:5000/changePassword/"+inforUser.accName, pass)
+                                    axios.patch(process.env.REACT_APP_BACKEND_URL+"/changePassword/"+inforUser.accName, pass)
+                                    .then(res => {
+                                        console.log(res)
+                                        toast(res.data)
+                                    }) 
                                 
                                 
                                 

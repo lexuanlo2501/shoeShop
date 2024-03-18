@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from './sideBar.module.scss'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faBars, faCircleDollarToSlot, faClockRotateLeft, faHome, faLayerGroup, faMagnifyingGlass, faMagnifyingGlassDollar, faPenToSquare, faRightFromBracket, faSquarePen, faTrash, faTrashCan, faUser, faUserAstronaut, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faBars, faCircleDollarToSlot, faClockRotateLeft, faHome, faIdCard, faLayerGroup, faMagnifyingGlass, faMagnifyingGlassDollar, faPenToSquare, faRightFromBracket, faSquarePen, faTrash, faTrashCan, faUser, faUserAstronaut, faUsers } from "@fortawesome/free-solid-svg-icons";
 import AvatarAuto from "../../../AvatarAuto";
 
 const cx = classNames.bind(styles)
@@ -64,7 +64,6 @@ function SideBar() {
             route:"accounts",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faUsers}/>,
             title: "người dùng"
-
         },
         {
             route:"history",

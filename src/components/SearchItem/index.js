@@ -10,7 +10,6 @@ import { BeatLoader } from 'react-spinners';
 import { useRef } from "react";
 
 
-
 const cx = classNames.bind(style)
 
 function SearchItem({setTrigger}) {
@@ -33,7 +32,6 @@ function SearchItem({setTrigger}) {
                 })
             }, delay);
         };
-      
         debounceFetchData();
 
         return () => {
@@ -52,19 +50,19 @@ function SearchItem({setTrigger}) {
     const [showResult, setShowResult] = useState(false)
   
     const handleBlur = () => {
-    //   console.log('Focus ra');
+    //   console.log('Focus');
       setShowResult(false)
     };
   
     const handleClick = () => {
-    //   console.log('Click vào');
+    //   console.log('Blur');
       setShowResult(true)
     };
   
     useEffect(() => {
         const parentElement = parentRef.current;
 
-    // event capturing
+        // event capturing
         const handleCapture = (event) => {
             if (!parentElement.contains(event.target)) {
             handleBlur();
@@ -82,7 +80,7 @@ function SearchItem({setTrigger}) {
 
 
     return ( 
-        <div className={cx('wrapper')}
+        <div className={cx(['wrapper', {"wrapper_focus":showResult}])}
             ref={parentRef}
 
             // CÁCH CŨ

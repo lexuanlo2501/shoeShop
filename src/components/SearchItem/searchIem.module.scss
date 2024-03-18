@@ -11,10 +11,15 @@
 
     padding-left: 15px ;
 
+    &.wrapper_focus {
+        outline: 2px rgb(240, 154, 154) solid;
+    }
+
     input {
         background-color: transparent;
         padding: 7px 0;
         flex: 1;
+
     }
 
 }

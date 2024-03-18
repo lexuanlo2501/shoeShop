@@ -1,9 +1,7 @@
 import classNames from "classnames/bind";
 import style from "./home.module.scss";
 import SliderHome from "../../components/SliderHome";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import Carousel from "../../components/Carousel";
+import Carousel_v2 from "../../components/Carousel_v2";
 
 const cx = classNames.bind(style)
 
@@ -11,10 +9,33 @@ function Home({}) {
 
     const brands = ['adidas','nike','converse', 'vans']
 
-   
+    const debounce = (fn, delay) => {
+        delay = delay || 0
+        let timerId
+        // console.log("timerId immediate load:::", timerId)
+        return () => {
+            // closure
+            // console.log("timerId previous at:::", timerId)
+            if(timerId) {
+                clearTimeout(timerId)
+                timerId = null
+            }
+            timerId = setTimeout(() => {
+                fn()
+            }, delay)
+
+        }
+    }
+    const clickOrder = () => console.log("order")
+    const debouncedClickOrder = debounce(clickOrder, 2000);
     return ( 
         <div className={cx("wrapper")}>
             {/* <SliderHome/> */}
+            {/* <div>
+                <button onClick={debouncedClickOrder}>Test debounce</button>
+            </div> */}
+
+            
             <div className={cx('brand')}>
                 <img src={require("./logoBrand/Sneaker-Brand-Logos-2.png")}/>
                 <img src={require("./logoBrand/Sneaker-Brand-Logos-4.png")}/>
@@ -26,7 +47,7 @@ function Home({}) {
             <div>
                 <h1>AIR JORDAN/NIKE COLLECTION</h1>
                 <img className={cx('img_nikeBrand')} src={require("./news_img/news1.webp")}/>
-                <Carousel brand={"nike"} nameProd="jordan"/>
+                <Carousel_v2 brand={"nike"} nameProd="jordan"/>
                 <img className={cx('img_nikeBrand')} src={require("./news_img/news2.webp")}/>
             </div>
 
@@ -39,7 +60,7 @@ function Home({}) {
                             <img src={require(`../../imgData/box/${item}.png`)} alt="box"/>
                             <h2>{item}</h2>
                         </div>
-                        <Carousel brand={item}/>
+                        <Carousel_v2 brand={item}/>
 
                     </div>
                 })

@@ -16,7 +16,7 @@ const cx = classNames.bind(style)
 
 
 
-function PurchaseOrder({userID}) {
+function PurchaseOrder({userID = JSON.parse(localStorage.getItem("tokens")).accName}) {
 
     const [orders, setOrders] = useState([])
     const [rerender, setRerender] = useState(false)
@@ -25,14 +25,12 @@ function PurchaseOrder({userID}) {
     const pagName = ['chờ xác nhận','đang giao','hoàn thành','đã hủy',]
     const [pagCurr, setPagCurr] = useState(0)
     
-    let [deliAmount, setDeliAmount] = useState()
 
     useEffect(() => {
         let canceled = false
         const controller = new AbortController();
-        
         const user = JSON.parse(localStorage.getItem("tokens"));
-        console.log(user)
+
         axios.get(process.env.REACT_APP_BACKEND_URL+"/orders?_client_id="+userID,{signal: controller.signal})
         .then(res => {
 
@@ -59,9 +57,10 @@ function PurchaseOrder({userID}) {
                     orderUser = orderUser.filter(i => i.status === 4)
                 }
                 setOrders(orderUser.reverse())
+
+                console.log(res.data)
     
-                // console.log(orderUser)
-                setDeliAmount(res.data.filter(i => i.status===2).length)
+          
             }
 
             // RULE
@@ -87,14 +86,15 @@ function PurchaseOrder({userID}) {
         <div className={cx('wrapper')}>
             <ul className={cx('navigate')} >
             {
-                pagName.map((item,index) => <li key={item} className={ cx({"li_active":index ===pagCurr}) }
-                    onClick={() => {
-                        setPagCurr(index)
-                    }}
-
-                >
-                    {item} {index === 2 && <span>({deliAmount})</span>}
-                </li>)
+                pagName.map((item,index) => (
+                    <li key={item} className={ cx({"li_active":index ===pagCurr}) }
+                        onClick={() => {
+                            setPagCurr(index)
+                        }}
+                    >
+                        {item} 
+                    </li>
+                ))
             }
             </ul>
 
@@ -124,6 +124,9 @@ function Orders({orders, setRerender, userID}) {
         axios.delete(process.env.REACT_APP_BACKEND_URL+"/orders/"+id)
         .then(res => {
             console.log("xoa thanh cong don hang " + id)
+
+            // trigger to re-render (dependence of useEffect)
+            setRerender(pre => !pre) 
         })
     }
    
@@ -207,7 +210,7 @@ function Orders({orders, setRerender, userID}) {
                                 body='Bấm xác nhận để hủy đơn'
                                 accept={() => {
                                     cancleOrder(item.id)
-                                    setRerender(pre => !pre) 
+                                    
                                 }}
                             />
                             :
@@ -302,11 +305,18 @@ const Rating = ({order_detail}) => {
             <button
                 className={cx("rating_send_btn")}
                 onClick = {() => {
+                    // console.log(order_detail)
+
                     if(numberStar) {
                         const dataP = {rating:numberStar, detail_order_id:order_detail.detail_order_id}
+                        console.log(dataP)
+
                         axios.post(process.env.REACT_APP_BACKEND_URL+"/rating", dataP)
-                        .then(() => {
+                        .then((res) => {
                             toast.success("Gửi đánh giá thành công")
+                        })
+                        .catch((err) => {
+                            console.log(err)
                         })
                         // console.log(dataP)
                     }

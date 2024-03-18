@@ -40,11 +40,14 @@
     }
     
     .header_action_btn {
+        position: relative;
         // float: right;
         font-size: 20px;
         line-height: 100%;
         display: inline-block;
-        padding: 8px;
+        // padding: 8px;
+        width: 33px;
+        height: 33px;
         border-radius: 50%;
         color: #434445;
         background-color: #eae6e6;
@@ -74,15 +77,71 @@
     }
 }
 
+
+.header_cart-notice{
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    // padding: 0px 7px;
+    background-color: #fa5d6f;
+    font-size: 0.9rem;
+    color: var(--white-color);
+    border-radius: 50%;
+    top: 3px;
+    right: 1px;
+    font-size: 14px;
+}
+
+.notify_admin {
+    padding: 10px 0px;
+    width: 360px;
+   
+    .notify_item+.notify_item {
+        border-top: 0.7px solid #d6d3d3;
+
+    }
+
+    .notify_item {
+        padding: 15px;
+
+        &>div {
+            display:flex;
+            justify-content: space-between;
+            p {
+                font-size: 14px;
+            }
+        }
+
+        h3 {
+            text-transform: capitalize;
+            color: #626161;
+            font-weight: 700;
+        }
+        p {
+            color:#646464
+        }
+
+        &:hover {
+            background-color: #e2e1e1;
+        }
+    }
+}
+
 .alert-chat.avatar_admin {
     background-color: rgb(187, 136, 201);
     color: #fff
 }
 
 
-.menu_avatar {
+.shape_Tippy {
     background-color: #fff;
-    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+    border-radius: 10px;
+    padding: 10px 0px;
+}
+
+.menu_avatar {
+   
     width: 170px;
     font-size: 17px;
     ul {

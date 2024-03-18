@@ -6,7 +6,7 @@ const cx = classNames.bind(style)
 
 function AvatarAuto({nameU="User"}) {
 
-    let bgRand = nameU.lastIndexOf(' ') ? nameU[nameU.lastIndexOf(' ')+1].charCodeAt(0)%10 : nameU[0].charCodeAt(0)%10
+    let bgRand = nameU.lastIndexOf(' ') ? nameU[nameU.lastIndexOf(' ')+1]?.charCodeAt(0)%10 : nameU[0]?.charCodeAt(0)%10
     bgRand = bgRand>0 ? bgRand : bgRand+1
     const sumaryU = () => {
         let n = nameU.lastIndexOf(' ')+1

@@ -7,6 +7,7 @@
 }
 
 .wrapper {
+    position: relative;
     // margin: 0 5px;
     margin-top: 30px;
 
@@ -46,6 +47,7 @@
 }
 
 .container {
+    position: relative;
     margin: 0 auto;
     min-height: 1vh;
 }
@@ -244,10 +246,12 @@ a{
         cursor: pointer;
         color: #333;
         font-weight: 600;
+
+        &:hover {
+            background-color: #f6bdbd;
+        }
         &.active {
             color: #f65757;
-            
-
         }
     }
 }
@@ -272,9 +276,15 @@ a{
     text-align: center;
     position: absolute;
     transform: translateX(-50%);
-    width: 80%;
     left: 50%;
     /* top: 129px; */
+
+    &.listView {
+        left: 5%;
+        bottom: 0;
+        transform: none;
+
+    }
 }
 .card-title,
 .card-preci{
@@ -315,15 +325,42 @@ a{
 .card-button{
     display: block;
     background-color: #f2a20c;
-    color: #e9eaec;
+    color: hsl(220, 7%, 92%);
     border-radius: 14px;
     font-weight: 600;
     transition: 0.2s;
     opacity: 0;
-    width: 100%;
     position: relative;
-    padding: 10px 0;
+    // padding: 7px 0;
+    box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+    .detail_vew_btn,
+    .prev_vew_btn
+    {
+        background-color: #fff;
+        padding: 8px 0;
+        font-size: 15px;
+        color: #333;
+        width: 38px;
 
+        &:hover {
+            background-color: #515050;
+            color: #fff;
+            transition: ease 0.3s;
+        }
+    }
+
+    .detail_vew_btn {
+        border-top-left-radius: 7px;
+        border-bottom-left-radius: 7px;
+        border-right: 0.3px solid #e5e4e4;
+
+    }
+    .prev_vew_btn {
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 7px;
+        border-left: 0.3px solid #e5e4e4;
+
+    }
     
 }
 
@@ -348,7 +385,7 @@ a{
 .card:hover .card-button{
     transition-delay: 0.2s;
     opacity: 1;
-    transform: translateY(-111%);
+    transform: translateY(-126%);
 }    
 .card-items{
     /* bottom: 42px; */
@@ -386,7 +423,7 @@ a{
 .pagination {
     text-align: center;
     margin-top: 30px;
-    margin-bottom: 30px;
+    margin-bottom: 100px;
 }
 .pagination_container {
     display: inline-block;
@@ -478,6 +515,21 @@ a{
     }
 
 
+}
+
+.wrapper_LoadingPage {
+    position: absolute;
+    z-index: 100;
+    inset: 0;
+    height: 100%;
+    background-color: #4949494e;
+    display: flex;
+    justify-content: center;
+    // align-items: center;
+
+    .loading {
+        margin-top: 100px;
+    }
 }
 
 

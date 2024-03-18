@@ -46,11 +46,9 @@ function ForgotPassword () {
                 })
                 navigate("/signin")
             })
-
-            console.log(true)
         }
         else{
-            console.log(false)
+            alert("Mã xác nhận không chính xác")
         }
     }
 
@@ -89,7 +87,7 @@ function ForgotPassword () {
                                 }, "vVRWCJMmPNi61x4AK");
                             }
                             else {
-                                console.log("Ban chua nhap email")
+                                alert("Bạn chưa nhập email")
                             }
                         }}
                     >Gửi mã</button>

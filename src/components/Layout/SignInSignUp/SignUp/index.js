@@ -49,7 +49,7 @@ function SignUp() {
             const dataPost = {
                 ...data,
                 password: data.password,
-                dateOfBirth: `${date[2]}/${date[1]}/${date[0]}`,
+                // dateOfBirth: `${date[2]}/${date[1]}/${date[0]}`,
                 role: 'client'
             }
     

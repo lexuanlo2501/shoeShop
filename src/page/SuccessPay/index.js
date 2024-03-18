@@ -41,10 +41,7 @@ function SuccessPay() {
             }
         }
        time_render++
-
-
     }, [])
-
     
    
     return (

@@ -2,7 +2,7 @@ import classNames from "classnames/bind";
 import styles from './Orders.module.scss'
 
 import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,10 +17,15 @@ import Modal from 'react-bootstrap/Modal';
 import { faCreditCard, faCreditCardAlt, faTrashCan, faTruckFast } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {formatPrice, limit, priceDiscount} from "../../common"
+import { createAxios } from "../../createInstance";
+import { CartContext } from "../../App";
 
 const cx = classNames.bind(styles)
+const axiosJWT = createAxios()
 
 function Orders() {
+
+
 
     const [user, setUser] = useState({})
 
@@ -31,19 +36,20 @@ function Orders() {
 
     const [show, setShow] = useState(false);
     const [optionPay, setOptionPay] = useState("cod")
+    const [errQuantity, setErrQuantity] = useState([])
     
     const [urlVNP, setUrlVNP] = useState("")
 
     const handleChange_payMent = (event) => {
         setOptionPay(event.target.value)
-        console.log(event.target.value)
+        // console.log(event.target.value)
         if(event.target.value === "credit") {
             axios.post(process.env.REACT_APP_BACKEND_URL+"/create_payment_url", {
                 "amount":total,
                 "language":"vn"
             })
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 setUrlVNP(res.data)
             })
         }
@@ -64,17 +70,14 @@ function Orders() {
         axios.get(process.env.REACT_APP_BACKEND_URL+"/shoesList/"+cart_prod_id)
         .then(res => {
 
-            let cart = JSON.parse(localStorage.getItem('cart'))
             let newCart = cart.map(item => {
                 return {
                     ...item,
                     "product": res.data.find(i => i.id === item.id)
-
                 }
             })
 
             setOrderItem(newCart.sort(function(a, b){return a.id - b.id}))
-            console.log(newCart)
             setLoading(false)
         })
 
@@ -106,7 +109,7 @@ function Orders() {
         return result
     })
 
-    console.log({total,total_reduce})
+    // console.log({total,total_reduce})
 
     const handleOrder = (data) => {
 
@@ -161,12 +164,23 @@ function Orders() {
                 }))
             }
 
-            axios.post(process.env.REACT_APP_BACKEND_URL+'/orders', order)
+            axiosJWT.post(process.env.REACT_APP_BACKEND_URL+'/orders', order, {
+                headers: {Authorization: user.accessToken}
+            })
             .then(res => {
-                toast("Đặt hàng thành công", {
-                    theme: "light",
-                    position: "top-center",
-                })
+                if(res.data.status) {
+                    toast("Đặt hàng thành công", {
+                        theme: "light",
+                        position: "top-center",
+                    })
+                }
+                else {
+                    setErrQuantity(res.data.message)
+                    toast.error("Không đủ sản phẩm có sẵn, Vui lòng kiểm tra lại giỏ hàng", {
+                        theme: "light",
+                        position: "top-center",
+                    })
+                }
                 console.log(res)
             })
             .catch(err => {
@@ -202,6 +216,20 @@ function Orders() {
                             </h1>
                             <span>(<span className={cx("count_item")}> {orderItem.length} </span>sản phẩm)</span>
                         </div>
+
+                        
+                    {
+                        !!errQuantity.length && 
+                        <div className={cx("err_quantity_order")}>
+                            <p>* Thông báo: không đủ số lượng để bạn đặt hàng</p>
+                            <p>Bạn vui lòng kiểm tra thông tin giỏ hàng với những thông tin dưới đây</p>
+                        {
+                            errQuantity.map(mess => <p key={mess.message}>{orderItem.find(prod => prod.product.id===mess.product_id)?.product?.name} {mess.message}</p>)
+                        }
+                        </div>
+                    }
+                        
+
                         <div className={cx("content_description")}>
                             <div className={cx("content_production_left")}>
                                
@@ -408,6 +436,7 @@ function Orders() {
 
 
 function Item_order({order, setCheck}) {
+    const cart_context = useContext(CartContext);
 
     const [quantity, setQuantity] = useState(order.quantity)
 
@@ -419,8 +448,8 @@ function Item_order({order, setCheck}) {
         // lấy ra array mà k có sản phẩm đang select
         cart = cart.filter(i => i.id + i.size !== order.id + order.size)
         
-        console.log(tmp)
-        console.log(cart)
+        // console.log(tmp)
+        // console.log(cart)
 
         let quantityUpdate = order.quantity
         if(add) {
@@ -435,7 +464,7 @@ function Item_order({order, setCheck}) {
                 quantityUpdate -=1 
             }
         }
-        console.log(quantityUpdate)
+        // console.log(quantityUpdate)
 
         let newCart = [...cart, {...tmp, "quantity":quantityUpdate}].sort(
             function(a, b){
@@ -490,6 +519,11 @@ function Item_order({order, setCheck}) {
             {/* <i className="ti-close remove_product"></i> */}
             <Link to={`/shoes/detail_product?_id=${order?.product?.id}`} className={cx("content_description_left")}>
                 <img src={process.env.REACT_APP_BACKEND_URL+`/imgs/${order?.product?.img}`} alt="" className={cx("content_product")}/>
+            {
+                order?.product?.inventory?.find(i => i.size === order.size).quantity === 0 
+                && 
+                <div className={cx("soldOut_mess")}><span>HẾT HÀNG</span></div>
+            }
             </Link>
             <div className={cx("content_description_right")}>
                 <div className={cx("product_name_and_remove")}>
@@ -555,6 +589,7 @@ function Item_order({order, setCheck}) {
                             let cart = JSON.parse(localStorage.getItem('cart'))
                             cart = cart.filter(i => i.id + i.size !== order.id + order.size)
                             localStorage.setItem('cart', JSON.stringify(cart))
+                            cart_context.setCart_context(pre => !pre)
                             setCheck(pre => !pre)
                         }}
                     >

@@ -20,6 +20,11 @@
 table {
     font-family:'Open Sans';
 
+    
+}
+
+.row_order{
+    border-bottom: 3px solid  #e8e5e5;
 }
 
 th {
@@ -27,6 +32,7 @@ th {
 }
 
 .navigate {
+    margin-top: 15px;
     margin-bottom: 17px;
     display: flex;
     justify-content: center;
@@ -114,7 +120,13 @@ th {
     }
 }
 
-
+.find_order {
+    font-size: 20px;
+    padding: 8px 15px;
+    background-color: #4e4e4e;
+    color:#fff;
+    border-radius: 10px;
+}
 
 .btnModal {
     font-size: 19px;
@@ -186,6 +198,38 @@ th {
         width: 135px;
     }
 
+}
+
+
+.input_Date {
+    margin-bottom: 20px;
+    height: 35px;
+    select {
+        width: 70px;
+        // padding: 5px 0;
+        border-radius: 10px;
+       height: 100%;
+       border-color: rgb(162, 162, 162);
+    }
+
+    select+select {
+        margin-left: 5px;
+    }
+
+    button {
+        display: inline-block;
+        padding: 0 10px;
+        color: #fff;
+        margin-left: 10px;
+        border-radius: 5px;
+        background-color: #333;
+        height: 100%;
+    }
+}
+
+.messagge_not_found {
+    text-align: center;
+    color: #757575;
 }
 
 // RESPONSIVE

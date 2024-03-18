@@ -286,3 +286,9 @@ ul {
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
   }
+
+img {
+    -webkit-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none; 
+}

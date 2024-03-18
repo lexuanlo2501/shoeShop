@@ -1,7 +1,7 @@
 import { useState } from "react"
 import './SelectActive.scss'
 
-function SelectActive({children, noActive}) {
+function SelectActive({children=[], noActive}) {
     const [active, setActive] = useState()
     
     return (

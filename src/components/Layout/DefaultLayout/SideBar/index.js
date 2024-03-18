@@ -86,6 +86,7 @@ function SideBar({setRe_render}) {
                     
                 </ul>
 
+{/* 
                 <ul className={cx("nav-bar")}>
                     <li>Loại</li>
                     <li className={cx('select_type-Brand')}>
@@ -103,7 +104,7 @@ function SideBar({setRe_render}) {
                     ))
                 }
 
-                </ul>
+                </ul> */}
 
 
                 <ul className={cx("nav-bar")}>

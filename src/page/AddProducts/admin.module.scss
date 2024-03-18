@@ -104,6 +104,15 @@ ul {
     height: 500px;
     border-radius: 30px;
 
+
+    .errFile_img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        font-size: 900%;
+        opacity: 0.3;
+    }
   
     
 }
@@ -294,7 +303,7 @@ ul {
 
 
 .input_product {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     position: relative;
 
     .label-product {
@@ -382,7 +391,8 @@ ul {
 
 .button-54 {
   font-family: "Open Sans", sans-serif;
-  width: 150px;
+//   width: 150px;
+  width: 100%;
   font-size: 18px;
   letter-spacing: 2px;
   text-decoration: none;
@@ -663,18 +673,21 @@ ul {
 
 .quantity_size {
     position: relative;
+    // display: inline-block;
     
     span {
         display: inline-block;
         margin-right: 10px;
-        background-color: #333;
+        background-color: #4a4a4a;
         color: #fff;
         padding: 3px 4px;
         border-radius: 5px;
+        width: 50px;
+        text-align: center;
     }
 
     input {
-        width: 85px;
+        width: 100px;
     }
 
     &+& {
@@ -902,14 +915,18 @@ ul {
     }
 }
 
+
 .modify_attrib {
-    min-height: 400px;
+    // min-height: 400px;
+    height: 470px;
+    overflow-y: scroll;
+
     .navigate_attribProd {
         display: flex;
+        justify-content: center;
         margin-top: 5px;
         margin-bottom: 15px; 
 
-    
         li {
             cursor: pointer;
             width: 130px;
@@ -927,6 +944,12 @@ ul {
     
         
     }
+}
+
+.category_SelectInTypes {
+    border-radius: 10px;
+    background-color: #f0f0ef;
+    padding: 1px;
 }
 
 .input_add {
@@ -1019,6 +1042,13 @@ ul {
 
 .tabel_product {
     overflow-x: scroll;
+    table {
+
+        tr {
+            border-bottom:4px solid #e8e5e5;
+        }
+
+    }
 
 }
 

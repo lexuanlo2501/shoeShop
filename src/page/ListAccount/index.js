@@ -9,10 +9,18 @@ import AvatarAuto from '../../components/AvatarAuto';
 import { faCircle, faCircleInfo, faInfo, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from 'react-bootstrap';
 import PurchaseOrder from '../PurchaseOrder';
+import { createAxios } from '../../createInstance';
+
+
+let axiosJWT = createAxios()
+
 
 const cx = classNames.bind(style)
 
 function ListAccount() {
+    let infor_user = JSON.parse(localStorage.getItem("tokens"))
+
+
     const [acc, setAcc] = useState([])
     const [userSelect, setUserSelect] = useState({})
 
@@ -25,25 +33,30 @@ function ListAccount() {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL+'/accounts')
+        axiosJWT.get(process.env.REACT_APP_BACKEND_URL+'/accounts', {
+            headers: {Authorization: infor_user.accessToken}
+        })
         .then(res => setAcc(res.data))
     }, [rr_lock])
 
     const handleLockAcc = (id, value) => {
-        axios.patch(process.env.REACT_APP_BACKEND_URL+`/accounts/${id}`, {"isLock":value})
+        axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/accounts/${id}`, {"isLock":value}, {
+            headers: {Authorization: infor_user.accessToken}
+        })
         // .then(res => console.log(res))
         setRr_lock(pre => !pre)
     }
 
     return (
         <div className={cx('wrapper')}>
-            <h2>Quản lý tài khoản</h2>
+            <h1>Quản lý tài khoản</h1>
             <div className={cx("table_accounts")}>
                 <table className="table table-hover">
                     <thead>
                         <tr className="table-info">
                             <th scope="col">#</th>
                             <th scope="col"></th>
+                            <th scope="col" className={cx('fullName')}>Tài Khoản</th>
                             <th scope="col" className={cx('fullName')}>Tên</th>
                             <th scope="col">Email</th>
                             <th scope="col">SĐT</th>
@@ -63,8 +76,9 @@ function ListAccount() {
                                     <p className={cx('padding_row')}>{index+1}</p>
                                 </th>
                                 <td>
-                                <AvatarAuto nameU={item.fullName}/>
+                                    <AvatarAuto nameU={item.fullName}/>
                                 </td>
+                                <td>{item.accName}</td>
                                 <td>{item.fullName}</td>
                                 <td>{item.email}</td>
                                 <td>{item.phoneNumber}</td>

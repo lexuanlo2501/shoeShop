@@ -1,7 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import classNames from 'classnames/bind';
-import { useEffect, useState } from 'react';
-import Carousel from '../../components/Carousel';
+import { useContext, useEffect, useState } from 'react';
 import SelectActive from '../../components/SelectActive';
 import Slider from '../../components/Slider';
 import styles from './DetailProduct.module.scss'
@@ -10,18 +9,47 @@ import axios from 'axios';
 import {priceDiscount, formatPrice} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
-import { faHeart as faHeartSolid  } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faHeart as faHeartSolid  } from '@fortawesome/free-solid-svg-icons';
 import { HashLoader } from 'react-spinners';
+import { createAxios } from '../../createInstance';
 
+///////////////////////
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Navigation } from 'swiper/modules';
 
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import Carousel_v2 from '../../components/Carousel_v2';
+import { CartContext } from '../../App';
+// import { CartContext } from '../../components/Layout/HeaderOnly';
+
+// import required modules
+/////////////////////////
 
 const cx = classNames.bind(styles)
+const axiosJWT = createAxios()
 
+// khi component có prop "product_prop" thì dùng component này để quick view(xem nhanh)
+function DetailProduct_v2({product_prop={}}) {
 
-function DetailProduct_v2() {
+    // context được tạo ở file App.js (mục đích tăng số lượng hiển thị giỏ hàng)
+    const cart_context = useContext(CartContext);
+
+    let infor_user = JSON.parse(localStorage.getItem("tokens"))
+
     const sizeValues = ['36', '37', '38', '39', '40', '41', '42', '43']
-    const [product, setProduct] = useState({})
+    const [product, setProduct] = useState(product_prop)
     const [trigger, setTrigger] = useState(false)
+
+
+    const [imgMain, setImgMain] = useState("")
+
+    const [showWanr, setShowWanr] = useState(false)
+    const [showRefun, setShowRefun] = useState(false)
+
+
     
     const [quantity_Order, setQuantity_Order] = useState(1)
     // const [size_Order, setSize_Order] = useState(sizeValues[0])
@@ -32,14 +60,20 @@ function DetailProduct_v2() {
     let param = currentUrl.split("?")[1]
     let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
 
-
+    let isQuickView = Object.keys(product_prop).length
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL+"/shoes/"+paramToObject._id)
-        .then(res => {
-            setProduct(res.data)
-            console.log(res.data)
-        })
-        console.log(paramToObject)
+        if(!isQuickView) {
+            axios.get(process.env.REACT_APP_BACKEND_URL+"/shoes/"+paramToObject._id)
+            .then(res => {
+                setProduct(res.data)
+                setImgMain(res.data.img)
+            })
+        }
+        else {
+            setImgMain(product_prop.img)
+        }
+        // console.log(paramToObject)
+
 
     }, [trigger])
 
@@ -85,7 +119,10 @@ function DetailProduct_v2() {
     
     return (
         <div >
+           
             <div className={cx("container")}>
+            {
+                !isQuickView &&
                 <div className={cx("container_rounter")}>
                     <ul className={cx("rounter")}>
                         <li><a href="#">Home</a></li>
@@ -95,13 +132,56 @@ function DetailProduct_v2() {
                         <li><a href="#"><strong>{product.name}</strong></a></li>
                     </ul>
                 </div>
+            }
 
+               
                 <div className={cx("row")}>
                     <div className={cx("row_grp1")}>
                     {
                         product.img ?
                         <div className={cx("container_imgs_shoe")}>
-                            <img className={cx(["shoe_img", "_shoe"])} src={process.env.REACT_APP_BACKEND_URL+`/imgs/${product.img}`} alt="shoe image"/>
+                            <div className={cx("img_main")}>
+                                <img className={cx(["shoe_img", {"shadow":imgMain===product.img, "quick_view":isQuickView}])} src={process.env.REACT_APP_BACKEND_URL+`/imgs/${imgMain}`} alt="shoe image"/>
+                            </div>
+
+                            <Swiper
+                                style={{
+                                    '--swiper-navigation-color': '#333',
+                                    '--swiper-pagination-color': '#333',
+                                }}
+                                modules={[Pagination, Navigation]}
+                                navigation={true}
+                                slidesPerView={3}
+                                spaceBetween={5}
+                                pagination={{
+                                    clickable: true,
+                                }}
+                                className="mySwiper"
+
+                                // breakpoints={{
+                                //     0:{slidesPerView:1},
+                                //     400:{slidesPerView:2},
+                                //     639:{slidesPerView:3},
+                                //     865:{slidesPerView:4},
+                                //     1000:{slidesPerView:5},
+                                //     1500:{slidesPerView:6},
+                                //     1700:{slidesPerView:7}
+                                // }}
+
+
+                            >
+                            {
+                                [product.img,...product?.imgs]?.map(img => (
+                                    <SwiperSlide key={img}>
+                                        <img 
+                                            onClick={() => setImgMain(img)}
+                                            className={cx("img_sub_slide")} src={process.env.REACT_APP_BACKEND_URL+`/imgs/${img}`} alt="shoe image"
+                                        />
+
+                                    </SwiperSlide>
+                                ))
+                            }
+                            </Swiper>
                         </div>
                         :
                          <div style={{ textAlign: '-webkit-center' }}>
@@ -146,20 +226,23 @@ function DetailProduct_v2() {
                             
                             </div>
 
-                            <div className={cx(["line", "line2"])}></div>
-
-                            <div id="description_shoes">
-                                <p className={cx("description")}>{product.description}</p>
-                            </div>
+                        {
+                            !isQuickView && 
+                            <>
+                                <div className={cx(["line"])}></div>
+                                <div id="description_shoes"><p className={cx("description")}>{product.description}</p></div>
+                            </>
+                        }
 
                             <div className={cx("line")}></div>
-                            <div className={cx("option")}>
+                            <div className={cx("option", {"quick_view":isQuickView})}>
                                 <div className={cx("size_product")}>
-                                    <p className={cx("select")}>Size: </p>
+                                    <p className={cx(["select","m-0"])}>Size: </p>
                                     <ul className={cx("button_size")}>
                                         <SelectActive>
                                         {
-                                            sizeValues.map((item, index) => {
+                                            // sizeValues
+                                            product?.inventory?.map(i=>i.size)?.map((item, index) => {
                                                 let quantitySize_select = product?.inventory?.find(i => i.size===item)
 
                                                 return (
@@ -167,14 +250,14 @@ function DetailProduct_v2() {
                                                     <span key={index}
                                                         className={cx("btn_size")}
                                                         onClick={() => {
-                                                            console.log(quantitySize_select)
+                                                            // console.log(quantitySize_select)
                                                             setSize_Order(item)
                                                         }}
                                                     >
                                                         {item}
                                                     </span>
                                                     :
-                                                    <span noActive className={cx(["btn_size", "noActive"])} onClick={() => {}}><span>x</span></span>
+                                                    <span noActive key={index} className={cx(["btn_size", "noActive"])} onClick={() => {}}><span>x</span></span>
                                                 )
                                                 
 
@@ -184,7 +267,7 @@ function DetailProduct_v2() {
                                     </ul>
                                 </div>
                                 <div className={cx("quantity_product")}>
-                                    <p className={cx("quantity")}>Số Lượng: </p>
+                                    <p className={cx(["quantity", "m-0"])}>Số Lượng: </p>
                                     <div className={cx("wrapper")}>
                                         <span className={cx("minus")}
                                             onClick={() => {
@@ -204,26 +287,29 @@ function DetailProduct_v2() {
                                                     return pre<size_quantiry_select ? pre+1 : pre
 
                                                 })
-                                                console.log(product.inventory.find(i => i.size === size_Order))
+                                                // console.log(product.inventory.find(i => i.size === size_Order))
                                             }}
                                         >+</span>
                                     </div>
 
+                                    <p className={cx("quantity_availabel")}>{product?.inventory?.find(i => i.size === size_Order)?.quantity} sản phẩm sẵn có</p>
                                     <p className={cx("mess_quantity_prod")}>{size_quantiry_select < quantity_Order ? `Size của sản phẩm này không đủ số lượng mà bạn cần. Hiện có ${product?.inventory?.find(i => i.size === size_Order).quantity} sản phẩm` : ""}</p>
-
                                 </div>
                             </div>
 
                             <div id="btn_grp">
-                                <div className={cx("buy_btn_grp")}>
+                                {/* <div className={cx("buy_btn_grp")}>
                                     <button className={cx("buy")}>MUA HÀNG</button>
-                                </div>
-
+                                </div> */}
+                            {
+                                !isQuickView &&
                                 <div className={cx("buy_btn_grp")}>
                                     <button className={cx("buy")}
                                         onClick={() => {
                                             const user = JSON.parse(localStorage.getItem("tokens"));
-                                            axios.patch(process.env.REACT_APP_BACKEND_URL+"/favorite_list/"+user.accName,{product_id:product.id})
+                                            axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+"/favorite_list/"+user.accName,{product_id:product.id}, {
+                                                headers: {Authorization: infor_user.accessToken}
+                                            })
                                             .then(res => {
                                                 setTrigger(pre => !pre)
                                                 localStorage.setItem("tokens", JSON.stringify({...user, favorite:res.data}))
@@ -233,6 +319,7 @@ function DetailProduct_v2() {
                                         YÊU THÍCH {user?.favorite?.includes(product?.id) ?<FontAwesomeIcon icon={faHeartSolid}/>:<FontAwesomeIcon icon={faHeart}/>}
                                     </button>
                                 </div>
+                            }
                 
                                 <div className={cx("add_btn_grp")}
                                     onClick={() =>{
@@ -246,6 +333,7 @@ function DetailProduct_v2() {
                                         }
                                         else if(size_Order) {
                                             addCart(product.id)
+                                            cart_context.setCart_context(pre => !pre)
                                             toast.success("Đã thêm vào gỏi hàng", {
                                                 autoClose: 2000,
                                                 theme: "colored",
@@ -266,24 +354,95 @@ function DetailProduct_v2() {
                                     <button className={cx("add")}>THÊM VÀO GIỎ HÀNG</button>
                                 </div>
 
+                            {
+                                !isQuickView && 
+                                <>
+                                    <div className={cx(["line"])}></div>
+                                    <div className={cx(["policy","policy_refund"])}>
+
+                                        <h2 className={cx({"active_policy":showRefun})} onClick={() => {setShowRefun(pre => !pre)}}>
+                                            QUY ĐỊNH ĐỔI SẢN PHẨM
+                                        {
+                                            showRefun ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronUp}/>
+                                        }
+                                        </h2>
+                                    {
+                                        showRefun &&
+                                        <ul >
+                                            <li>Chỉ đổi hàng 1 lần duy nhất, mong bạn cân nhắc kĩ trước khi quyết định.</li>
+                                            <li>Thời hạn đổi sản phẩm khi mua trực tiếp tại cửa hàng là 07 ngày, kể từ ngày mua. Đổi sản phẩm khi mua online là 14 ngày, kể từ ngày nhận hàng.</li>
+                                            <li>Sản phẩm đổi phải kèm hóa đơn. Bắt buộc phải còn nguyên tem, hộp, nhãn mác.</li>
+                                            <li>Sản phẩm đổi không có dấu hiệu đã qua sử dụng, không giặt tẩy, bám bẩn, biến dạng.</li>
+                                            <li>
+                                                Ananas chỉ ưu tiên hỗ trợ đổi size. Trong trường hợp sản phẩm hết size cần đổi, bạn có thể đổi sang 01 sản phẩm khác:
+                                                <br/>- Nếu sản phẩm muốn đổi ngang giá trị hoặc có giá trị cao hơn, bạn sẽ cần bù khoảng chênh lệch tại thời điểm đổi (nếu có).
+                                                <br/>- Nếu bạn mong muốn đổi sản phẩm có giá trị thấp hơn, chúng tôi sẽ không hoàn lại tiền.
+                                            </li>
+                                            <li>Trong trường hợp sản phẩm - size bạn muốn đổi không còn hàng trong hệ thống. Vui lòng chọn sản phẩm khác.</li>
+                                            <li>Không hoàn trả bằng tiền mặt dù bất cứ trong trường hợp nào. Mong bạn thông cảm.</li>
+                                        </ul>
+                                    }
+                                    
+                                    </div>
+
+                                    <div className={cx(["line"])}></div>
+
+                                    <div className={cx("policy")}>
+                                        <h2 className={cx({"active_policy":showWanr})} onClick={() => {setShowWanr(pre => !pre)}}>BẢO HÀNH THẾ NÀO ?
+                                        {
+                                            showWanr ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronUp}/>
+                                        }
+
+                                        </h2>
+                                    {
+                                        showWanr &&
+                                        <p>
+                                            Mỗi đôi giày trước khi xuất xưởng đều trải qua nhiều khâu kiểm tra. Tuy vậy, trong quá trình sử dụng, nếu nhận thấy các lỗi: gãy đế, hở đế, đứt chỉ may,...trong thời gian 6 tháng từ ngày mua hàng, mong bạn sớm gửi sản phẩm nhằm giúp chúng tôi có cơ hội phục vụ bạn tốt hơn. Vui lòng gửi sản phẩm về bất kỳ cửa hàng Ananas nào, hoặc gửi đến trung tâm bảo hành ngay trong trung tâm TP.ĐN trong giờ hành chính:
+                                            Địa chỉ: 01 ABC, P.Thanh Bình, Q.Hải Châu , TP. Đà Nẵng.
+                                            Hotline: 077 721 6047
+                                        </p>
+                                    }
+                                    
+                                    </div>
+
+                                </>
+                                
+                            }
+                               
                               
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
+            {
+                !isQuickView && 
+                <>
                 {
                     product.imgs && <Slider imgs={product?.imgs}/>
                 }
+                    <div className={cx("line")}></div>
+                    <img className={cx('choose_size')} src={require('../../imgData/howto.png')} alt="shoe image"/>
+                    <img className={cx('choose_size')} src={require('../../imgData/chart_size.png')} alt="shoe image"/>
+
                 
-                <div className={cx("line")}></div>
-                <img className={cx('choose_size')} src={require('../../imgData/howto.png')} alt="shoe image"/>
-                <img className={cx('choose_size')} src={require('../../imgData/chart_size.png')} alt="shoe image"/>
-                <Carousel brand={product.brand_id} setTrigger={setTrigger}/>
+                    <div className={cx("same_products")} >
+                        <div className={cx("same_products__title")} >
+                            <h1>sản phẩm tương tự</h1>
+                            <p>Các sản phẩm khác được đề xuất dành riêng cho bạn</p>
+                        </div>
+                    
+                    {
+                        product?.brand_id && <Carousel_v2 brand={product?.brand_id} setTrigger={setTrigger}/>
+                    }
+                </div>
+                </>
+            }
+            
+           
+
 
             </div>
-
-
 
 
         </div>
