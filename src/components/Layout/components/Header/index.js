@@ -5,7 +5,7 @@ import axios from "axios";
 import { useState, useEffect, useMemo, useRef, useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart, faHome, faPercent, faBell } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart, faHome, faPercent, faBell, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 // import Tippy from '@tippyjs/react';
 // import 'tippy.js/dist/tippy.css'; // optional
 
@@ -21,8 +21,22 @@ import { CartContext } from "../../../../App";
 const cx = classNames.bind(styles)
 
 function Header({setRe_render}) {
-    
-    
+    //Category
+    const [apiCategory, setApicategory] = useState([]);
+useEffect(()=> {
+    axios.get('http://localhost:5000/category')
+
+    .then((data) => {
+            if(data.status === 200) {
+                setApicategory(data.data);
+                console.log(apiCategory);
+            }
+       
+    })
+},[])
+ 
+       
+ 
     const [orderItem, setOrderItem] = useState([])
     const [notify, setNotify] = useState([])
 
@@ -107,207 +121,254 @@ function Header({setRe_render}) {
     return ( 
         <div className={cx('wrapper')}>
 
-            <ul className={cx(["nav_dropdown"])} id={styles["nav-menu"]} >
-                
-
-                <li className={cx("box_logo")} >
-                    <img className={cx('logo')} src={require('./logoDT-70.png')}/>
-                    <span className={cx('logo_title')}>
-                        <span className={cx('L_1')}>C</span>
-                        <span className={cx('L_2')}>D</span>
-                        <span className={cx('L_3')}>I</span>
-                        <span className={cx('L_4')}>O</span>
-                    </span>
-                </li>
-
-                <li className={cx(["men","menu"])}>
-                    <Link to="/home" onClick={() => {window.scrollTo(0, 0)}}>
-                        <span className={cx("nav_desktop")}>trang chủ</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faHome}/></span>
-                    </Link>
-                </li>
-
-                <li className={cx(["men","menu"])}>
-                    <Link 
-                        to={`/shoes?_page=1&_limit=${limit}`} 
-                        onClick={() => {
-                            window.scrollTo(0, 0)
-                            setRe_render(pre => !pre)
-                        }}
-                    >
-                        <span className={cx("nav_desktop")}>sản phẩm</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faShopify}/></span>
-                        
-                    </Link>
-                   
-                </li>
-
-                <li className={cx(["men","menu"])}>
-                    <Link to={`/shoes?_page=1&_limit=${limit}&_isDiscount=true`} 
-                        onClick={() => {
-                            window.scrollTo(0, 0)
-                            setRe_render(pre => !pre)
-                            
-                        }}
-                    >
-                        <span className={cx("nav_desktop")}>giảm giá</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faPercent}/></span>
-                    </Link>
-                </li>
-                
-
-              
-            </ul>
-
-
-            <ul id={styles["nav"]}>
-                <li>
-                    <Tippy
-                        trigger="click" interactive placement="bottom-end"	
-                        render={attrs => (
-                            <div className={cx(["wapper_notify", "shape_Tippy"])}  tabIndex="-1" {...attrs}>
-                            {!notify.length && <h2 className="text-center">Không có thông báo nào</h2>}
-                            {
-                                notify.map(i => (
-                                    <div className={cx("notify_item")} key={i.id}>
-                                        <div>
-                                            <h3>{i.name}</h3>
-                                            <p>{i.date}</p>
-                                            <button
-                                                onClick={() => {
-                                                    handleDelete_notify(i.id)
-                                                    setTrigger(pre => !pre)
-                                                    console.log("delete")
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faClose}/>
-                                            </button>
-                                        </div>
-                                        <p>{i.content}</p>
-                                    </div>
-                                ))
-                            }
-                               
-                            </div>
-                        )}
-                    >
-                        <button>
-                            <FontAwesomeIcon icon={faBell} className={cx(["notify_btn","btn_header"])}/>
-                        </button>
-                    </Tippy>
-                {
-                    !!notify.length && <span className={cx("header_cart-notice")}></span>
-                }
+           <div className={cx('above')}>
+                <ul className={cx(["nav_dropdown"])} id={styles["nav-menu"]} >
                     
-                </li>
-                {
-                    login ?
-                    <>
-                        
-                        <li className={cx(['favorite'])}>
-                            <Link to={`/shoes?_favorite=true&_page=1&_limit=${limit}`}
-                                onClick={() => {
-                                    window.scrollTo(0, 0)
-                                    setRe_render(pre => !pre)
-                                    
-                                }}
-                            >
-                                <FontAwesomeIcon className={cx("btn_header")} icon={faHeart}/>
-                            </Link>
-                        </li>
-                        <li className={cx(['avatar'])}>
-                            <Tippy
-                                trigger="click"
-                                interactive
-                                placement="bottom-end"	
-                                render={attrs => (
-                                    <div className={cx(['menu_avatar', "shape_Tippy"])} tabIndex="-1" {...attrs}>
-                                        <ul>
-                                            <li onClick={(e) => {window.scrollTo(0, 0)}}>
-                                                <Link to='/infor' >Thông tin cá nhân</Link>
-                                            </li>
-                                            <li onClick={(e) => {window.scrollTo(0, 0)}}>
-                                                <Link to='/purchaseOrder'>Đơn mua</Link>
-                                            </li>
-                                            {/* <li
-                                                onClick={() => {
-                                                    localStorage.setItem("tokens", JSON.stringify({}));
-                                                    navigate("/signin")
-                                                }}
-                                            >
-                                                Đăng xuất
-                                                <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
-                                            </li> */}
-
-                                            <li onClick={handleLogout}>
-                                                Đăng xuất
-                                                <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
-                                            </li>
-
-                                        </ul>
-                                    </div>
-                                )}
-                            >
-                                <button >
-                                    <FontAwesomeIcon className={cx(["btn_header"])}  icon={faUser}/>
-                                </button>
-                            </Tippy>
-                        </li>
-                    </>
-                    :
-                    <li className={cx("login")}>
-                        <span  >
-                            TÀI KHOẢN
+    
+                    <li className={cx("box_logo")} >
+                        <img className={cx('logo')} src={require('./logoDT-70.png')}/>
+                        <span className={cx('logo_title')}>
+                            <span className={cx('L_1')}>C</span>
+                            <span className={cx('L_2')}>D</span>
+                            <span className={cx('L_3')}>I</span>
+                            <span className={cx('L_4')}>O</span>
                         </span>
-                        <ul className={cx(["sub_nav","the_first","shape_Tippy"])}>
-                            <li><Link to="/signIn">ĐĂNG NHẬP</Link></li>
-                            <li><Link to="/signUp">ĐĂNG KÝ</Link></li>
-                        </ul>
                     </li>
-                }
-                
-
-                <li className={cx(["cart_btn"])}>
-                    <div className={cx("header_cart-wrap")}>
-                        <Link to="/order" className={cx("header_cart")}>
-                            <FontAwesomeIcon className={cx(["btn_header"])} icon={faCartShopping}/>
+    
+                    <li className={cx(["men","menu"])}>
+                        <Link to="/home" onClick={() => {window.scrollTo(0, 0)}}>
+                            <span className={cx("nav_desktop")}>trang chủ</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faHome}/></span>
                         </Link>
-                        {/* <span className={cx("header_cart-notice")}>{orderItem.length}</span> */}
-                        <span className={cx("header_cart_quantity")}><span>{orderItem.length}</span></span>
-
-                    {/* {
-                        Boolean(orderItem.length) && <span className={cx("header_cart-notice")}></span>
-                    } */}
-                        {/* <span className={cx("header_cart-notice")}></span> */}
-
+                    </li>
+    
+                    <li className={cx(["men","menu"])}>
+                        <Link 
+                            to={`/shoes?_page=1&_limit=${limit}`} 
+                            onClick={() => {
+                                window.scrollTo(0, 0)
+                                setRe_render(pre => !pre)
+                            }}
+                        >
+                            <span className={cx("nav_desktop")}>sản phẩm</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faShopify}/></span>
+                            
+                        </Link>
+                       
+                    </li>
+    
+                    <li className={cx(["men","menu"])}>
+                        <Link to={`/shoes?_page=1&_limit=${limit}&_isDiscount=true`} 
+                            onClick={() => {
+                                window.scrollTo(0, 0)
+                                setRe_render(pre => !pre)
+                                
+                            }}
+                        >
+                            <span className={cx("nav_desktop")}>giảm giá</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faPercent}/></span>
+                        </Link>
+                    </li>
+                    
+    
+                  
+                </ul>
+    
+    
+                <ul id={styles["nav"]}>
+                    <li>
+                        <Tippy
+                            trigger="click" interactive placement="bottom-end"	
+                            render={attrs => (
+                                <div className={cx(["wapper_notify", "shape_Tippy"])}  tabIndex="-1" {...attrs}>
+                                {!notify.length && <h2 className="text-center">Không có thông báo nào</h2>}
+                                {
+                                    notify.map(i => (
+                                        <div className={cx("notify_item")} key={i.id}>
+                                            <div>
+                                                <h3>{i.name}</h3>
+                                                <p>{i.date}</p>
+                                                <button
+                                                    onClick={() => {
+                                                        handleDelete_notify(i.id)
+                                                        setTrigger(pre => !pre)
+                                                        console.log("delete")
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon={faClose}/>
+                                                </button>
+                                            </div>
+                                            <p>{i.content}</p>
+                                        </div>
+                                    ))
+                                }
+                                   
+                                </div>
+                            )}
+                        >
+                            <button>
+                                <FontAwesomeIcon icon={faBell} className={cx(["notify_btn","btn_header"])}/>
+                            </button>
+                        </Tippy>
+                    {
+                        !!notify.length && <span className={cx("header_cart-notice")}></span>
+                    }
                         
-                        <div className={cx("header_cart-list")}>
-                            <img src="./assets/img/no-cart.png" alt="" className={cx("header_cart-no-cart-img")}/>
+                    </li>
+                    {
+                        login ?
+                        <>
                             
-                        {
-                            !Boolean(orderItem.length) && <p className={cx("header_cart-list-no-cart-msg")}>
-                                <p>Chưa có sản phẩm</p>
-                                <p>¯\_( ͡❛ ͜ʖ ͡❛)_/¯</p>
-                            </p>
-                        }
+                            <li className={cx(['favorite'])}>
+                                <Link to={`/shoes?_favorite=true&_page=1&_limit=${limit}`}
+                                    onClick={() => {
+                                        window.scrollTo(0, 0)
+                                        setRe_render(pre => !pre)
+                                        
+                                    }}
+                                >
+                                    <FontAwesomeIcon className={cx("btn_header")} icon={faHeart}/>
+                                </Link>
+                            </li>
+                            <li className={cx(['avatar'])}>
+                                <Tippy
+                                    trigger="click"
+                                    interactive
+                                    placement="bottom-end"	
+                                    render={attrs => (
+                                        <div className={cx(['menu_avatar', "shape_Tippy"])} tabIndex="-1" {...attrs}>
+                                            <ul>
+                                                <li onClick={(e) => {window.scrollTo(0, 0)}}>
+                                                    <Link to='/infor' >Thông tin cá nhân</Link>
+                                                </li>
+                                                <li onClick={(e) => {window.scrollTo(0, 0)}}>
+                                                    <Link to='/purchaseOrder'>Đơn mua</Link>
+                                                </li>
+                                                {/* <li
+                                                    onClick={() => {
+                                                        localStorage.setItem("tokens", JSON.stringify({}));
+                                                        navigate("/signin")
+                                                    }}
+                                                >
+                                                    Đăng xuất
+                                                    <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
+                                                </li> */}
+    
+                                                <li onClick={handleLogout}>
+                                                    Đăng xuất
+                                                    <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
+                                                </li>
+    
+                                            </ul>
+                                        </div>
+                                    )}
+                                >
+                                    <button >
+                                        <FontAwesomeIcon className={cx(["btn_header"])}  icon={faUser}/>
+                                    </button>
+                                </Tippy>
+                            </li>
+                        </>
+                        :
+                        <li className={cx("login")}>
+                            <span  >
+                                TÀI KHOẢN
+                            </span>
+                            <ul className={cx(["sub_nav","the_first","shape_Tippy"])}>
+                                <li><Link to="/signIn">ĐĂNG NHẬP</Link></li>
+                                <li><Link to="/signUp">ĐĂNG KÝ</Link></li>
+                            </ul>
+                        </li>
+                    }
+                    
+    
+                    <li className={cx(["cart_btn"])}>
+                        <div className={cx("header_cart-wrap")}>
+                            <Link to="/order" className={cx("header_cart")}>
+                                <FontAwesomeIcon className={cx(["btn_header"])} icon={faCartShopping}/>
+                            </Link>
+                            {/* <span className={cx("header_cart-notice")}>{orderItem.length}</span> */}
+                            <span className={cx("header_cart_quantity")}><span>{orderItem.length}</span></span>
+    
+                        {/* {
+                            Boolean(orderItem.length) && <span className={cx("header_cart-notice")}></span>
+                        } */}
+                            {/* <span className={cx("header_cart-notice")}></span> */}
+    
                             
-                            
-                            <ul className={cx("header_cart-list-item")}>
+                            <div className={cx("header_cart-list")}>
+                                <img src="./assets/img/no-cart.png" alt="" className={cx("header_cart-no-cart-img")}/>
                                 
                             {
-                                orderItem.map((item, index) => 
-                                    <CartItem_subnav key={index} order={item}/>
-                                )
+                                !Boolean(orderItem.length) && <p className={cx("header_cart-list-no-cart-msg")}>
+                                    <p>Chưa có sản phẩm</p>
+                                    <p>¯\_( ͡❛ ͜ʖ ͡❛)_/¯</p>
+                                </p>
                             }
                                 
                                 
-                            </ul>
+                                <ul className={cx("header_cart-list-item")}>
+                                    
+                                {
+                                    orderItem.map((item, index) => 
+                                        <CartItem_subnav key={index} order={item}/>
+                                    )
+                                }
+                                    
+                                    
+                                </ul>
+                            </div>
+    
+    
                         </div>
+    
+                    </li>
+    
+                </ul>
+           </div>
 
+           <div className={cx('category')}>
+              <div className={cx('category_items')}>
+              {apiCategory.map((item) =>(
+                     <button className={cx('category_button')} key={item.id}>{item.name} <FontAwesomeIcon icon={faCaretDown}/>
+                      <div className={cx('category_menu')}>
+           
+                               <div className={cx('category_list')}>
+                               {item.name === 'Giày' && (<ul>
+                                <Link className={cx('link_btn_view_all')}>Xem tất cả</Link>{ item.detail.map(item => (<li><Link className={cx('category_item_button')}>{item.type_name} </Link></li>))}</ul>) }
+                               
+                                {item.name==='Quần Áo' &&  
+                                <div className={cx('block_clothes')}>
+                                    <ul>
+                                    <h2 className={cx('block_clothes_header')}>Áo</h2>
+                                    <Link className={cx('link_btn_view_all')}>Xem tất cả</Link>
+                                            {item.detail.map(item =>item.type_name.startsWith('Áo') && (
+                                            <div>
+                                                <li><Link className={cx('category_item_button')}>{item.type_name} </Link></li></div>))}
+                                    </ul>
+                                    <ul>
+                                    <h2 className={cx('block_clothes_header')}>Quần</h2>
+                                    <Link className={cx('link_btn_view_all')}>Xem tất cả</Link>
+                                    {item.detail.map(item =>item.type_name.startsWith('Quần') &&  
+                                        <li><Link className={cx('category_item_button')}>            
+                                            { item.type_name}
+                                            </Link></li>
+                                    )}
+                                    </ul>
+                              
+                             </div>}
 
-                    </div>
-
-                </li>
-
-            </ul>
-
+                               {item.name==='Phụ Kiện'  && (
+                                <ul>
+                                    <Link className={cx('link_btn_view_all')}>Xem tất cả</Link>
+                               {item.detail.map(item => (<li><Link className={cx('category_item_button')}>{item.category_id===3 && item.type_name}</Link></li>))}
+                                </ul>
+                               )}
+                               </div>
+                      </div>
+              </button>
+              ))}
+             
+              </div>
+           </div>
+           
             
 
         </div>
