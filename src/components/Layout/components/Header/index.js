@@ -332,33 +332,71 @@ useEffect(()=> {
            
                                <div className={cx('category_list')}>
                                {item.name === 'Giày' && (<ul>
-                                <Link className={cx('link_btn_view_all')}>Xem tất cả</Link>{ item.detail.map(item => (<li><Link className={cx('category_item_button')}>{item.type_name} </Link></li>))}</ul>) }
+                                <Link to={`/shoes?_page=1&_limit=16&_category=${item.id}`} className={cx('link_btn_view_all')}  
+                                onClick={() => {
+                                window.scrollTo(0, 0)
+                                setRe_render(pre => !pre)
+                                
+                            }}>Xem tất cả</Link>{ item.detail.map(item => (<li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}`} className={cx('category_item_button')} 
+                            onClick={() => {
+                                window.scrollTo(0, 0)
+                                setRe_render(pre => !pre)
+                                
+                            }} >{item.type_name} </Link></li>))}</ul>) }
                                
                                 {item.name==='Quần Áo' &&  
                                 <div className={cx('block_clothes')}>
                                     <ul>
                                     <h2 className={cx('block_clothes_header')}>Áo</h2>
-                                    <Link className={cx('link_btn_view_all')}>Xem tất cả</Link>
+                                    
                                             {item.detail.map(item =>item.type_name.startsWith('Áo') && (
                                             <div>
-                                                <li><Link className={cx('category_item_button')}>{item.type_name} </Link></li></div>))}
+                                                <li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}`} onClick={() => {
+                                        window.scrollTo(0, 0)
+                                        setRe_render(pre => !pre)
+                                        
+                                    }}  className={cx('category_item_button')}>{item.type_name} </Link></li></div>))}
                                     </ul>
+                                    
                                     <ul>
                                     <h2 className={cx('block_clothes_header')}>Quần</h2>
-                                    <Link className={cx('link_btn_view_all')}>Xem tất cả</Link>
+                                
                                     {item.detail.map(item =>item.type_name.startsWith('Quần') &&  
-                                        <li><Link className={cx('category_item_button')}>            
+                                        <li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}`}
+                                        onClick={() => {
+                                            window.scrollTo(0, 0)
+                                            setRe_render(pre => !pre)
+                                            
+                                        }}
+                                         className={cx('category_item_button')}>            
                                             { item.type_name}
                                             </Link></li>
                                     )}
                                     </ul>
                               
+                                    <ul>
+                                        <li><Link to={`/shoes?_page=1&_limit=16&_category=${item.id}`}
+                                    onClick={() => {
+                                        window.scrollTo(0, 0)
+                                        setRe_render(pre => !pre)
+                                        
+                                    }}  className={cx('link_btn_view_all')}>Xem tất cả</Link ></li>
+                                    </ul>
                              </div>}
 
                                {item.name==='Phụ Kiện'  && (
                                 <ul>
-                                    <Link className={cx('link_btn_view_all')}>Xem tất cả</Link>
-                               {item.detail.map(item => (<li><Link className={cx('category_item_button')}>{item.category_id===3 && item.type_name}</Link></li>))}
+                                    <Link to={`/shoes?_page=1&_limit=16&_category=${item.id}`} onClick={() => {
+                                        window.scrollTo(0, 0)
+                                        setRe_render(pre => !pre)
+                                        
+                                    }}  className={cx('link_btn_view_all')}>Xem tất cả </Link>
+                               {item.detail.map(item => (<li><Link
+                               to={`/shoes?_page=1&_limit=16&_type=${item.id}`} onClick={() => {
+                                window.scrollTo(0, 0)
+                                setRe_render(pre => !pre)
+                                
+                            }}  className={cx('category_item_button')}>{item.category_id===3 && item.type_name}</Link></li>))}
                                 </ul>
                                )}
                                </div>

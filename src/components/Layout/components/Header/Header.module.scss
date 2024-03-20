@@ -828,6 +828,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
                 .category_menu {
                     display: block;
                     color: black;
+         
                 }
         }
 
@@ -843,11 +844,10 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
 
     .category_menu {
         position: absolute;
-        top:45px;
-        left: 0;
+        top:32px;
+        left: -120px;
         display: none;
         padding: 16px 16px;
-        background-color: white;
         width: 600px;
         max-width: 600px;
         height: 300px;
@@ -856,6 +856,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         border-radius: 5px;
         background-color: rgba(241, 241, 239, 0.9137254902);
         overflow-y: auto;
+        z-index: 0;
 
         .category_list {
             display: flex !important;
@@ -869,8 +870,6 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
                     color: #77E51F;
                 }
             }
-
-            
         }
     }
   }
@@ -885,6 +884,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         padding-left: 0;
         width: 50%;
         text-align: left;
+        z-index: 101;
     }
 }
 
@@ -897,9 +897,9 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         width: 100%;
     }
   }
+
   .block_clothes_quan {
     width: 50%;
-
   }
 
   .category_button::before {
@@ -907,8 +907,8 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
     position: absolute;
     height: 25px;
     width: 100px;
-    top: 33px;
-    left: 5px;
+    top: 20px;
+    left: -5px;
     bottom: 70px;
   }
 
@@ -930,9 +930,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         margin-left: 176px !important;
 
     .category_button {
-       
         width: 100px;
-       
     }
         
     }}
