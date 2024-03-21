@@ -807,10 +807,17 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
 .category {
     display: flex;
     position: relative;
+    height: 32px;
     
     .category_items {
-        margin-left: 313px;
+        margin-left: 285px;
         width: 100%;
+        
+        padding: 0 32px;
+
+        .icon_menu {
+           display: none;
+        }
     }
 
     .category_button {
@@ -826,9 +833,10 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
                 border-bottom: 1px solid #77E51F;
                 transition: .1s ease-in-out;
                 .category_menu {
+                    
                     display: block;
                     color: black;
-         
+                    
                 }
         }
 
@@ -836,6 +844,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         cursor: pointer;
         width: 100%;
         text-align: left;
+        
         &:hover {
             color: #77E51F;
         }
@@ -856,7 +865,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         border-radius: 5px;
         background-color: rgba(241, 241, 239, 0.9137254902);
         overflow-y: auto;
-        z-index: 0;
+        
 
         .category_list {
             display: flex !important;
@@ -865,6 +874,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
     
             .category_item {
                 cursor: pointer;
+                
                 width: 50%;
                 &:hover {
                     color: #77E51F;
@@ -924,19 +934,143 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         color: #77E51F;
     }
   }
+  .btn_exit {
+    display: none!important;
+  }
+
+
+  .menu_mobile {
+    display: none;
+  }
 //tablet
   @media only screen and (min-width: 46.25em) and (max-width: 78.25em){
     .category_items {
-        margin-left: 176px !important;
+        margin-left: 140px !important;
 
     .category_button {
         width: 100px;
     }
-        
+    
+   
     }}
 //mobile
     @media only screen and (max-width:46.1875em){
-        .category {
+        .category_list {
             display: none;
         }
-    }
+        .icon_menu {
+            display: block !important;
+            height: 30px;
+            width:  38px;
+            position: relative;
+            color: white;
+            background-color: #444343;
+            border-radius: 5px;
+            
+         
+         
+         }
+         .category_items {
+            margin-left: 0 !important;
+            
+         }
+
+         .category_button {
+            display: none;
+         }
+
+         .menu_mobile {
+             display: flex;
+             flex-direction: column;
+           position: absolute;
+           top: -10px;
+           left: 0;
+            min-width: 360px;
+          
+            min-height: 800px;
+            background-color: white;
+            color: white;
+            border-radius: 5px;
+            overflow-x: auto;
+            overflow-y: auto;
+
+            .wrapper_btn_exit {
+                width: 100%;
+                height: 50px;
+            }
+            .btn_exit {
+                display: block !important;
+                position: absolute;
+                padding: 4px 0;
+                right: 0;
+                height: 32px;
+                width: 32px;
+                
+                .icon_exit {
+                    height: 32px;
+                    width: 32px;
+                }
+            }
+         }
+        
+        .group_btn_category {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            padding: 0 6px;
+        }
+         .btn_category {
+            width: 33.333%;
+            position: relative;
+            &:hover {
+                color: #77E51F;
+            }
+            
+            
+         }
+         .btn_type {
+            display: block;
+         }
+         .list_category {
+            position: absolute;
+            top:80px;
+            left: 0;
+            background-color: white;
+            width: 360px;
+            min-height: 300px;
+            padding-left: 10px;
+         }
+      
+        .header {
+            font-weight: 600;
+            border-bottom: 2px solid #ccc;
+            padding: 2px 4px;
+        }
+
+        .quanao_div {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            left: 0;
+            top:80px;
+            background-color: white;
+            width: 360px;
+            min-height: 340px;
+
+            ul {
+                width: 33.333%;
+                margin-left: 10px;
+            }
+        }
+
+        .view_all_quanao {
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        .btn_link {
+            &:hover {
+                color: #77E51F;
+            }
+        }
+        }
