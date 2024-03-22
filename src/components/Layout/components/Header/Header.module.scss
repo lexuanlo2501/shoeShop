@@ -846,7 +846,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         text-align: left;
         
         &:hover {
-            color: #77E51F;
+            color: rgb(245, 152, 38);
         }
      }
     }
@@ -854,30 +854,29 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
     .category_menu {
         position: absolute;
         top:32px;
-        left: -120px;
+        
         display: none;
         padding: 16px 16px;
-        width: 600px;
-        max-width: 600px;
-        height: 300px;
-        max-height: 300px;
+        min-width: 250px;
+        max-width: 400px;
+        
+       
         cursor: default;
         border-radius: 5px;
-        background-color: rgba(241, 241, 239, 0.9137254902);
-        overflow-y: auto;
-        
+        background-color: #fff;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
         .category_list {
             display: flex !important;
             width: 100%;
-            max-height: 100px;
+            // max-height: 100px;
     
             .category_item {
                 cursor: pointer;
                 
-                width: 50%;
+                
                 &:hover {
-                    color: #77E51F;
+                    color: rgb(245, 152, 38);
                 }
             }
         }
@@ -963,8 +962,8 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
             height: 30px;
             width:  38px;
             position: relative;
-            color: white;
-            background-color: #444343;
+            color: black;
+            background-color: transparent;
             border-radius: 5px;
             
          
@@ -972,7 +971,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
          }
          .category_items {
             margin-left: 0 !important;
-            
+            padding: 0 12px !important;
          }
 
          .category_button {
@@ -985,13 +984,13 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
            position: absolute;
            top: -10px;
            left: 0;
-            min-width: 360px;
-            min-height: 800px;
+            width: 100%;
+            height: 800px;
             background-color: white;
             color: white;
-            border-radius: 5px;
-            overflow-x: auto;
-            overflow-y: auto;
+            border-radius: 5px; 
+            margin-bottom: 8px;
+            
 
             .wrapper_btn_exit {
                 width: 100%;
@@ -1014,14 +1013,15 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
          }
         
         .group_btn_category {
-            display: flex;
+            
+            
             width: 100%;
-            justify-content: space-between;
+            justify-content: space-evenly;
             padding: 0 6px;
         }
 
          .btn_category {
-            width: 33.333%;
+            width: 65px;
             position: relative;
             &:hover {
                 color: #77E51F;
@@ -1031,13 +1031,14 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
             display: block;
          }
          .list_category {
-            position: absolute;
+            text-align: center;
             top:80px;
             left: 0;
             background-color: white;
-            width: 360px;
+            width: 100%;
             min-height: 300px;
             padding-left: 10px;
+            margin-top: 16px;
          }
       
         .header {
@@ -1048,24 +1049,26 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
 
         .quanao_div {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             position: absolute;
             left: 0;
             top:80px;
             background-color: white;
-            width: 360px;
-            min-height: 340px;
-
+            width: 100%;
+            // height: 400px;
+            margin-top: 16px;
+            
             ul {
-                width: 33.333%;
+                width: 100%;
                 margin-left: 10px;
             }
         }
 
         .view_all_quanao {
-            text-align: right;
+            text-align: center;
             padding-right: 20px;
             font-weight: 700;
+            padding-right: 0;
         }
 
         .view_all_phukien {
@@ -1076,5 +1079,10 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
             &:hover {
                 color: #77E51F;
             }
+        }
+        .wrapper_btn_category {
+            display: flex;
+            width: 100%;
+            justify-content: space-evenly;
         }
         }

@@ -9,7 +9,7 @@ import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import {limit} from "../../../../common"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSliders, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles)
 
@@ -26,6 +26,7 @@ function SideBar({setRe_render}) {
 
     let paramToObject = param && JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
 
+    console.log(paramToObject)
 
     useEffect(() => {
         // axios.get('http://localhost:4000/products')
@@ -53,7 +54,7 @@ function SideBar({setRe_render}) {
 
     return (
         <div className={cx('wrapper')}>
-            <FontAwesomeIcon icon={isBars ? faXmark : faBars} className={cx("showBar_btn")}
+            <FontAwesomeIcon icon={isBars ? faXmark : faSliders} className={cx("showBar_btn")}
                 onClick={() => setIsBars(pre => !pre)}
             />
             {/* <img className={cx(["thumbnail",isBars?"":"off"])} src="https://wallpapercave.com/wp/wp5866497.jpg" alt=""/>  */}
@@ -86,7 +87,7 @@ function SideBar({setRe_render}) {
                     
                 </ul>
 
-{/* 
+
                 <ul className={cx("nav-bar")}>
                     <li>Loại</li>
                     <li className={cx('select_type-Brand')}>
@@ -104,7 +105,7 @@ function SideBar({setRe_render}) {
                     ))
                 }
 
-                </ul> */}
+                </ul>
 
 
                 <ul className={cx("nav-bar")}>

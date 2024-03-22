@@ -5,7 +5,7 @@ import axios from "axios";
 import { useState, useEffect, useMemo, useRef, useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart, faHome, faPercent, faBell, faCaretDown, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart, faHome, faPercent, faBell, faCaretDown, faXmark, faSliders } from "@fortawesome/free-solid-svg-icons";
 // import Tippy from '@tippyjs/react';
 // import 'tippy.js/dist/tippy.css'; // optional
 
@@ -331,12 +331,14 @@ useEffect(()=> {
                 /></button>
                 {showMenuMobile && <div className={cx('menu_mobile')}><div className={cx('wrapper_btn_exit')}><button onClick={()=>setShowMenuMobile(!showMenuMobile)} className={cx('btn_exit')}><FontAwesomeIcon className={cx('icon_exit')} icon={faXmark}/></button>
                 </div>
-                <div className={cx('group_btn_category')}> {apiCategory.map((item,index) =>(<button onClick={()=>{setShowtype(index)
+                <div className={cx('group_btn_category')}> <div className={cx('wrapper_btn_category')}>
+                {apiCategory.map((item,index) =>(<button onClick={()=>{setShowtype(index)
                 console.log(index)}} className={cx('btn_category')}>{item.name}
                 
                 </button>))} 
+                </div>
                 {showtype === 0 && <ul className={cx('list_category')}>
-                    <h2 className={cx('header')}>Giày</h2>
+                    
                     <li className={cx('view_all_phukien')}><Link className={cx('btn_link')} to={`/shoes?_page=1&_limit=16&_category=1` } onClick={() => {
                                 window.scrollTo(0, 0)
                                 setRe_render(pre => !pre)
@@ -446,7 +448,7 @@ useEffect(()=> {
                 }}>Xem tất cả</Link></li></ul>
              </div>}
                 {showtype === 2 && <ul className={cx('list_category')}>
-                    <h2 className={cx('header')}>Phụ Kiện</h2>
+                    
                     <li className={cx('view_all_phukien')}><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
@@ -499,15 +501,16 @@ useEffect(()=> {
                 {apiCategory.map((item) =>(
                      <button className={cx('category_button')} key={item.id}>{item.name} <FontAwesomeIcon icon={faCaretDown}/>
                       <div className={cx('category_menu')}>
-           
-                               <div className={cx('category_list')}>
-                               {item.name === 'Giày' && (<ul>
-                                <Link to={`/shoes?_page=1&_limit=16&_category=${item.id}`} className={cx('link_btn_view_all')}  
+                      <Link to={`/shoes?_page=1&_limit=16&_category=${item.id}`} className={cx('link_btn_view_all')}  
                                 onClick={() => {
                                 window.scrollTo(0, 0)
                                 setRe_render(pre => !pre)
                                 
-                            }}>Xem tất cả</Link>{ item.detail.map(item => (<li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}`} className={cx('category_item_button')} 
+                            }}>Xem tất cả</Link>
+                               <div className={cx('category_list')}>
+                                
+                               {item.name === 'Giày' && (<ul>
+                                { item.detail.map(item => (<li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}`} className={cx('category_item_button')} 
                             onClick={() => {
                                 window.scrollTo(0, 0)
                                 setRe_render(pre => !pre)
@@ -544,23 +547,12 @@ useEffect(()=> {
                                     )}
                                     </ul>
                               
-                                    <ul>
-                                        <li><Link to={`/shoes?_page=1&_limit=16&_category=${item.id}`}
-                                    onClick={() => {
-                                        window.scrollTo(0, 0)
-                                        setRe_render(pre => !pre)
-                                        
-                                    }}  className={cx('link_btn_view_all')}>Xem tất cả</Link ></li>
-                                    </ul>
+                                    
                              </div>}
 
                                {item.name==='Phụ Kiện'  && (
                                 <ul>
-                                    <Link to={`/shoes?_page=1&_limit=16&_category=${item.id}`} onClick={() => {
-                                        window.scrollTo(0, 0)
-                                        setRe_render(pre => !pre)
-                                        
-                                    }}  className={cx('link_btn_view_all')}>Xem tất cả </Link>
+                                    
                                {item.detail.map(item => (<li><Link
                                to={`/shoes?_page=1&_limit=16&_type=${item.id}`} onClick={() => {
                                 window.scrollTo(0, 0)
