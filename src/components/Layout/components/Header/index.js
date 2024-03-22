@@ -22,14 +22,8 @@ const cx = classNames.bind(styles)
 
 function Header({setRe_render}) {
     //Category
-    const [showtype, setShowtype] = useState([]);
-   const [showtypeGiay, setShowtypeGiay] = useState(true);
-   const [showtypeQuanAo, setShowtypeQuanAo] = useState(true);
-
-   const [showtypePhuKien, setShowtypePhuKien] = useState(true);
-
-
-    const [showMenuMobile, setShowMenuMobile] = useState(false);
+    const [showtype, setShowtype] = useState(-1);
+    const[showMenuMobile,setShowMenuMobile] = useState(false);
     const [apiCategory, setApicategory] = useState([]);
 useEffect(()=> {
     axios.get('http://localhost:5000/category')
@@ -39,6 +33,7 @@ useEffect(()=> {
                 setApicategory(data.data);
                 console.log(apiCategory);
             }
+       
     })
 },[])
  
@@ -319,7 +314,6 @@ useEffect(()=> {
                                     )
                                 }
                                     
-                                    
                                 </ul>
                             </div>
     
@@ -330,10 +324,10 @@ useEffect(()=> {
     
                 </ul>
            </div>
-
+          
            <div className={cx('category')}>
               <div className={cx('category_items')}>
-                <button className={cx('icon_menu')} onClick={()=>setShowMenuMobile(!showMenuMobile)}><FontAwesomeIcon icon={faBars}
+              <button className={cx('icon_menu')} onClick={()=>setShowMenuMobile(!showMenuMobile)}><FontAwesomeIcon icon={faBars}
                 /></button>
                 {showMenuMobile && <div className={cx('menu_mobile')}><div className={cx('wrapper_btn_exit')}><button onClick={()=>setShowMenuMobile(!showMenuMobile)} className={cx('btn_exit')}><FontAwesomeIcon className={cx('icon_exit')} icon={faXmark}/></button>
                 </div>
@@ -343,7 +337,7 @@ useEffect(()=> {
                 </button>))} 
                 {showtype === 0 && <ul className={cx('list_category')}>
                     <h2 className={cx('header')}>Giày</h2>
-                    <li><Link className={cx('btn_link')} to={`/shoes?_page=1&_limit=16&_category=1` } onClick={() => {
+                    <li className={cx('view_all_phukien')}><Link className={cx('btn_link')} to={`/shoes?_page=1&_limit=16&_category=1` } onClick={() => {
                                 window.scrollTo(0, 0)
                                 setRe_render(pre => !pre)
                                 
@@ -453,7 +447,7 @@ useEffect(()=> {
              </div>}
                 {showtype === 2 && <ul className={cx('list_category')}>
                     <h2 className={cx('header')}>Phụ Kiện</h2>
-                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_category=3`} onClick={() => {
+                    <li className={cx('view_all_phukien')}><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
@@ -502,7 +496,7 @@ useEffect(()=> {
                 <ul><li>ádasd</li></ul></div> */}
 
                 </div>}
-              {apiCategory.map((item) =>(
+                {apiCategory.map((item) =>(
                      <button className={cx('category_button')} key={item.id}>{item.name} <FontAwesomeIcon icon={faCaretDown}/>
                       <div className={cx('category_menu')}>
            
