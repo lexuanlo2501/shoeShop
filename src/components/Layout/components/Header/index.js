@@ -344,23 +344,23 @@ useEffect(()=> {
                                 setRe_render(pre => !pre)
                                 
                             }}>Xem tất cả</Link></li>
-                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=1`} onClick={() => {
+                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=1&_category=1`} onClick={() => {
                                 window.scrollTo(0, 0)
                                 setRe_render(pre => !pre)
                                 
                             }}>Sneaker</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=2`}
+                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=2&_category=1`}
                 onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Boot</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=3`} onClick={() => {
+                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=3&_category=1`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Sandal</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=4`} onClick={() => {
+                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=4&_category=1`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
@@ -371,42 +371,42 @@ useEffect(()=> {
                     
                     <ul >
                         <h2 className={cx('header')}>Áo</h2>
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=44`} onClick={() => {
+                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=44&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Áo Hoodie</Link></li>
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=53`} onClick={() => {
+                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=53&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Áo Khoác</Link></li>
 
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=54`} onClick={() => {
+                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=54&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Áo Thun</Link></li>
 
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=55`} onClick={() => {
+                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=55&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Áo Sơ Mi</Link></li>
 
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=56`} onClick={() => {
+                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=56&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Áo Polo</Link></li>
 
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=57`} onClick={() => {
+                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=57&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Áo Ba Lỗ</Link></li>
 
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=58`} onClick={() => {
+                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=58&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
@@ -416,24 +416,24 @@ useEffect(()=> {
 
                     <ul >
                         <h2 className={cx('header')}>Quần</h2>
-                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=59`}onClick={() => {
+                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=59&_category=2`}onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Quần Jean</Link></li>
-                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=60`} onClick={() => {
+                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=60&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Quần Tây</Link></li>
 
-                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=61`}onClick={() => {
+                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=61&_category=2`}onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Quần Short</Link></li>
 
-                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=62`}onClick={() => {
+                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=62&_category=2`}onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
@@ -455,37 +455,37 @@ useEffect(()=> {
                     
                 }}>Xem tất cả</Link></li>
 
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=46`} onClick={() => {
+                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=46&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Mũ</Link ></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=48`} onClick={() => {
+                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=48&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Túi & Balo</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=51`}onClick={() => {
+                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=51&_category=3`}onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Vớ / Tất</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=52`} onClick={() => {
+                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=52&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Găng Tay</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=63`} onClick={() => {
+                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=63&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Mắt Kính</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=64`}onClick={() => {
+                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=64&_category=3`}onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
                 }}>Thắt Lưng</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=65`} onClick={() => {
+                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=65&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     
