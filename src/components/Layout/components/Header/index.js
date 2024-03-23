@@ -510,7 +510,7 @@ useEffect(()=> {
                                <div className={cx('category_list')}>
                                 
                                {item.name === 'Giày' && (<ul>
-                                { item.detail.map(item => (<li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}`} className={cx('category_item_button')} 
+                                { item.detail.map(item => (<li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`} className={cx('category_item_button')} 
                             onClick={() => {
                                 window.scrollTo(0, 0)
                                 setRe_render(pre => !pre)
@@ -524,7 +524,7 @@ useEffect(()=> {
                                     
                                             {item.detail.map(item =>item.type_name.startsWith('Áo') && (
                                             <div>
-                                                <li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}`} onClick={() => {
+                                                <li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`} onClick={() => {
                                         window.scrollTo(0, 0)
                                         setRe_render(pre => !pre)
                                         
@@ -535,7 +535,7 @@ useEffect(()=> {
                                     <h2 className={cx('block_clothes_header')}>Quần</h2>
                                 
                                     {item.detail.map(item =>item.type_name.startsWith('Quần') &&  
-                                        <li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}`}
+                                        <li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`}
                                         onClick={() => {
                                             window.scrollTo(0, 0)
                                             setRe_render(pre => !pre)
@@ -554,7 +554,7 @@ useEffect(()=> {
                                 <ul>
                                     
                                {item.detail.map(item => (<li><Link
-                               to={`/shoes?_page=1&_limit=16&_type=${item.id}`} onClick={() => {
+                               to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`} onClick={() => {
                                 window.scrollTo(0, 0)
                                 setRe_render(pre => !pre)
                                 

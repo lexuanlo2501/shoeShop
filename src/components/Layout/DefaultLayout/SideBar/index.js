@@ -26,7 +26,7 @@ function SideBar({setRe_render}) {
 
     let paramToObject = param && JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
 
-    console.log(paramToObject)
+    console.log(paramToObject._category)
 
     useEffect(() => {
         // axios.get('http://localhost:4000/products')
@@ -96,12 +96,12 @@ function SideBar({setRe_render}) {
                         /> <label htmlFor="t0">Tất cả</label>
                     </li>
                 {
-                    types.map(type => (
-                        <li className={cx('select_type-Brand')} key={type.id}>
-                            <input id={"t"+type.id} name="type_prod" value={type.id} type="radio"
-                                onChange={e=> setType(`&_type=${e.target.value}`)}
-                            /> <label htmlFor={"t"+type.id}>{type.type_name}</label>
-                        </li>
+                    types.map(type => ( paramToObject._category == type.category_id &&
+                         (<li className={cx('select_type-Brand')} key={type.id}>
+                         <input id={"t"+type.id} name="type_prod" value={type.id} type="radio"
+                             onChange={e=> setType(`&_type=${e.target.value}`)}
+                         /> <label htmlFor={"t"+type.id}>{type.type_name}</label>
+                     </li>)
                     ))
                 }
 
