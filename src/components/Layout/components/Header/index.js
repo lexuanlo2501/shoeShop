@@ -22,7 +22,7 @@ const cx = classNames.bind(styles)
 
 function Header({setRe_render}) {
     //Category
-    const [showtype, setShowtype] = useState(-1);
+    const [showtype, setShowtype] = useState(0);
     const[showMenuMobile,setShowMenuMobile] = useState(false);
     const [apiCategory, setApicategory] = useState([]);
 useEffect(()=> {
@@ -342,28 +342,28 @@ useEffect(()=> {
                     <li className={cx('view_all_phukien')}><Link className={cx('btn_link')} to={`/shoes?_page=1&_limit=16&_category=1` } onClick={() => {
                                 window.scrollTo(0, 0)
                                 setRe_render(pre => !pre)
-                                
+                                setShowMenuMobile(!showMenuMobile)
                             }}>Xem tất cả</Link></li>
                     <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=1&_category=1`} onClick={() => {
                                 window.scrollTo(0, 0)
                                 setRe_render(pre => !pre)
-                                
+                                setShowMenuMobile(!showMenuMobile)
                             }}>Sneaker</Link></li>
                 <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=2&_category=1`}
                 onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Boot</Link></li>
                 <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=3&_category=1`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Sandal</Link></li>
                 <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=4&_category=1`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Dép</Link></li>
                 
                 </ul>}
@@ -374,7 +374,7 @@ useEffect(()=> {
                         <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=44&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Áo Hoodie</Link></li>
                         <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=53&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
@@ -385,31 +385,31 @@ useEffect(()=> {
                         <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=54&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Áo Thun</Link></li>
 
                         <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=55&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Áo Sơ Mi</Link></li>
 
                         <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=56&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Áo Polo</Link></li>
 
                         <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=57&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Áo Ba Lỗ</Link></li>
 
                         <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=58&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Áo Len</Link></li>
 
                     </ul>
@@ -419,24 +419,24 @@ useEffect(()=> {
                     <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=59&_category=2`}onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Quần Jean</Link></li>
                     <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=60&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Quần Tây</Link></li>
 
                     <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=61&_category=2`}onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Quần Short</Link></li>
 
                     <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=62&_category=2`}onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Quần Kaki</Link></li>
 
                     </ul>
@@ -444,7 +444,7 @@ useEffect(()=> {
                     <ul className={cx('view_all_quanao')}><li ><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_category=2`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Xem tất cả</Link></li></ul>
              </div>}
                 {showtype === 2 && <ul className={cx('list_category')}>
@@ -452,43 +452,43 @@ useEffect(()=> {
                     <li className={cx('view_all_phukien')}><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Xem tất cả</Link></li>
 
                 <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=46&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Mũ</Link ></li>
                 <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=48&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Túi & Balo</Link></li>
                 <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=51&_category=3`}onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Vớ / Tất</Link></li>
                 <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=52&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Găng Tay</Link></li>
                 <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=63&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Mắt Kính</Link></li>
                 <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=64&_category=3`}onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Thắt Lưng</Link></li>
                 <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=65&_category=3`} onClick={() => {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
-                    
+                    setShowMenuMobile(!showMenuMobile)
                 }}>Ví</Link></li></ul>}
                 
 
