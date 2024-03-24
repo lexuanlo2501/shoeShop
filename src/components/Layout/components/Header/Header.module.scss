@@ -1,16 +1,27 @@
 .wrapper {
-    // height: 100px;
+    height: 90px;
     position: fixed;
     z-index: 100;
     width: 100%;
     box-shadow: 0 0 16px rgb(167 167 167 / 70%);
     // margin-bottom: 20px;
     background-color: #f1f1efe9;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    margin-top: -58px;
+    // height: 56px;
+   
+}
+
+
+.above {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: -58px;
     height: 56px;
+
+
 }
 
 *{
@@ -104,6 +115,9 @@ ul {
     font-size: 15px;
     letter-spacing: 1px;
 
+    &:hover {
+        color: rgb(245, 152, 38);
+    }
 }
 
 .sub_nav_prod {
@@ -125,7 +139,8 @@ ul {
 }
 
 #nav-menu .menu:hover{
-    background-color: rgb(121, 120, 120);
+    // background-color: rgb(121, 120, 120);
+    
 }
 
 .nav_dropdown {
@@ -785,12 +800,291 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
 
     .nav_desktop {
         display: none;
+        
     }
     .nav_mobile {
         font-size: 17px;
         color: #424141;
         display: inline-block;
     }
-   
-
 }
+
+.category {
+    display: flex;
+    position: relative;
+    height: 32px;
+    
+    .category_items {
+        margin-left: 285px;
+        width: 100%;
+        
+        padding: 0 33px;
+
+        .icon_menu {
+           display: none;
+        }
+    }
+
+    .category_button {
+        position: relative;
+        width: 120px;
+        height: 30px;
+        text-align: left;
+        padding-right: 1em;
+        margin-right: 12px;
+    
+        &:hover {
+                color:  rgb(245, 152, 38);;
+                border-bottom: 1px solid  rgb(245, 152, 38);;
+                transition: .1s ease-in-out;
+                .category_menu {
+                    
+                    display: block;
+                    color: black;
+                    
+                }
+        }
+
+     .category_item_button {
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        
+        &:hover {
+            color: rgb(245, 152, 38);
+        }
+     }
+    }
+
+    .category_menu {
+        position: absolute;
+        top:32px;
+        
+        display: none;
+        padding: 16px 16px;
+        min-width: 250px;
+        max-width: 400px;
+        
+       
+        cursor: default;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+        .category_list {
+            display: flex !important;
+            width: 100%;
+            // max-height: 100px;
+    
+           
+        }
+    }
+  }
+
+  .block_clothes {
+    display: flex;
+    width: 100%;
+    height: 100%;
+
+    ul {
+        list-style: none;
+        padding-left: 0;
+        width: 50%;
+        text-align: left;
+        z-index: 101;
+    }
+}
+
+  .block_clothes_ao {
+    width: 50%;
+    
+    .block_clothes_ao_list {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+    }
+  }
+
+  .block_clothes_quan {
+    width: 50%;
+  }
+
+  .category_button::before {
+    content: "";
+    position: absolute;
+    height: 25px;
+    width: 100px;
+    top: 20px;
+    left: -5px;
+    bottom: 70px;
+  }
+
+  .block_clothes_header {
+    width: 80%;
+    border-bottom: 2px solid #000;
+  }
+
+  .link_btn_view_all {
+    font-size: 18px;
+    font-weight: bold;
+    &:hover {
+        color: rgb(245, 152, 38);
+    }
+  }
+  .btn_exit {
+    display: none!important;
+  }
+
+
+  .menu_mobile {
+    display: none;
+  }
+//tablet
+  @media only screen and (min-width: 46.25em) and (max-width: 78.25em){
+    .category_items {
+        margin-left: 140px !important;
+
+    .category_button {
+        width: 100px;
+    }
+    
+   
+    }}
+//mobile
+    @media only screen and (max-width:46.1875em){
+        .category_list {
+            display: none;
+        }
+        .icon_menu {
+            display: block !important;
+            height: 30px;
+            width:  38px;
+            position: relative;
+            color: black;
+            background-color: transparent;
+            border-radius: 5px;
+            
+         
+         
+         }
+         .category_items {
+            margin-left: 0 !important;
+            padding: 0 12px !important;
+         }
+
+         .category_button {
+            display: none;
+         }
+
+         .menu_mobile {
+            display: flex;
+            flex-direction: column;
+           position: absolute;
+           top: -10px;
+           left: 0;
+            width: 100%;
+            height: 800px;
+            background-color: white;
+            color: white;
+            border-radius: 5px; 
+            margin-bottom: 8px;
+            
+
+            .wrapper_btn_exit {
+                width: 100%;
+                height: 50px;
+            }
+
+            .btn_exit {
+                display: block !important;
+                position: absolute;
+                padding: 4px 0;
+                right: 0;
+                height: 32px;
+                width: 32px;
+                
+                .icon_exit {
+                    height: 32px;
+                    width: 32px;
+                }
+            }
+         }
+        
+        .group_btn_category {
+            
+            
+            width: 100%;
+            justify-content: space-evenly;
+            padding: 0 6px;
+        }
+
+         .btn_category {
+            width: 65px;
+            position: relative;
+            &:hover {
+                color:  rgb(245, 152, 38);
+            }
+         }
+         .btn_type {
+            display: block;
+         }
+         .list_category {
+            text-align: center;
+            top:80px;
+            left: 0;
+            background-color: white;
+            width: 100%;
+            min-height: 300px;
+            padding-left: 10px;
+            margin-top: 16px;
+         }
+      
+        .header {
+            font-weight: 600;
+            border-bottom: 2px solid #ccc;
+            padding: 2px 4px;
+        }
+
+        .quanao_div {
+            display: flex;
+            justify-content: center;
+            position: absolute;
+            left: 0;
+            top:80px;
+            background-color: white;
+            width: 100%;
+            // height: 400px;
+            margin-top: 16px;
+            
+            ul {
+                width: 100%;
+                margin-left: 10px;
+            }
+        }
+
+        .view_all_quanao {
+            text-align: center;
+            padding-right: 20px;
+            font-weight: 700;
+            padding-right: 0;
+
+            
+               
+            
+        }
+
+        .view_all_phukien {
+            font-weight: 700;
+        }
+
+        .btn_link {
+            &:hover {
+                color: rgb(245, 152, 38);
+            }
+        }
+        .wrapper_btn_category {
+            display: flex;
+            width: 100%;
+            justify-content: space-evenly;
+        }
+        }
