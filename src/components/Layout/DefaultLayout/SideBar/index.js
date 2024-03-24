@@ -80,7 +80,7 @@ function SideBar({setRe_render}) {
                                 handleClickScroll()
                             }}
                         >
-                            <Link to={`/shoes?_page=1&_limit=${limit}&_brand=${item.brand_id}&_category=${paramToObject._category}`}>{item.brand_id}</Link>
+                            <Link onClick={console.log(paramToObject)} to={`/shoes?_page=1&_limit=${limit}&_brand=${item.brand_id}&_category=${paramToObject._category}`}>{item.brand_id}</Link>
                         </li>
                     )
                 }
