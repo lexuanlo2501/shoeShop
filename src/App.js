@@ -5,7 +5,9 @@ import ModifyProducts from './page/ModifyProducts';
 import Home from './page/Home';
 
 
+// import {BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {HashRouter as Router, Routes, Route } from 'react-router-dom';
+
 
 import Confirming from './page/Confirming';
 
