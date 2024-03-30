@@ -1,7 +1,7 @@
 .wrapper {
    display: flex;
-   height: 100vh;
    position: relative;
+   min-height: 100vh;
 
    .logo {
         margin: 10px 20px;
@@ -330,6 +330,9 @@ margin-left: 10px
 
 // mobile
 @media only screen and (max-width:46.1875em){
+    // .wrapper {
+    //     height: 100vh;
+    // }
    .leftSide {
     position: absolute;
         width: 85%;
