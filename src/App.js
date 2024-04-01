@@ -36,6 +36,12 @@ import ListAccount from './page/ListAccount';
 import ProductList_v3 from './page/ProductList_v3';
 import SuccessPay from './page/SuccessPay';
 import Test1403 from './page/Test1403';
+import DeliveryPolicy from './components/Layout/components/Footer/FooterPage/DeliveryPolicy';
+import Contact from './components/Layout/components/Footer/FooterPage/Contact';
+import GuidePickSize from './components/Layout/components/Footer/FooterPage/GuidePickSize';
+import Condition_Clause from './components/Layout/components/Footer/FooterPage/Condition_Clause';
+import Exchange_Return from './components/Layout/components/Footer/FooterPage/Exchange_Return';
+import SecurityPolicy from './components/Layout/components/Footer/FooterPage/SecurityPolicy';
 
 export const CartContext = createContext()
 
@@ -190,7 +196,48 @@ function App() {
 
             />
 
-          
+          {/* PAGE FOOTER */}
+          <Route
+              path="deliveryPolicy"
+              // DefaultLayout
+              element={<HeaderOnly><DeliveryPolicy/></HeaderOnly>}
+
+            />
+
+            <Route
+              path="contact"
+              // DefaultLayout
+              element={<HeaderOnly><Contact/></HeaderOnly>}
+
+            />
+
+            <Route
+              path="guidepicksize"
+              // DefaultLayout
+              element={<HeaderOnly><GuidePickSize/></HeaderOnly>}
+
+            />
+
+<Route
+              path="conditionClause"
+              // DefaultLayout
+              element={<HeaderOnly><Condition_Clause/></HeaderOnly>}
+
+            />
+
+<Route
+              path="exchangeReturn"
+              // DefaultLayout
+              element={<HeaderOnly><Exchange_Return/></HeaderOnly>}
+
+            />
+
+<Route
+              path="securityPolicy"
+              // DefaultLayout
+              element={<HeaderOnly><SecurityPolicy/></HeaderOnly>}
+
+            />
 
             
 
