@@ -325,7 +325,7 @@ ul {
 .wapper_notify {
     width: 360px;
     height: 450px;
-    overflow-y: scroll;
+    
   
     .notify_item+.notify_item {
         border-top: 0.7px solid #d6d3d3;
@@ -834,7 +834,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
         margin-right: 12px;
     
         &:hover {
-                color:  rgb(245, 152, 38);;
+                color:  rgb(245, 152, 38);
                 border-bottom: 1px solid  rgb(245, 152, 38);;
                 transition: .1s ease-in-out;
                 .category_menu {

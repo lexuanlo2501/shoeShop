@@ -1,11 +1,10 @@
 .content {
-    width: 1300px;
     margin: 0 auto;
     margin-top: 58px;
     padding-top: 15px;
 
 }
-
+.wrapper {
 // mobile
 @media only screen and (max-width:46.1875em){
     .wrapper {
@@ -20,7 +19,7 @@
     
 
 }
-
+}
 // tablet
 @media only screen and (min-width: 46.25em) and (max-width: 78.25em){
    .content {

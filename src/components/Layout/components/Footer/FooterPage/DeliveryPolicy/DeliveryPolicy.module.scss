@@ -1,0 +1,213 @@
+.wrapper {
+  margin-top: 90px;
+  margin-left: 31.5px;
+  margin-right: 31.5px;
+  margin-bottom: 63px;
+  padding: 0 20px;
+
+  .wrapper_content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px;
+
+    h1 {
+      font-weight: 600 !important;
+      font-size: 3em;
+      margin-bottom: 36px;
+      
+    }
+
+    .wrapper_content_policy {
+      display: flex;
+      flex-direction: column;
+      text-align: justify;
+      padding-left: 30px;
+      line-height: 1.6em;
+      word-wrap: break-word;
+      zoom: 1;
+      color: #ff0000;
+      margin-bottom: 36px;
+
+      .free_delivery {
+        color: #ff0000;
+        font-weight: bold;
+      }
+
+      .link-to-home {
+        font-style: italic;
+        color: #0293DC;
+
+        &:hover {
+          color:  rgb(245, 152, 38);
+          
+        }
+      }
+
+      .italic {
+        font-style: italic;
+      }
+    }
+
+    .rules_block {
+      display: flex;
+      flex-direction: column;
+
+      h2 {
+        margin-bottom: 32px;
+      }
+
+      span {
+        margin-bottom: 24px;
+      }
+      
+     .wrapper-table {
+      margin-bottom: 24px;
+      max-width: 700px;
+
+    
+     }
+
+     .list-quy-tac-giao-hang {
+       padding-left:70px;
+     }
+
+      .wrapper_quy-dinh-hang-hoa {
+        padding-left: 30px;
+        margin-bottom: 12px;
+        ul {
+          padding-left: 40px;
+         
+          li {
+            list-style-type: disc;
+            margin-bottom: 12px;
+          }
+        }
+      }
+        
+      .bold {
+        font-weight: bold;
+      }
+
+      .wrapper_quy-dinh-giao-hang {
+          border-collapse: collapse;
+          border-spacing: 0;
+          width: 700px;
+          border-radius: 5px;
+          background-color: #e9f9ff;
+       
+
+          .width-530px {
+            width: 530px;
+          }
+          .height-22px {
+            height: 22px;
+          }
+          .text-center {
+            text-align: center;
+          }
+      }
+      .block-area {
+        padding-left: 30px;
+
+        ul {
+          padding-left: 40px;
+
+          li {
+            list-style: disc;
+            margin-bottom: 6px;
+          }
+        }
+      }
+      
+    }
+
+    
+  }
+}
+
+//tablet
+  @media only screen and (min-width: 46.25em) and (max-width: 78.25em){
+.wrapper {
+  margin-top: 50px;
+  margin-left: 10px;
+  margin-right: 10px;
+
+}
+
+   .wrapper_content_policy {
+    padding-left: 0px !important;
+}
+
+    .wrapper-table {
+    
+    }
+   .wrapper_quy-dinh-hang-hoa {
+    padding-left: 0 !important;
+   }
+   .block-area {
+    padding-left: 0 !important;
+   }
+   .list-quy-tac-giao-hang {
+      padding-left: 40px !important;
+   }
+
+   .wrapper_content {
+    h1 {
+    
+      font-size: 2em !important;
+    }
+  }
+    }
+//mobile
+    @media only screen and (max-width:46.1875em){
+
+      .wrapper {
+        margin-top: 30px;
+        margin-left: 0 !important ;
+        margin-right: 0 !important ;
+
+      }
+      .wrapper-table {
+        table {
+          max-width: 320px;
+        }
+      }
+
+      .wrapper_content_policy{
+          padding-left: 0!important;
+      }
+
+      .wrapper_content {
+        h1 {
+          font-size: 1.5em !important;
+        }
+      }
+
+      .wrapper_quy-dinh-hang-hoa {
+               padding-left: 20px !important;
+        ul {
+          padding-left: 0!important;
+        }
+      }
+
+      .block-area {
+        padding-left: 18px !important;
+        ul {
+          padding-left: 0!important;
+        }
+      }
+
+      .list-quy-tac-giao-hang {
+        padding-left: 20px !important;
+      }
+
+      .width-530px {
+        max-width: 200px !important;
+      }
+
+      .mobile-list {
+        ul {
+          padding-left: 15px !important;
+        }
+      }
+        }
