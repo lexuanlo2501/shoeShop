@@ -43,8 +43,7 @@ function ProductList_v3({ re_render }) {
 
     const [numberOfPage, setNumberOfPage] = useState([])
 
-    const [listView, setListView] = useState(false)
-    const [view, setView] = useState('grid-3')
+    const [view, setView] = useState('grid-4')
 
     const arrPage = (n) => {
         let arr = Array(Math.ceil(n/limit)).fill(0).map((_, index) => index+1)
@@ -123,7 +122,6 @@ function ProductList_v3({ re_render }) {
                     
                     <TfiLayoutListThumbAlt className={cx(['viewProd_btn',{'active':view==="list"}])}
                         onClick = {() => {
-                            setListView(true)
                             setView("list")
                             console.log('list')
                         }}
@@ -136,7 +134,6 @@ function ProductList_v3({ re_render }) {
                     />
                     <TfiLayoutColumn3Alt className={cx(['viewProd_btn','btn_grid3',{'active':view==="grid-3"}])}
                         onClick = {() => {
-                            setListView(false)
                             setView("grid-3")
                             console.log('grip')
                         }}
@@ -163,7 +160,7 @@ function ProductList_v3({ re_render }) {
             }
 
             {   
-                products.map((item, index) => <Card listView={listView} view={view} key={item.id} product={item}/>)
+                products.map((item, index) => <Card  view={view} key={item.id} product={item}/>)
             }
 
             {
@@ -215,7 +212,7 @@ function ProductList_v3({ re_render }) {
     );
 }
 
-function Card({product, listView, view}) {
+function Card({product, view}) {
     const inforUser = JSON.parse(localStorage.getItem("tokens"));
     const [like, setLike] = useState(inforUser?.favorite?.includes(product.id))
     const [token, setToken] = useState(inforUser)
@@ -227,7 +224,7 @@ function Card({product, listView, view}) {
 
 
     return (
-        <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx(["card", {"active":listView,"list":view==="list","grid-4":view==="grid-4","grid-3":view==="grid-3","grid-2":view==="grid-2"}])}
+        <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx(["card", {"list":view==="list","grid-4":view==="grid-4","grid-3":view==="grid-3","grid-2":view==="grid-2"}])}
             onClick={(e) => {window.scrollTo(0, 0)}}
         >
             <div className={cx(["card_thumnal", product.BC_color, checkSoldOut && "sold_out"])}>
@@ -265,7 +262,7 @@ function Card({product, listView, view}) {
                
             </div>
             {/* listView */}
-            <div className={cx("card-data", {"listView": listView})}>
+            <div className={cx("card-data", {"listView": view ==="list"})}>
 
                 <div href="" className={cx("card-button")}
                     onClick={(e) => {
@@ -273,13 +270,13 @@ function Card({product, listView, view}) {
 
                     }}
                 >
-                    <button className={cx("detail_vew_btn")} 
+                    <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx("detail_vew_btn")} 
                         onClick={() => {
                             
                         }}
                     >
                         <FontAwesomeIcon icon={faCartShopping}/>
-                    </button>
+                    </Link>
                     <ConfirmModal_v2
                         size="lg"
                         body={<DetailProduct_v2 product_prop={product}/>}

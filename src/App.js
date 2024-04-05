@@ -42,8 +42,6 @@ export const CartContext = createContext()
 function App() {
   const [cart_context, setCart_context] = useState(false)
 
-  console.log("In App")
-
   const token =  JSON.parse(localStorage.getItem("tokens"));
   const cart = JSON.parse(localStorage.getItem("cart"))
   if(!cart) {

@@ -79,7 +79,7 @@ function SideBar({setRe_render}) {
                                 handleClickScroll()
                             }}
                         >
-                            <Link onClick={console.log(paramToObject)} to={`/shoes?_page=1&_limit=${limit}&_brand=${item.brand_id}&_category=${paramToObject?._category}`}>{item.brand_id}</Link>
+                            <Link to={`/shoes?_page=1&_limit=${limit}&_brand=${item.brand_id}&_category=${paramToObject?._category}`}>{item.brand_id}</Link>
                         </li>
                     )
                 }
@@ -98,7 +98,10 @@ function SideBar({setRe_render}) {
                     types.map(type => ( paramToObject?._category == type?.category_id &&
                          (<li className={cx('select_type-Brand')} key={type.id}>
                          <input id={"t"+type.id} name="type_prod" value={type.id} type="radio"
-                             onChange={e=> setType(`&_type=${e.target.value}`)}
+                             onChange={e=> {
+                                setType(`&_type=${e.target.value}`)
+                                console.log(`&_type=${e.target.value}`)
+                            }}
                          /> <label htmlFor={"t"+type.id}>{type.type_name}</label>
                      </li>)
                     ))
@@ -121,8 +124,16 @@ function SideBar({setRe_render}) {
                             step={10000}
                         />
                         {/* <br/> */}
-                        <button className={cx('filter_price_btn')} onClick={() => setRe_render(pre => !pre)}>
-                            <Link 
+                        {/* <button className={cx('filter_price_btn')} 
+                            onClick={() => {
+                                // setRe_render(pre => !pre)
+                                const params = `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}&_brand=${paramToObject._brand}`
+
+                                console.log(params)
+                            }
+                        }> */}
+                            <Link className={cx('filter_price_btn')}
+                                onClick={() => setRe_render(pre => !pre)}
                                 to={
                                     paramToObject?._brand ? 
                                     `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}&_brand=${paramToObject._brand}`
@@ -132,7 +143,7 @@ function SideBar({setRe_render}) {
                             >Lọc</Link>
                         
                             
-                        </button>
+                        {/* </button> */}
                        
 
                   

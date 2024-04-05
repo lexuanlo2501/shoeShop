@@ -255,12 +255,17 @@ a{
 }
 
 .filter_price_btn {
+    display: inline-block;
     margin-top: 20px;
     padding: 0 20px;
     line-height: 33px;
     border-radius: 7px;
     background-color: #444343;
     margin-bottom: 20px;
+    color: #fff !important;
+    width: 100%;
+    text-align: center;
+    letter-spacing: 2px;
 
     &:hover {
         opacity: 0.8;
