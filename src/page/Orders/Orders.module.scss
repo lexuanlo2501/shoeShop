@@ -817,11 +817,14 @@ p.price_product{
     }
 
     .input_infor {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
         position: relative;
         font-size: 17px;
         margin-bottom: 10px;
         label {
-            width: 70px;
+            width: 130px;
             text-transform: capitalize;
             cursor: pointer;
         }
@@ -829,17 +832,21 @@ p.price_product{
             margin-right: 7px;
         }
         input {
-            border-bottom: 1px solid rgb(124, 124, 124);
-            width: 300px;
+            border: 1px solid rgb(124, 124, 124);
+            width: 400px;
+            border-radius: 5px ;
+            height: 40px;
 
             &:focus {
-                border-color: rgb(249, 188, 188);
+                border-color: rgb(249, 188, 188) !important;
             }
         }
         textarea {
             resize: both;
-            width: 300px;
+            width: 400px;
             padding: 8px;
+
+            
         }
 
         .err_messagge {
@@ -847,7 +854,55 @@ p.price_product{
             left: 154px;
             color:rgb(245, 172, 172);
         }
+
+        .select_address {
+            width: 400px;
+            height: 40px;
+            margin-right: 8px;
+            border-radius: 5px;
+            outline: none;
+            padding: 4px 2px;
+            cursor: pointer;
+            border-color: #cdcdcd;
+         
+        }
+
+        .input-add-address {
+            padding-left: 4px;
+            padding-right: 4px;
+            borderColor: #cdcdcd;
+        }
+
+             
+    .loading1 {
+        position: absolute;
+        right: 61.3%;
+        top: 38px;
+        height: 24px;
+        color: #8c8c8c;
+       animation: spinner 1s linear infinite;
     }
+
+    .loading2 {
+        position: absolute;
+        right: 61.3%;
+        top: 10px;
+        height: 24px;
+        color: #8c8c8c;
+       animation: spinner 1s linear infinite;
+    }
+      
+    @keyframes spinner{
+     from {
+        transform: rotate(0);
+     }
+
+      to {
+        transform: rotate(360deg);
+
+      }
+    }
+}
 
 
 }
@@ -1030,6 +1085,14 @@ p.price_product{
             
         }
     }
+
+    textarea {
+        resize: both;
+        width: 400px;
+        padding: 8px;
+
+        
+    }
     
     
 }
@@ -1113,6 +1176,21 @@ p.price_product{
 
     .content_description_wrapper {
         justify-content: space-between;
+    }
+
+    .input_infor {
+        .input-add-address {
+           width: 210px !important;
+        }
+
+        textarea {
+           width: 210px !important;
+        }
+        
+    }
+
+    .select_address{
+        width: 210px !important;
     }
     
 }
