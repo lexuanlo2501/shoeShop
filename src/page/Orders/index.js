@@ -240,6 +240,7 @@ function Orders() {
         .then(()=>{
             setLoadicon1(false);
             setIconAddaddress(true);
+            refinputAddress.current.value = ''
         })
       
         setTrigger(pre => !pre)
@@ -406,7 +407,7 @@ function Orders() {
                                 paddingLeft:4,
                                 paddingRight:4,
                                 borderColor: "#cdcdcd",
-                                
+                                value:{addAddress}
                                 }}
                                 ref={refinputAddress}
                                 onChange={(e) => {
@@ -505,7 +506,11 @@ function Orders() {
                                 <span className={cx('title')} title="Phương thức dành cho khách hàng có tài khoản và lựa chọn thanh toán qua ví điện tử MoMo. Vui lòng đọc kĩ các cam kết về phương thức này trước khi quyết định. Phí thanh toán đang được áp dụng là 1% trên tổng thanh toán.">?</span>
                                 <img src={require('./MoMo_Logo.png')}/>
                             </div>
-                            <h3>Địa chỉ: { JSON.parse(localStorage.getItem("tokens")).address }</h3>
+                            <h3>Địa chỉ: {
+                                addressList.find(address => address.id ==  JSON.parse(localStorage.getItem("tokens")).address).addressName
+                             
+
+                             }</h3>
                             <p className='text-danger'>{optionPay === "momo" && <span>Hiện chưa có phương thức này</span>} </p>
 
                         </div>
