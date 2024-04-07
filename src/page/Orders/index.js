@@ -247,6 +247,7 @@ function Orders() {
        
     }
     const refinputAddress=useRef();
+    const refinputSelect = useRef();
     useLayoutEffect(() => {
         if (addAddress !== '') {
             setIconAddaddress(true);
@@ -273,6 +274,7 @@ function Orders() {
         .then(() => {
         setLoadicon2(false);
         setIcondel(true);
+       
       
         })
         setTrigger(pre => !pre)
@@ -385,7 +387,7 @@ function Orders() {
                         <div style={{display:"flex", alignItems:"center", height:"42px", position:"relative"}}>
                             <select className={cx('select_address')} {...register("address")}>
                             {
-                                addressList?.map(i => <option  key={i.id} value={i.id}>{i.addressName}</option>)
+                                addressList?.map(i => <option ref={refinputSelect}  key={i.id} value={i.id}>{i.addressName}</option>)
                             }
                             </select>
                             {iconDel && <button onClick={(e)=>{handleSubmit(handleDelAddress)(e)}}><FontAwesomeIcon style={{height:"24px", marginTop:5, color: "#8c8c8c"}} icon={faTrashCan} /></button>}
@@ -507,7 +509,7 @@ function Orders() {
                                 <img src={require('./MoMo_Logo.png')}/>
                             </div>
                             <h3>Địa chỉ: {
-                                addressList.find(address => address.id ==  JSON.parse(localStorage.getItem("tokens")).address)?.addressName
+                                addressList.find(address => address.id ==  JSON.parse(localStorage.getItem("tokens")).address)?.addressName ||  addressList[0].addressName
                              }</h3>
                             <p className='text-danger'>{optionPay === "momo" && <span>Hiện chưa có phương thức này</span>} </p>
 
