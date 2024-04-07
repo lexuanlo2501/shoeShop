@@ -509,7 +509,7 @@ function Orders() {
                                 <img src={require('./MoMo_Logo.png')}/>
                             </div>
                             <h3>Địa chỉ: {
-                                addressList.find(address => address.id ==  JSON.parse(localStorage.getItem("tokens")).address)?.addressName ||  addressList[0].addressName
+                                addressList.find(address => address.id ==  JSON.parse(localStorage.getItem("tokens")).address)?.addressName ||  addressList[0]?.addressName
                              }</h3>
                             <p className='text-danger'>{optionPay === "momo" && <span>Hiện chưa có phương thức này</span>} </p>
 
