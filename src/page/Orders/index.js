@@ -274,9 +274,16 @@ function Orders() {
         .then(() => {
         setLoadicon2(false);
         setIcondel(true);
-       
+        const userInfor = JSON.parse(localStorage.getItem("tokens"))
+        console.log(userInfor)
       
+        
+        localStorage.setItem("tokens", JSON.stringify({...userInfor, address : addressList[0].id}))
+        
+
+   
         })
+
         setTrigger(pre => !pre)
             console.log(idDel)
   
