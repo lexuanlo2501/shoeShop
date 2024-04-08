@@ -2,7 +2,7 @@ import classNames from "classnames/bind";
 import styles from './Orders.module.scss'
 
 import axios from "axios";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useLayoutEffect ,useMemo, useRef, useState } from "react";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,7 +14,7 @@ import { PacmanLoader } from "react-spinners";
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { faCreditCard, faCreditCardAlt, faTrashCan, faTruckFast } from "@fortawesome/free-solid-svg-icons";
+import { faAddressBook, faCircleXmark, faCreditCard, faCreditCardAlt, faSpinner, faTrashCan, faTruckFast } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {formatPrice, limit, priceDiscount} from "../../common"
 import { createAxios } from "../../createInstance";
@@ -84,17 +84,17 @@ function Orders() {
 
     }, [check])
 
-
+    const [trigger, setTrigger] = useState(false)
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("tokens"));
         setUser(user)
-    }, [])
+        console.log(user)
+    }, [trigger])
 
 
     const total = useMemo(() => {
         let result = orderItem.reduce((pre, cur) => {
             return pre + priceDiscount(cur?.product?.price, cur?.product?.discount_id) * cur.quantity
-
         }, 0)
         // console.log(result)
         return result
@@ -130,7 +130,10 @@ function Orders() {
             console.log('block')
         }
 
-        localStorage.setItem("tokens", JSON.stringify({...user, address:data.address, description:data.description}))
+        let checkAddress = addressList.find(i => i.id == data.address)
+
+        localStorage.setItem("tokens", JSON.stringify({...user, address:checkAddress?data.address:(addressList[0])?.id, description:data.description}))
+       
         
 
     }
@@ -156,7 +159,7 @@ function Orders() {
             const order = {
                 "client_id" : user.accName,
                 "description": data.description,
-                "address": data.address,
+                "address": addressList.find(i => i.id == user?.address)?.addressName,
                 "products": orderItem.filter(i => i.quantity!=0).map(prod => ({
                     "product_id": prod.id,
                     "size": prod.size,
@@ -196,9 +199,90 @@ function Orders() {
         }
     }
 
+    const [addressList, setAddressList] = useState([])
+
+    useEffect(() => {
+        const userInfor = JSON.parse(localStorage.getItem("tokens"))
+        axios.get(process.env.REACT_APP_BACKEND_URL+`/addresses/${userInfor?.accName}`)
+        .then(res => {
+            setAddressList(res.data)
+            localStorage.setItem("tokens", JSON.stringify({...userInfor, address :  res.data[0].id }))
+            console.log(res.data)
+        
+        })
+
+        
+    }, [trigger])
+
+    
+
+    
 
 
+    //Add address
 
+    const [addAddress, setAddaddress] = useState('');
+   
+   const [iconAddaddress, setIconAddaddress] = useState(false);
+   const [loadIcon1, setLoadicon1] = useState(false);
+
+   const [loadIcon2, setLoadicon2] = useState(false);
+
+
+    const handleAddaddress = (value) => {
+        setLoadicon1(true);
+        setIconAddaddress(false);
+        const userInfor = JSON.parse(localStorage.getItem("tokens"))
+        refinputAddress.current.focus();
+        axios.post(process.env.REACT_APP_BACKEND_URL+`/addresses` ,
+        {
+          
+            addressName : value,
+            accName: userInfor.accName
+          
+        }) 
+        .then(()=>{
+            setLoadicon1(false);
+            setIconAddaddress(true);
+            refinputAddress.current.value = ''
+        })
+      
+        setTrigger(pre => !pre)
+       
+    }
+    const refinputAddress=useRef();
+    const refinputSelect = useRef();
+    useLayoutEffect(() => {
+        if (addAddress !== '') {
+            setIconAddaddress(true);
+        } else {
+            setIconAddaddress(false);
+        }
+    }, [addAddress]);
+
+    // console.log(addAddress)
+
+
+    //Delete address
+    const [iconDel, setIcondel] = useState(true)
+    
+    const handleDelAddress = (data) => {
+        setLoadicon2(true);
+        setIcondel(false);
+
+        const idDel = data.address;
+        
+        axios.delete(process.env.REACT_APP_BACKEND_URL+`/addresses/${idDel}`)
+       
+        .then(() => {
+        setLoadicon2(false);
+        setIcondel(true);
+        
+      })
+
+        setTrigger(pre => !pre)
+        
+    }
 
     return ( 
         <div id={styles["wrapper"]}>           
@@ -242,8 +326,6 @@ function Orders() {
                                 :
                                 orderItem.map((item, index) => <Item_order setCheck={setCheck} order={item} key={item.id+item.size} index={index}/>)
 
-                                
-                                
                             }
 
                             </div>
@@ -272,7 +354,6 @@ function Orders() {
                                                     navigate("/signin")
                                                 }
 
-
                                                 handleSubmit(handleOrder)(e)
                                                 
                                             }}
@@ -296,21 +377,73 @@ function Orders() {
                     
                 
                     <div className={cx('input_infor')}>
-                        <label htmlFor="input_5">địa chỉ</label><span>:</span>
-                        <input id="input_5" {...register("address")}/> 
+                        <label>địa chỉ:</label>
+                        {/* <input id="input_5" {...register("address")}/> 
                         {
                             errors.address && <ComponentRequire/>
-                        }
+                        } */}
+                        {/* <p>Tỉnh/Thành phố, Quận/Huyện, Phường/Xã</p> */}
 
-                        <p>Tỉnh/Thành phố, Quận/Huyện, Phường/Xã</p>
+                        <div style={{display:"flex", alignItems:"center", height:"42px", position:"relative"}}>
+                            <select className={cx('select_address')} {...register("address")}>
+                            {
+                                addressList?.map(i => <option ref={refinputSelect}  key={i.id} value={i.id}>{i.addressName}</option>)
+                            }
+                            </select>
+                            {iconDel && <button onClick={(e)=>{handleSubmit(handleDelAddress)(e)}}><FontAwesomeIcon style={{height:"24px", marginTop:5, color: "#8c8c8c"}} icon={faTrashCan} /></button>}
+                             
+                            {loadIcon2 && <FontAwesomeIcon className={cx("loading2")} icon = {faSpinner}/>}
+
+                        </div>
+
+                               
+                        {/* <button onClick={(e)=>{handleSubmit(handleLogAddress)(e)}}>Test</button> */}
+
+                       <div  style={{display:"flex", height:"80px", position:"relative"}}>
+                           <div style={{display:"flex", flexDirection:"column",
+                             marginRight:"8px",
+                             gap:"4px",}}>
+                               <label htmlFor="addAddress">Thêm địa chỉ:</label>
+        
+                               <input className={cx("input-add-address")} placeholder="Địa chỉ mới" style={{ 
+                                paddingLeft:4,
+                                paddingRight:4,
+                                borderColor: "#cdcdcd",
+                                value:{addAddress}
+                                }}
+                                ref={refinputAddress}
+                                onChange={(e) => {
+                                    setAddaddress(e.target.value)
+                                    
+                                }}
+                                 id="addAddress"/>
+                           </div>
+    
+                            {iconAddaddress && <button style={{ position:"relative", }} onClick={()=>{
+                                handleAddaddress(addAddress)}}> <FontAwesomeIcon style={{ position:"absolute",bottom:"18px", height:'24px', color: "#8c8c8c"}} icon={faAddressBook} /> 
+                              
+                                 </button>}
+
+                                  { loadIcon1 && <FontAwesomeIcon className={cx("loading1")} icon = {faSpinner}/>}
+                       </div>
+
+                       <div style={{display:"flex", flexDirection:"column", gap:"4px", width:"300px"}}>
+                        <label htmlFor="input_4">Ghi Chú:</label>
+                            <div>
+                                <textarea style={{
+                                    paddingLeft:4,
+                                    paddingRight:4,
+                                   
+                                    }}  id="input_4"
+                                {...register("description")}
+                                />
+                            </div>
+                        
+                    </div>
+                                       
                     </div>
 
-                    <div className={cx('input_infor')}>
-                        <label htmlFor="input_4">ghi chú</label><span>:</span>
-                        <textarea id="input_4"
-                        {...register("description")}
-                        />
-                    </div>
+                    
                 </div>
 
             </div>
@@ -375,7 +508,9 @@ function Orders() {
                                 <span className={cx('title')} title="Phương thức dành cho khách hàng có tài khoản và lựa chọn thanh toán qua ví điện tử MoMo. Vui lòng đọc kĩ các cam kết về phương thức này trước khi quyết định. Phí thanh toán đang được áp dụng là 1% trên tổng thanh toán.">?</span>
                                 <img src={require('./MoMo_Logo.png')}/>
                             </div>
-                            <h3>Địa chỉ: { JSON.parse(localStorage.getItem("tokens")).address }</h3>
+                            <h3>Địa chỉ: {
+                                addressList.find(address => address.id ==  JSON.parse(localStorage.getItem("tokens")).address)?.addressName ||  addressList[0]?.addressName
+                             }</h3>
                             <p className='text-danger'>{optionPay === "momo" && <span>Hiện chưa có phương thức này</span>} </p>
 
                         </div>
@@ -509,8 +644,6 @@ function Item_order({order, setCheck}) {
 
     }
 
-    useEffect(() => {
-    }, [])
     const sizeValues = ['36', '37', '38', '39', '40', '41', '42', '43']
 
     
