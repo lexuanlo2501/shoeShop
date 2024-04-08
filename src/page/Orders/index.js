@@ -130,7 +130,10 @@ function Orders() {
             console.log('block')
         }
 
-        localStorage.setItem("tokens", JSON.stringify({...user, address:data.address, description:data.description}))
+        let checkAddress = addressList.find(i => i.id == data.address)
+
+        localStorage.setItem("tokens", JSON.stringify({...user, address:checkAddress?data.address:(addressList[0])?.id, description:data.description}))
+       
         
 
     }
@@ -156,7 +159,7 @@ function Orders() {
             const order = {
                 "client_id" : user.accName,
                 "description": data.description,
-                "address": data.address,
+                "address": addressList.find(i => i.id == user?.address)?.addressName,
                 "products": orderItem.filter(i => i.quantity!=0).map(prod => ({
                     "product_id": prod.id,
                     "size": prod.size,
