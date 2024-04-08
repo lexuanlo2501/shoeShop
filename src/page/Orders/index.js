@@ -203,6 +203,7 @@ function Orders() {
         axios.get(process.env.REACT_APP_BACKEND_URL+`/addresses/${userInfor?.accName}`)
         .then(res => {
             setAddressList(res.data)
+            localStorage.setItem("tokens", JSON.stringify({...userInfor, address :  res.data[0].id }))
             console.log(res.data)
         
         })
@@ -269,27 +270,16 @@ function Orders() {
         const idDel = data.address;
         
         axios.delete(process.env.REACT_APP_BACKEND_URL+`/addresses/${idDel}`)
-        
-
+       
         .then(() => {
         setLoadicon2(false);
         setIcondel(true);
-        const userInfor = JSON.parse(localStorage.getItem("tokens"))
-        console.log(userInfor)
-      
         
-        localStorage.setItem("tokens", JSON.stringify({...userInfor, address : addressList[0].id}))
-        
-
-   
-        })
+      })
 
         setTrigger(pre => !pre)
-            console.log(idDel)
-  
+        
     }
-
-
 
     return ( 
         <div id={styles["wrapper"]}>           
