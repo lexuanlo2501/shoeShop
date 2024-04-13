@@ -42,6 +42,8 @@ import GuidePickSize from './components/Layout/components/Footer/FooterPage/Guid
 import Condition_Clause from './components/Layout/components/Footer/FooterPage/Condition_Clause';
 import Exchange_Return from './components/Layout/components/Footer/FooterPage/Exchange_Return';
 import SecurityPolicy from './components/Layout/components/Footer/FooterPage/SecurityPolicy';
+import SaleChannel from './page/SaleChannel';
+import RegisterSale from './page/RegisterSale';
 
 export const CartContext = createContext()
 
@@ -125,7 +127,18 @@ function App() {
               />
             }
             
-          
+            
+            <Route
+              path="saleHome"
+              element={<HeaderOnly><SaleChannel/></HeaderOnly>}
+            />
+            <Route
+              path="registerSale"
+              element={<HeaderOnly><RegisterSale/></HeaderOnly>}
+            />
+
+
+
 
             <Route
               path="signIn"

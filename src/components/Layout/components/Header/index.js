@@ -137,13 +137,13 @@ useEffect(()=> {
                         </span>
                     </li>
     
-                    <li className={cx(["men","menu"])}>
+                    <li className={cx(["menu"])}>
                         <Link to="/home" onClick={() => {window.scrollTo(0, 0)}}>
                             <span className={cx("nav_desktop")}>trang chủ</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faHome}/></span>
                         </Link>
                     </li>
     
-                    <li className={cx(["men","menu"])}>
+                    <li className={cx(["menu"])}>
                         <Link 
                             to={`/shoes?_page=1&_limit=${limit}`} 
                             onClick={() => {
@@ -157,7 +157,7 @@ useEffect(()=> {
                        
                     </li>
     
-                    <li className={cx(["men","menu"])}>
+                    <li className={cx(["menu"])}>
                         <Link to={`/shoes?_page=1&_limit=${limit}&_isDiscount=true`} 
                             onClick={() => {
                                 window.scrollTo(0, 0)
@@ -166,6 +166,18 @@ useEffect(()=> {
                             }}
                         >
                             <span className={cx("nav_desktop")}>giảm giá</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faPercent}/></span>
+                        </Link>
+                    </li>
+
+                    <li className={cx(["menu"])}>
+                        <Link to={`/shoes?_page=1&_limit=${limit}&_C2C=true`} 
+                            onClick={() => {
+                                window.scrollTo(0, 0)
+                                setRe_render(pre => !pre)
+                                
+                            }}
+                        >
+                            <span className={cx("nav_desktop")}>Chợ</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faPercent}/></span>
                         </Link>
                     </li>
                     
@@ -243,16 +255,9 @@ useEffect(()=> {
                                                 <li onClick={(e) => {window.scrollTo(0, 0)}}>
                                                     <Link to='/purchaseOrder'>Đơn mua</Link>
                                                 </li>
-                                                {/* <li
-                                                    onClick={() => {
-                                                        localStorage.setItem("tokens", JSON.stringify({}));
-                                                        navigate("/signin")
-                                                    }}
-                                                >
-                                                    Đăng xuất
-                                                    <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
-                                                </li> */}
-    
+                                                <li onClick={(e) => {window.scrollTo(0, 0)}}>
+                                                    <Link to='/saleHome'>Kênh bán hàng</Link>
+                                                </li>
                                                 <li onClick={handleLogout}>
                                                     Đăng xuất
                                                     <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
@@ -372,45 +377,45 @@ useEffect(()=> {
                     <ul >
                         <h2 className={cx('header')}>Áo</h2>
                         <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=44&_category=2`} onClick={() => {
-                    window.scrollTo(0, 0)
-                    setRe_render(pre => !pre)
-                    setShowMenuMobile(!showMenuMobile)
-                }}>Áo Hoodie</Link></li>
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=53&_category=2`} onClick={() => {
-                    window.scrollTo(0, 0)
-                    setRe_render(pre => !pre)
-                    
-                }}>Áo Khoác</Link></li>
+                            window.scrollTo(0, 0)
+                            setRe_render(pre => !pre)
+                            setShowMenuMobile(!showMenuMobile)
+                        }}>Áo Hoodie</Link></li>
+                                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=53&_category=2`} onClick={() => {
+                            window.scrollTo(0, 0)
+                            setRe_render(pre => !pre)
+                            
+                        }}>Áo Khoác</Link></li>
 
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=54&_category=2`} onClick={() => {
-                    window.scrollTo(0, 0)
-                    setRe_render(pre => !pre)
-                    setShowMenuMobile(!showMenuMobile)
-                }}>Áo Thun</Link></li>
+                                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=54&_category=2`} onClick={() => {
+                            window.scrollTo(0, 0)
+                            setRe_render(pre => !pre)
+                            setShowMenuMobile(!showMenuMobile)
+                        }}>Áo Thun</Link></li>
 
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=55&_category=2`} onClick={() => {
-                    window.scrollTo(0, 0)
-                    setRe_render(pre => !pre)
-                    setShowMenuMobile(!showMenuMobile)
-                }}>Áo Sơ Mi</Link></li>
+                                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=55&_category=2`} onClick={() => {
+                            window.scrollTo(0, 0)
+                            setRe_render(pre => !pre)
+                            setShowMenuMobile(!showMenuMobile)
+                        }}>Áo Sơ Mi</Link></li>
 
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=56&_category=2`} onClick={() => {
-                    window.scrollTo(0, 0)
-                    setRe_render(pre => !pre)
-                    setShowMenuMobile(!showMenuMobile)
-                }}>Áo Polo</Link></li>
+                                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=56&_category=2`} onClick={() => {
+                            window.scrollTo(0, 0)
+                            setRe_render(pre => !pre)
+                            setShowMenuMobile(!showMenuMobile)
+                        }}>Áo Polo</Link></li>
 
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=57&_category=2`} onClick={() => {
-                    window.scrollTo(0, 0)
-                    setRe_render(pre => !pre)
-                    setShowMenuMobile(!showMenuMobile)
-                }}>Áo Ba Lỗ</Link></li>
+                                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=57&_category=2`} onClick={() => {
+                            window.scrollTo(0, 0)
+                            setRe_render(pre => !pre)
+                            setShowMenuMobile(!showMenuMobile)
+                        }}>Áo Ba Lỗ</Link></li>
 
-                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=58&_category=2`} onClick={() => {
-                    window.scrollTo(0, 0)
-                    setRe_render(pre => !pre)
-                    setShowMenuMobile(!showMenuMobile)
-                }}>Áo Len</Link></li>
+                                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=58&_category=2`} onClick={() => {
+                            window.scrollTo(0, 0)
+                            setRe_render(pre => !pre)
+                            setShowMenuMobile(!showMenuMobile)
+                        }}>Áo Len</Link></li>
 
                     </ul>
 

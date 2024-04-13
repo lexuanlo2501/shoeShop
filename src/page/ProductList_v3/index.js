@@ -15,10 +15,6 @@ import ConfirmModal_v2 from "../../components/ConfirmModal_v2"
 import QuickProduct from '../../components/QuickProduct';
 import DetailProduct_v2 from '../DetailProduct_v2';
 
-import { BsFillGrid3X2GapFill,BsFillGrid3X3GapFill , BsFillGridFill  } from "react-icons/bs";
-import { FaList } from "react-icons/fa6";
-import { TfiLayoutGrid4Alt } from "react-icons/tfi";
-
 import { TfiLayoutColumn4Alt, TfiLayoutColumn3Alt, TfiLayoutColumn2Alt, TfiLayoutListThumbAlt  } from "react-icons/tfi";
 
 
