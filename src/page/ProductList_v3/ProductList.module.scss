@@ -29,8 +29,8 @@
 }
 
 .viewProd_btn {
-    padding: 6px;
-    font-size: 20px;
+    padding: 5px;
+    font-size: 30px;
     background-color: transparent;
     cursor: pointer;
 
@@ -41,7 +41,7 @@
     &.active{
         background-color: #515151;
         color: #fff;
-        border-radius: 10px;
+        border-radius: 7px;
 
     }
 }
@@ -156,15 +156,13 @@ a{
     // margin: 0 17px;
    margin-bottom: 38px;
     
-   &.active {
+   &.list {
         width: 80%;
         margin: 0 20px;
         box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
         display: flex;
         margin-bottom: 18px;
         border-radius: 30px;
-
-
 
         .card_thumnal {
             text-align: start;
@@ -176,12 +174,11 @@ a{
             
             .card-img{
                 width: 300px;
+                border-radius: 30px;
 
                 
             }
         }
-
-        
 
         .card-items {
 
@@ -205,6 +202,27 @@ a{
 
         }
    }
+
+    &.grid-4 {
+        .card_thumnal {
+            // height: 190px;
+        }
+    }
+    &.grid-3 {
+        width: 30%;
+        .card_thumnal {
+            height: 300px;
+        }
+
+    }
+    &.grid-2 {
+        width: 40%;
+        .card_thumnal {
+            height: 300px;
+
+        }
+    }
+
 }
 
 .sold_out::before {
@@ -332,7 +350,7 @@ a{
 
 .card-button{
     display: block;
-    background-color: #f2a20c;
+    // background-color: #f2a20c;
     color: hsl(220, 7%, 92%);
     border-radius: 14px;
     font-weight: 600;
@@ -344,6 +362,7 @@ a{
     .detail_vew_btn,
     .prev_vew_btn
     {
+        display: inline-block;
         background-color: #fff;
         padding: 8px 0;
         font-size: 15px;
@@ -475,7 +494,7 @@ a{
     }
 }
 
-
+// tablet
 @media only screen and (min-width: 46.25em) and (max-width: 78.25em){
    
     .wrapper{
@@ -483,7 +502,12 @@ a{
     }
     
     .card{
-        width: 32%;
+        // width: 32% ;
+        &.grid-4 {
+            .card_thumnal {
+                height: 190px;
+            }
+        }
     }
     .route {
         text-align: center;
@@ -496,12 +520,14 @@ a{
         width: 100%;
     }
     .card{
-        width: 47%;
+        width: 47% !important;
+        .card_thumnal {
+            height: 220px !important;
 
-        &.active {
-            width: 90%;
+        }
 
-            
+        &.list {
+            width: 90% !important;
 
             .card_thumnal {
                 height: 180px;
@@ -513,6 +539,8 @@ a{
             }
         }
         
+       
+        
     }
 
     .route {
@@ -522,6 +550,10 @@ a{
         &>div {
             margin-bottom: 10px;
         }
+    }
+
+    .btn_grid4, .btn_grid3 {
+        display: none;
     }
 
 

@@ -15,6 +15,13 @@ import ConfirmModal_v2 from "../../components/ConfirmModal_v2"
 import QuickProduct from '../../components/QuickProduct';
 import DetailProduct_v2 from '../DetailProduct_v2';
 
+import { BsFillGrid3X2GapFill,BsFillGrid3X3GapFill , BsFillGridFill  } from "react-icons/bs";
+import { FaList } from "react-icons/fa6";
+import { TfiLayoutGrid4Alt } from "react-icons/tfi";
+
+import { TfiLayoutColumn4Alt, TfiLayoutColumn3Alt, TfiLayoutColumn2Alt, TfiLayoutListThumbAlt  } from "react-icons/tfi";
+
+
 const cx = classNames.bind(styles)
 let axiosJWT = createAxios()
 
@@ -36,7 +43,7 @@ function ProductList_v3({ re_render }) {
 
     const [numberOfPage, setNumberOfPage] = useState([])
 
-    const [listView, setListView] = useState(false)
+    const [view, setView] = useState('grid-4')
 
     const arrPage = (n) => {
         let arr = Array(Math.ceil(n/limit)).fill(0).map((_, index) => index+1)
@@ -112,19 +119,30 @@ function ProductList_v3({ re_render }) {
                 <SearchItem setTrigger={setTrigger}/>
 
                 <div>
-                    <FontAwesomeIcon className={cx(['viewProd_btn', {'active':listView}])} icon={faList}
+                    
+                    <TfiLayoutListThumbAlt className={cx(['viewProd_btn',{'active':view==="list"}])}
                         onClick = {() => {
-                            setListView(true)
+                            setView("list")
                             console.log('list')
                         }}
                     />
-                    <FontAwesomeIcon className={cx(['viewProd_btn',{'active':!listView}])} icon={faGrip}
+
+                    <TfiLayoutColumn4Alt className={cx(['viewProd_btn','btn_grid4',{'active':view==="grid-4"}])}
+                         onClick = {() => {
+                            setView("grid-4")
+                        }}
+                    />
+                    <TfiLayoutColumn3Alt className={cx(['viewProd_btn','btn_grid3',{'active':view==="grid-3"}])}
                         onClick = {() => {
-                            setListView(false)
+                            setView("grid-3")
                             console.log('grip')
                         }}
                     />
-
+                    <TfiLayoutColumn2Alt className={cx(['viewProd_btn',{'active':view==="grid-2"}])}
+                         onClick = {() => {
+                            setView("grid-2")
+                        }}
+                    />
                 </div>
                 
 
@@ -142,7 +160,7 @@ function ProductList_v3({ re_render }) {
             }
 
             {   
-                products.map((item, index) => <Card listView={listView} key={item.id} product={item}/>)
+                products.map((item, index) => <Card  view={view} key={item.id} product={item}/>)
             }
 
             {
@@ -194,7 +212,7 @@ function ProductList_v3({ re_render }) {
     );
 }
 
-function Card({product, listView}) {
+function Card({product, view}) {
     const inforUser = JSON.parse(localStorage.getItem("tokens"));
     const [like, setLike] = useState(inforUser?.favorite?.includes(product.id))
     const [token, setToken] = useState(inforUser)
@@ -206,7 +224,7 @@ function Card({product, listView}) {
 
 
     return (
-        <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx(["card", {"active":listView}])}
+        <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx(["card", {"list":view==="list","grid-4":view==="grid-4","grid-3":view==="grid-3","grid-2":view==="grid-2"}])}
             onClick={(e) => {window.scrollTo(0, 0)}}
         >
             <div className={cx(["card_thumnal", product.BC_color, checkSoldOut && "sold_out"])}>
@@ -244,7 +262,7 @@ function Card({product, listView}) {
                
             </div>
             {/* listView */}
-            <div className={cx("card-data", {"listView": listView})}>
+            <div className={cx("card-data", {"listView": view ==="list"})}>
 
                 <div href="" className={cx("card-button")}
                     onClick={(e) => {
@@ -252,13 +270,13 @@ function Card({product, listView}) {
 
                     }}
                 >
-                    <button className={cx("detail_vew_btn")} 
+                    <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx("detail_vew_btn")} 
                         onClick={() => {
                             
                         }}
                     >
                         <FontAwesomeIcon icon={faCartShopping}/>
-                    </button>
+                    </Link>
                     <ConfirmModal_v2
                         size="lg"
                         body={<DetailProduct_v2 product_prop={product}/>}
