@@ -5,7 +5,7 @@ import axios from "axios";
 import { useState, useEffect, useMemo, useRef, useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart, faHome, faPercent, faBell, faCaretDown, faXmark, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faSearch, faBars, faClose, faUser, faRightFromBracket, faHeart, faHome, faPercent, faBell, faCaretDown, faXmark, faSliders, faStore } from "@fortawesome/free-solid-svg-icons";
 // import Tippy from '@tippyjs/react';
 // import 'tippy.js/dist/tippy.css'; // optional
 
@@ -105,6 +105,7 @@ useEffect(()=> {
     const handleLogout = async () => {
         try {
             const infor_user = JSON.parse(localStorage.getItem("tokens"))
+            // 25 is fake data, because is post method, the secound params will be body payload
             await axiosJWT.post(process.env.REACT_APP_BACKEND_URL+"/logout/"+ infor_user.accName, 25,{
                 headers: {Authorization: infor_user.accessToken}
             })
@@ -170,14 +171,14 @@ useEffect(()=> {
                     </li>
 
                     <li className={cx(["menu"])}>
-                        <Link to={`/shoes?_page=1&_limit=${limit}&_C2C=true`} 
+                        <Link to={`/shoes?_page=1&_limit=${limit}&_C2C=true`} className={cx("c2cMode_btn")}
                             onClick={() => {
                                 window.scrollTo(0, 0)
                                 setRe_render(pre => !pre)
                                 
                             }}
                         >
-                            <span className={cx("nav_desktop")}>Chợ</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faPercent}/></span>
+                            <span className={cx("nav_desktop")}>Chợ</span><FontAwesomeIcon icon={faStore}/>
                         </Link>
                     </li>
                     

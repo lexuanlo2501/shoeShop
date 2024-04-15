@@ -712,6 +712,25 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
     display: none;
 }
 
+.c2cMode_btn {
+    background-color: rgb(138, 192, 116);
+    color: #ffffff !important;
+    line-height: 1 !important;
+    padding: 8px 15px;
+    border-radius: 5px;
+
+    .nav_desktop {
+        margin-right: 10px;
+    }
+    svg {
+
+    }
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
 // tablet
 @media only screen and (min-width: 46.25em) and (max-width: 78.25em){
     .wrapper {
