@@ -23,6 +23,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import Carousel_v2 from '../../components/Carousel_v2';
 import { CartContext } from '../../App';
+import AvatarAuto from '../../components/AvatarAuto';
 // import { CartContext } from '../../components/Layout/HeaderOnly';
 
 // import required modules
@@ -49,9 +50,14 @@ function DetailProduct_v2({product_prop={}}) {
     const [showWanr, setShowWanr] = useState(false)
     const [showRefun, setShowRefun] = useState(false)
 
-
     
     const [quantity_Order, setQuantity_Order] = useState(1)
+    //comments
+
+    const [comments, setComments] = useState([]);
+
+    
+
     // const [size_Order, setSize_Order] = useState(sizeValues[0])
     const [size_Order, setSize_Order] = useState("")
     
@@ -76,6 +82,15 @@ function DetailProduct_v2({product_prop={}}) {
 
 
     }, [trigger])
+
+    useEffect(() =>{
+            console.log("pass")
+            axios.get(process.env.REACT_APP_BACKEND_URL+`/comments?_productId=${paramToObject._id}`)
+            .then((res)=> {
+                setComments(res.data)
+                console.log(res.data)
+            })
+    }, [paramToObject._id])
 
 
 
@@ -426,6 +441,49 @@ function DetailProduct_v2({product_prop={}}) {
                     <img className={cx('choose_size')} src={require('../../imgData/chart_size.png')} alt="shoe image"/>
 
                 
+                    {comments.length !==0 ? <div className={cx("comments")}> 
+                   <p><strong> ĐÁNH GIÁ SẢN PHẨM:</strong> </p>
+                {
+                    comments.map(i =>
+                     (<div className={cx('comment-item')} key={i.id}>
+                       <div className={cx('comment-item_info-user-comment')}>
+                        <div className={cx('comment-item_info-user-comment_name-date')}>
+                            <p> {i.fullName} </p>
+                            <p className={cx('comment-item_info-user-comment_name-date_date')}> {i.date} </p>
+                        </div>
+                       </div>
+                       
+                    <div className={cx('comment-item_avatar-comment')}>
+                                <AvatarAuto nameU={i.fullName}/>
+                                <p> {i.value} </p>
+                                
+                            </div>
+                         {i.reply.length !==0 && <div className={cx('comment-item_reply-wrapper')}>
+                                 <p><strong>Phản hồi</strong></p>
+                                 
+                                <ul className={cx('comment-item_reply')}>
+                              {i.reply.map((i) => 
+                                (
+                                   <div className={cx('comment-item_reply_reply-date')}>
+                                    <div className={cx('wrapper_date-saler')} > 
+                                         <p >Người bán</p>
+                                             <p className={cx('comment-item_reply_reply-date_date')}>{i.date}</p>
+                                    </div>
+                                         <li>{i.value}</li>
+                                   </div>
+                                  )
+                                  )}
+                            </ul>
+                            </div>} 
+                    </div>))
+                }
+                </div> : (
+                    <div className={cx("comments")}>
+                        <p><strong>ĐÁNH GIÁ SẢN PHẨM:</strong></p>
+                        <p>Chưa có đánh giá sản phẩm</p>
+                    </div>
+                )}
+
                     <div className={cx("same_products")} >
                         <div className={cx("same_products__title")} >
                             <h1>sản phẩm tương tự</h1>
