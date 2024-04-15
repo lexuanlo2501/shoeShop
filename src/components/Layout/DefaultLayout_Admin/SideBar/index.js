@@ -1,83 +1,64 @@
-import axios from "axios";
 import classNames from "classnames/bind";
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import styles from './sideBar.module.scss'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faBars, faCircleDollarToSlot, faClockRotateLeft, faHome, faIdCard, faLayerGroup, faMagnifyingGlass, faMagnifyingGlassDollar, faPenToSquare, faRightFromBracket, faSquarePen, faTrash, faTrashCan, faUser, faUserAstronaut, faUsers } from "@fortawesome/free-solid-svg-icons";
-import AvatarAuto from "../../../AvatarAuto";
+import { faAdd, faBars, faCircleDollarToSlot, faClockRotateLeft, faHome, faLayerGroup, faPenToSquare, faTrashCan, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles)
-
-
 
 function SideBar() {
     const [showBar, setShowbar] = useState(false)
     const [activeRoute, setActiveRoute] = useState()
     
+    const inforUser = JSON.parse(localStorage.getItem("tokens"))
     
-    
-    // const [quantityNotify,setQuantityNotify] = useState('')
-    // useEffect(()=> {
-    //     axios.get('http://localhost:4000/orders')
-    //     .then(res => {
-    //         let quantity_NC = res.data.filter(i => i.status === false).length
-    //         setQuantityNotify(quantity_NC)
-    //     })
-
-
-    // }, []) 
-
-    const navigate = useNavigate();
-
-
-    const dataSideBar = [
+    let dataSideBar = [
         {
             route:"",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faHome}/>,
-            title: "tổng thế"
+            title: "tổng thế",
         },
         {
             route:"addProducts",
             Icon : <FontAwesomeIcon className={cx('icon_barItem')} icon={faAdd}/>,
-            title: "thêm SP"
-
+            title: "thêm SP",
         },
         {
-            route:"modifyProducts",
+            route: inforUser.role ==="seller" ? `modifyProducts?_sellerId=${inforUser.accName}` : "modifyProducts",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faPenToSquare}/>,
-            title: "hiệu chỉnh SP"
-
+            title: "hiệu chỉnh SP",
         },
         {
-            route:"comfirming",
+            route: "comfirming",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faCircleDollarToSlot}/>,
-            title: "đơn hàng"
+            title: "đơn hàng",
         },
         {
             route:"",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faLayerGroup}/>,
-            title: "doanh thu"
-
+            title: "doanh thu",
         },
         {
             route:"accounts",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faUsers}/>,
-            title: "người dùng"
+            title: "người dùng",
         },
         {
             route:"history",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faClockRotateLeft}/>,
-            title: "lịch sử"
+            title: "lịch sử",
         },
         {
             route:"",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faTrashCan}/>,
-            title: "thùng rác"
+            title: "thùng rác",
         },
-
-
     ]
+
+    if(inforUser){
+
+    }
 
     return (
         <div className={cx('wrapper')}>
@@ -92,7 +73,6 @@ function SideBar() {
             <div className={cx('newSideBar_v2')}>
                 
                 <ul className={cx(['sideBar', {'showBar':showBar}])}>
-                    
                 {
                  
                     dataSideBar.map((item, index) => (
@@ -111,10 +91,8 @@ function SideBar() {
                     ))
                 }
                 </ul>
-                
             </div>
 
-           
             <div className={cx('overlay',{"show_overlay": showBar})}
                 onClick={() => setShowbar(false)}
             ></div>

@@ -91,14 +91,14 @@ function App() {
               />
             }
             {
-              login === "admin" &&
+              (login === "admin" || login === "seller") &&
               <Route
                 path='admin/addProducts'
                 element={<DefaultLayout_Admin> <AddProducts /> </DefaultLayout_Admin>}
               />
             }
             {
-              login === "admin" &&
+              (login === "admin" || login === "seller") &&
               <Route
                 path="admin/modifyProducts"
                 element={<DefaultLayout_Admin> <ModifyProducts /> </DefaultLayout_Admin>}
@@ -136,13 +136,7 @@ function App() {
               element={<HeaderOnly><RegisterSale/></HeaderOnly>}
             />
 
-            {/* {
-              login === "seller" &&
-              <Route
-                path={`admin/modifyProducts?_sellerId=${token.accName}`}
-                element={<DefaultLayout_Admin> <ModifyProducts /> </DefaultLayout_Admin>}
-              />
-            } */}
+            
 
 
 

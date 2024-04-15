@@ -1,11 +1,10 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./admin.module.scss"
-import {ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Modal from 'react-bootstrap/Modal';
-// import "../../components/GlobalStyles"
 
-import { faClose, faCross, faFileCircleXmark, faFileImage, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faFileCircleXmark, faFileImage, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,10 +13,8 @@ import {listColorBC} from "../../common"
 
 
 import axios from "axios";
-import ModifyQuantity from "../../components/ModifyQuantity";
 import { useRef } from "react";
 import ConfirmModal from "../../components/ConfirmModal";
-import ConfirmModal_v2 from "../../components/ConfirmModal_v2";
 import { createAxios } from '../../createInstance';
 
 const axiosJWT = createAxios()
@@ -175,24 +172,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
 
     const handleAdd = (data) => {
             // value: sneaker, boot, sandal, ... => type id
-            const default_type = (atri_prod.category.find(i => i.id === categorySelect_id).detail)[0]
-
-            // const infor = {
-            //     "name": data.name,
-            //     "brand_id": data.productId || "ADIDAS",
-            //     "price": +price,
-            //     "img": img && img.name,
-            //     "imgs": imgs_v2.map(i => i.name),
-            //     "description": data.description,
-            //     "type": +data.type || default_type?.id || 1,
-            //     "discount_id": +data.discount_id,
-            //     "inventory": inventory,
-            //     "BC_color": colorBCImg_main
-            // }
-
-            // console.log(infor)
-         
-
+        const default_type = (atri_prod.category.find(i => i.id === categorySelect_id).detail)[0]
 
         if(img && price && !isNaN(price) && validateFileImg(img) && price !== NaN) {
             const infor = {
@@ -204,11 +184,14 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                 "description": data.description,
                 "type": +data.type || default_type?.id || 1,
                 "discount_id": +data.discount_id,
-
                 "inventory": inventory,
                 "BC_color": colorBCImg_main
             }
 
+            // account seller will have seller_id
+            if(infor_user.role === "seller") {
+                infor.seller_id = infor_user.accName
+            }
 
             console.log(infor)
             
@@ -442,7 +425,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                 }
                 </select>
             {
-                !isUpdateForm &&
+                !isUpdateForm && infor_user.role!=="seller" &&
                 <FontAwesomeIcon  className={cx('addAtribute_btn')} icon={faPlus}
                     onClick={() => {
                         setAtribName("brands")
@@ -479,7 +462,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                 </select>
                 
             {
-                !isUpdateForm &&
+                !isUpdateForm && infor_user.role!=="seller" &&
                 <FontAwesomeIcon  className={cx('addAtribute_btn')} icon={faPlus}
                     onClick={() => {
                         setAtribName("category")
@@ -506,7 +489,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                 }
                 </select>
             {
-                !isUpdateForm &&
+                !isUpdateForm && infor_user.role!=="seller" &&
                 <FontAwesomeIcon className={cx('addAtribute_btn')} icon={faPlus}
                     onClick={() => {
                         setAtribName("types")
@@ -527,7 +510,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                 }
                 </select>
             {
-                !isUpdateForm &&
+                !isUpdateForm && infor_user.role!=="seller" &&
                 <FontAwesomeIcon className={cx('addAtribute_btn')} icon={faPlus}
                     onClick={() => {
                         setAtribName("discounts")
