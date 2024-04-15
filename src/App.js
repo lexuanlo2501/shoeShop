@@ -77,17 +77,16 @@ function App() {
   return (
     <div className="App">
       <CartContext.Provider value={{cart_context: cart_context, setCart_context: setCart_context}}>
-
         
         <ToastContainer />
         <Router>
           <Routes>
             {
-              login === "admin" &&
+              (login === "admin" || login === "seller")  && 
               <Route
                 path='admin'
                 element={
-                  <DefaultLayout_Admin><OverView /> </DefaultLayout_Admin>
+                  <DefaultLayout_Admin> <OverView /> </DefaultLayout_Admin>
                 }
               />
             }
@@ -101,7 +100,7 @@ function App() {
             {
               login === "admin" &&
               <Route
-                path='admin/modifyProducts'
+                path="admin/modifyProducts"
                 element={<DefaultLayout_Admin> <ModifyProducts /> </DefaultLayout_Admin>}
               />
             }
@@ -137,6 +136,14 @@ function App() {
               element={<HeaderOnly><RegisterSale/></HeaderOnly>}
             />
 
+            {/* {
+              login === "seller" &&
+              <Route
+                path={`admin/modifyProducts?_sellerId=${token.accName}`}
+                element={<DefaultLayout_Admin> <ModifyProducts /> </DefaultLayout_Admin>}
+              />
+            } */}
+
 
 
 
@@ -171,7 +178,7 @@ function App() {
             }
 
             {
-              login === "client" &&
+              login === "client" || login === "seller" &&
                 <Route
                   path="PurchaseOrder"
                   element={<DefaultLayout> <LayoutUserInfor><PurchaseOrder  /></LayoutUserInfor> </DefaultLayout>}

@@ -72,7 +72,7 @@ function SignIn({setLogin}) {
                 localStorage.setItem("tokens", JSON.stringify(toLocalStorage));
                 setLogin(toLocalStorage.role)
     
-                toLocalStorage.role === "client" && navigate(`/shoes?_page=1&_limit=${limit}`);
+                toLocalStorage.role === "client" || toLocalStorage.role === "seller" && navigate(`/shoes?_page=1&_limit=${limit}`);
                 toLocalStorage.role === "admin" && navigate("/admin");
                 setLoading(false)
 

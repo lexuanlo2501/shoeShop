@@ -3,22 +3,9 @@
     position: fixed;
     z-index: 34;
     height: calc(100vh - 90px);
-    overflow-y: scroll;
     background-color: #ffffff;
     margin-top: 34px;
 
-    &::-webkit-scrollbar {
-        width: 3px; /* Độ rộng của thanh cuộn */
-    }
-      
-    &::-webkit-scrollbar-thumb {
-        background-color: #b7b3b3; /* Màu sắc của thanh cuộn */
-        border-radius: 4px; /* Độ cong của thanh cuộn */
-    }
-    
-    &::-webkit-scrollbar-thumb:hover {
-        background-color: #c1bfbf; /* Màu sắc của thanh cuộn khi rê chuột */
-    }
       
     
 }
@@ -32,10 +19,6 @@
 }
 
 
-.menu{
-    // border-right: 1px solid #ccc;
-    width: 285px;
-}
 
 .nav-bar li a{
     text-decoration: none;
@@ -53,6 +36,23 @@
 
 .menu {
     padding: 0 20px;
+    width: 285px;
+
+    overflow-y: scroll;
+    height: 100%;
+
+    &::-webkit-scrollbar {
+        width: 5px; /* Độ rộng của thanh cuộn */
+    }
+      
+    &::-webkit-scrollbar-thumb {
+        background-color: #d2d1d1; /* Màu sắc của thanh cuộn */
+        border-radius: 4px; /* Độ cong của thanh cuộn */
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: #dad8d8; /* Màu sắc của thanh cuộn khi rê chuột */
+    }
 }
 
 .menu .nav-bar{

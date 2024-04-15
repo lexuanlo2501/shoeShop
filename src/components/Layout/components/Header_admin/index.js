@@ -77,7 +77,7 @@ function Header_admin() {
                     placement="bottom-end"	
                     render={attrs => (
                         <div className={cx(["notify_admin", "shape_Tippy"])} tabIndex="-1" {...attrs}>
-                        {!notify.length && <h2 className="text-center">Không có thông báo nào</h2>}
+                        {!notify.length && <h2 className="text-center p-3 text-secondary">Không Có Thông Báo Nào</h2>}
                         {
                             reverseArray(notify).map(i => (
                                 <div className={cx(["notify_item"])} key={i.id}>
