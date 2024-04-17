@@ -8,8 +8,8 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import {priceDiscount, formatPrice} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-regular-svg-icons';
-import { faChevronDown, faChevronUp, faHeart as faHeartSolid  } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faStar } from '@fortawesome/free-regular-svg-icons';
+import { faChevronDown, faChevronUp, faHeart as faHeartSolid, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
 import { HashLoader } from 'react-spinners';
 import { createAxios } from '../../createInstance';
 
@@ -447,15 +447,65 @@ function DetailProduct_v2({product_prop={}}) {
                     comments.map(i =>
                      (<div className={cx('comment-item')} key={i.id}>
                        <div className={cx('comment-item_info-user-comment')}>
-                        <div className={cx('comment-item_info-user-comment_name-date')}>
-                            <p> {i.fullName} </p>
-                            <p className={cx('comment-item_info-user-comment_name-date_date')}> {i.date} </p>
+                        <div className={cx('comment-item_info-user-comment_avatar-name')}>
+                            <AvatarAuto nameU={i.fullName}/>
+
+                            <div className={cx('wrapper_star-name')}>
+                                <p className={cx('name')}> {i.fullName} </p>
+
+                                { i.rating == 0  && <div className={cx('wrapper-star')}>
+                                <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                                <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                                <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                                <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                                <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              </div>}
+                              { i.rating == 1  && <div className={cx('wrapper-star')}> <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              
+                              </div>}
+                              {i.rating == 2  && <div className={cx('wrapper-star')}> <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              </div>}
+
+                              { i.rating == 3  && <div className={cx('wrapper-star')}> <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              </div>}
+
+                              { i.rating == 4  && <div className={cx('wrapper-star')}> <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              </div>}
+
+                              { i.rating == 5  && <div className={cx('wrapper-star')}> <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
+                              </div>}
+
+                              
+
                         </div>
+
+                         </div>
+
                        </div>
                        
-                    <div className={cx('comment-item_avatar-comment')}>
-                                <AvatarAuto nameU={i.fullName}/>
-                                <p> {i.value} </p>
+                     <div className={cx('comment-item_date-comment')}>
+                            <p className={cx('comment-item_info-user-comment_comment-date_date')}> {i.date} </p>
+                                <p className={cx('comment-item_info-user-comment_date-coment-comment')}> {i.value} </p>
                                 
                             </div>
                          {i.reply.length !==0 && <div className={cx('comment-item_reply-wrapper')}>
@@ -469,7 +519,7 @@ function DetailProduct_v2({product_prop={}}) {
                                          <p >Người bán</p>
                                              <p className={cx('comment-item_reply_reply-date_date')}>{i.date}</p>
                                     </div>
-                                         <li>{i.value}</li>
+                                       <li>{i.value}</li>
                                    </div>
                                   )
                                   )}
