@@ -133,8 +133,8 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
     }, [img])
 
     useEffect(() => {
-        console.log(atri_prod_)
-        console.log(default_value)
+        // console.log(atri_prod_)
+        // console.log(default_value)
     }, [])
 
 
