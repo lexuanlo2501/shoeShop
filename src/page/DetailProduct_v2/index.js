@@ -154,9 +154,7 @@ function DetailProduct_v2({product_prop={}}) {
         if(item.accName == user.accName) {
        setValuecomment(item.value)
     }
-    
     })
-    
     })
     
     const handleCloseInput = (() => {
