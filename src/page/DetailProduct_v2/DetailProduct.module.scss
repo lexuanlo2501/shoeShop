@@ -200,20 +200,91 @@
     .comment-item_date-comment {
          margin-left: 44px;
           .comment-item_info-user-comment_comment-date_date {
-            background-color: transparent;
             color: #8a8a8a;
             margin-bottom: 0;
-
-          }
-           .comment-item_info-user-comment_date-coment-comment {
+            .btn-option {
+              margin-left: 16px;
+              width: 20px;
+            }
 
           
+
+            .option {
+            display: flex;
+            flex-direction: column;
+            button {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background-color: #f0f0f0;
+              padding: 4px 4px ;
+              width:30px;
+              height: 30px;
+              font-size: 12px;
+              border-radius: 5px;
+              border: 1px solid rgb(56, 56, 56);
+       
+             
+
+              &:hover {
+                color: #ee4d2d;
+               
+              }
+              
+             &:first-child {
+              margin-bottom: 5px;
+             }               
+           }
+        }
+
+          }
+           .comment-item_info-user-comment_date-coment-comment {     
             padding: 4px 4px;
             background-color: #f0f0f0;
             border-radius: 5px;
             color: #363636;
             width: fit-content;
            }
+
+           input {
+            border: 1px solid black;
+            padding-left: 4px;
+            border-radius: 5px;
+            width: fit-content;
+           }
+           .wrapper-btn-input {
+            margin-top: 8px;
+            margin-bottom: 8px;
+              width: 186px;
+              display: flex;
+              justify-content: space-evenly;
+             .btn-save {
+              width: fit-content;
+              border: 1px solid rgb(56, 56, 56);
+              padding: 4px 4px ;
+              width:30px;
+              height: 30px;
+              border-radius: 5px;
+              &:hover {
+                color: #ee4d2d;
+               
+              }
+             }
+  
+             .btn-close {
+              width: fit-content;
+              border: 1px solid rgb(56, 56, 56);
+              padding: 4px 4px ;
+              width:30px;
+              height: 30px;
+              border-radius: 5px;
+              &:hover {
+                color: #ee4d2d;
+               
+              }
+             }
+           }
+
     }
 
     .comment-item_reply-wrapper {
@@ -765,12 +836,9 @@ p.btn_size-link:hover {
             }      
             li {
                 width: fit-content;
-              
             }
           }
         }
-
-     
       }
     }
     

@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import classNames from 'classnames/bind';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import SelectActive from '../../components/SelectActive';
 import Slider from '../../components/Slider';
 import styles from './DetailProduct.module.scss'
@@ -9,7 +9,7 @@ import axios from 'axios';
 import {priceDiscount, formatPrice} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faStar } from '@fortawesome/free-regular-svg-icons';
-import { faChevronDown, faChevronUp, faHeart as faHeartSolid, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
 import { HashLoader } from 'react-spinners';
 import { createAxios } from '../../createInstance';
 
@@ -24,6 +24,7 @@ import 'swiper/css/navigation';
 import Carousel_v2 from '../../components/Carousel_v2';
 import { CartContext } from '../../App';
 import AvatarAuto from '../../components/AvatarAuto';
+import Tippy from '@tippyjs/react';
 // import { CartContext } from '../../components/Layout/HeaderOnly';
 
 // import required modules
@@ -130,8 +131,45 @@ function DetailProduct_v2({product_prop={}}) {
     const size_quantiry_select = product?.inventory?.find(i => i.size === size_Order)?.quantity
     
     let user = JSON.parse(localStorage.getItem('tokens')) || {}
+    //option comment
+    const [showoption, setShowoption] = useState(false)
+    const [showInput, setShowInput] = useState(false)
+    const [showComment, setShowComment] = useState(true)
+    const [valuecomment, setValuecomment] = useState(' ');
+    const refinput = useRef()
+    const handleShowOption = (()=> {
+        setShowoption(prev => !prev)
+       
+    })
 
     
+
+    const  handleChangeComment = (() => {
+
+        setShowoption(false)
+        setShowComment(false)
+        setShowInput(true)
+       
+       comments.filter(item => {
+        if(item.accName == user.accName) {
+       setValuecomment(item.value)
+    }
+    
+    })
+    
+    })
+    
+    const handleCloseInput = (() => {
+        setShowInput(false)
+        setShowComment(true)
+    })
+
+    const handleOnchange= (() => {
+     setValuecomment(refinput.current.value)
+
+     
+    }) 
+   
     return (
         <div >
            
@@ -504,8 +542,41 @@ function DetailProduct_v2({product_prop={}}) {
                        </div>
                        
                      <div className={cx('comment-item_date-comment')}>
-                            <p className={cx('comment-item_info-user-comment_comment-date_date')}> {i.date} </p>
-                                <p className={cx('comment-item_info-user-comment_date-coment-comment')}> {i.value} </p>
+                            <p className={cx('comment-item_info-user-comment_comment-date_date')}> {i.date} 
+                            
+                           {user.accName==i.accName &&
+                           <Tippy
+                           visible={showoption}
+                           placement='right-start'
+                           interactive={true}
+                           zIndex={0}
+                           render={attrs => ( showoption &&
+                             <div className={cx('option')} tabIndex="-1" {...attrs}>
+                              <button onClick={handleChangeComment
+                            }
+                            
+                            ><FontAwesomeIcon icon={faPen}/></button>
+                              <button onClick={()=> {setShowoption(false)}}><FontAwesomeIcon icon={faDeleteLeft}/></button>
+
+                             </div>
+                           )}
+                         >
+                           <button onClick={ handleShowOption 
+                          
+                           
+                        } className={cx('btn-option')}><FontAwesomeIcon icon={faEllipsisVertical}/>
+                         </button>
+                         </Tippy>
+                           }
+                          
+                            </p>
+                                {showComment && <p className={cx('comment-item_info-user-comment_date-coment-comment')}> {i.value} </p>}
+                                {showInput && user.accName==i.accName && 
+                                <div style={{display:'flex', flexDirection:'column'}}><input onChange={handleOnchange} ref={refinput} value={valuecomment}/>
+                               <div className={cx('wrapper-btn-input')}> <button className={cx('btn-save')}><FontAwesomeIcon icon={faFloppyDisk}/></button>
+                               <button onClick={handleCloseInput} className={cx('btn-close')}><FontAwesomeIcon icon={faXmark}/></button>
+                               </div>
+                                </div>}
                                 
                             </div>
                          {i.reply.length !==0 && <div className={cx('comment-item_reply-wrapper')}>
