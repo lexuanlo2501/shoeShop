@@ -110,7 +110,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
         if(checkObj(default_value)) {
             setValue('name', default_value.name || '');
             setValue('description', default_value.description || '');
-            setValue('productId', default_value.brand_id || '');
+            setValue('brand_id', default_value.brand_id || '');
             
 
             // PHƯƠNG ÁN TẠM THỜI. ĐỢI FIX VALUE Ở SELECT HOÀN TẤT
@@ -173,11 +173,10 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
     const handleAdd = (data) => {
             // value: sneaker, boot, sandal, ... => type id
         const default_type = (atri_prod.category.find(i => i.id === categorySelect_id).detail)[0]
-
         if(img && price && !isNaN(price) && validateFileImg(img) && price !== NaN) {
             const infor = {
                 "name": data.name,
-                "brand_id": data.productId || "ADIDAS",
+                "brand_id": data.brand_id || "ADIDAS",
                 "price": +price,
                 "img": img && img.name,
                 "imgs": imgs_v2.map(i => i.name),
@@ -230,21 +229,22 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
     }
 
     const handleUpdate = (data) => {
+        // console.log(data)
         if(!!parseInt(price)) {
             let data_update = {
                 ...data,
                 img: img.name || img,
                 imgs: [...imgs_upd, ...imgs_v2.map(i => i.name)],
                 price: +price,
-                brand_id:data.productId,
+                brand_id:data.brand_id,
                 type: +data.type ,
                 discount_id: +data.discount_id,
                 inventory: inventory,
                 BC_color: colorBCImg_main
             }
-            delete data_update.productId
-            console.log({imgs_v2,imgs_upd,imgs_upd_del})
-            console.log(data_update)
+
+            // console.log({imgs_v2,imgs_upd,imgs_upd_del})
+            // console.log(data_update)
     
             //  --update infor shoes
             axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/shoes_update/${default_value.id}`,data_update,{
@@ -356,12 +356,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                                 let preImgs = [...imgs_upd]
                                 // setImgs_upd(preImgs.filter((item2,index2) => index2 !== index ))
                                 setImgs_upd(preImgs.filter((item2,index2) => item2 !== item ))
-
                                 setImgs_upd_del(pre => [...pre, item])
-                                
-
-                                
-                              
                             }}
                         >x</button>
                     </div>
@@ -369,7 +364,6 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
             }
 
             {
-
                 Boolean(imgs_v2.length) && imgs_v2.map((item, index) =>
                     <div className={cx('img_sub')} key={index}>
                         <img src={item.preview}/>
@@ -382,11 +376,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                                         return index2 !== index
                                     })
                                 })
-
-                             
-
                             }}
-
                         >X</button>
                     </div>
                 )
@@ -399,8 +389,6 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                     console.log(e.target.files[0].name)
                     file.preview = URL.createObjectURL(file)
                     setImgs_v2(pre => [...pre, file])
-
-
                 }}
                 id="file2"
                 className={cx('add_imgSub_btn-off')}
@@ -419,7 +407,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
 
             <div className={cx('input_product')}>
                 <label className={cx('label-product')}>hãng: </label>
-                <select>
+                <select {...register("brand_id")}>
                 {
                     atri_prod?.brands?.map(i => <option key={i.brand_id} value={i.brand_id}>{i.brand_id}</option>)
                 }
@@ -433,7 +421,6 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                     }}  
                 />
             }
-                
             </div>
 
         {
@@ -473,7 +460,6 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                 
             </div>
         }
-
 
             <div className={cx('input_product')}>
                 <label className={cx('label-product')}>loại: </label>
@@ -518,12 +504,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                     }} 
                 />
             }
-               
-
             </div>
-
-
-
 
             <div className={cx('input_product')}>
                 <label className={cx('label-product')}>tên SP: </label>
@@ -594,21 +575,16 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                                 // }}
                                 // defaultValue similar above but above not working   
 
-                               
-
                                 defaultValue={inventory.find(i => i.size === item)?.quantity}
                               
                                 onChange={(e) => {
-
                                     let tmpList = [...inventory]
                                     let newList = tmpList.map((item2, index2) => {
                                         if(item === item2.size) return {...item2, "quantity" : +e.target.value}
                                         return item2
-
                                     })
                                     setInventory(newList)
-
-                                    console.log(newList)
+                                    // console.log(newList)
                                 }}  
                             />
                             {
@@ -622,10 +598,6 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                         <div className={cx('quantity_size')}>
                             <input placeholder="Số lượng"
                                 type="number" min="0"
-                            
-                                onChange={(e) => {
-
-                                }}  
                             />
                         </div>
 
@@ -637,14 +609,11 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
 
             <div className={cx('input_product')}>
                 <label style={{display:'block'}} className={cx('label-product')}>mô tả: </label>
-                <textarea className={cx('input_textarea') }
-                    {...register("description", { required: true })}
-                ></textarea>
-                {
-                    errors.description && <span className={cx('message_err')}>không được bỏ trống mục này</span>
-                }
+                <textarea className={cx('input_textarea') } {...register("description", { required: true })} ></textarea>
+            {
+                errors.description && <span className={cx('message_err')}>không được bỏ trống mục này</span>
+            }
             </div>
-
 
         {
             isUpdateForm ?
@@ -676,12 +645,8 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
                 }}
             >thêm</button>
         }
-            
-
-
 
         </div>
-
       
     {
         show && <Modal_modify_atribute show={show} attrib_name={atribName}  handleClose={handleClose} atri_prod={atri_prod} setTrigger_Atrib={setTrigger_Atrib}/>
@@ -701,13 +666,11 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
     const attrib_list = [{id:"brands",name:"Thương hiệu"}, {id:"category",name:"Danh mục"}, {id:"discounts",name:"Khuyến mãi"}, {id:"types",name:"loại"}]
     const [category_type, setCategory_type] = useState((atri_prod.category[0]).id)
 
-
     const handle_delete = (id) => {
         axios.delete(process.env.REACT_APP_BACKEND_URL+`/${attrib}/${id}`)
         setTrigger_Atrib(pre => !pre)
 
     }
-
     const handle_add = (value) => {
         setTrigger_Atrib(pre => !pre)
         if(attrib === "brands") {
@@ -724,13 +687,11 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
         }
         input_add.current.value = ""
     }
-    
     const handleChangeCategoryInType = (e, types_id) => {
         axios.patch(process.env.REACT_APP_BACKEND_URL+`/types/${types_id}`, {"category_id":e.target.value})
         setTrigger_Atrib(pre => !pre)
 
     }
-
     const handleChangeCategory_TypeSize = (category_id, sizesValue_id) => {
         axios.patch(process.env.REACT_APP_BACKEND_URL+`/category/${category_id}`, {"sizesValue_id":sizesValue_id})
         setTrigger_Atrib(pre => !pre)

@@ -12,53 +12,63 @@ function SideBar() {
     const [activeRoute, setActiveRoute] = useState()
     
     const inforUser = JSON.parse(localStorage.getItem("tokens"))
-    
+    const showAdmin = inforUser.role === "admin"
+    const showSeller = inforUser.role === "seller"
+
     let dataSideBar = [
         {
             route:"",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faHome}/>,
             title: "tổng thế",
+            show: showAdmin || showSeller
         },
         {
             route:"addProducts",
             Icon : <FontAwesomeIcon className={cx('icon_barItem')} icon={faAdd}/>,
             title: "thêm SP",
+            show: showAdmin || showSeller
+
         },
         {
-            route: inforUser.role ==="seller" ? `modifyProducts?_sellerId=${inforUser.accName}` : "modifyProducts",
+            route: showSeller ? `modifyProducts?_sellerId=${inforUser.accName}` : "modifyProducts",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faPenToSquare}/>,
             title: "hiệu chỉnh SP",
+            show: showAdmin || showSeller
         },
         {
-            route: "comfirming",
+            route: showSeller ? `comfirming?_sellerId=${inforUser.accName}` : "comfirming",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faCircleDollarToSlot}/>,
             title: "đơn hàng",
+            show: showAdmin || showSeller
         },
         {
             route:"",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faLayerGroup}/>,
             title: "doanh thu",
+            show: showAdmin || showSeller
+
         },
         {
             route:"accounts",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faUsers}/>,
             title: "người dùng",
+            show: showAdmin
         },
         {
             route:"history",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faClockRotateLeft}/>,
             title: "lịch sử",
+            show: showAdmin
         },
         {
             route:"",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faTrashCan}/>,
             title: "thùng rác",
+            show: showAdmin
         },
     ]
 
-    if(inforUser){
-
-    }
+    console.log(dataSideBar)
 
     return (
         <div className={cx('wrapper')}>
@@ -76,6 +86,7 @@ function SideBar() {
                 {
                  
                     dataSideBar.map((item, index) => (
+                        item.show &&
                         <li key={index}>
                             <Link to={`/admin/${item.route}`}
                                 className={cx({"active_route":activeRoute === index})}

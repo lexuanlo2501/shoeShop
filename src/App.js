@@ -66,6 +66,7 @@ function App() {
     // console.log( token )
 
     setLogin(token?.role)
+    console.log("set role")
   }, [login])
 
 
@@ -105,7 +106,7 @@ function App() {
               />
             }
             {
-              login === "admin" &&
+              (login === "admin" || login === "seller") &&
               <Route
                 path='admin/comfirming'
                 element={<DefaultLayout_Admin> <Confirming /> </DefaultLayout_Admin>}

@@ -14,12 +14,7 @@ import { jwtDecode } from "jwt-decode";
 const cx = classNames.bind(style)
 
 
-function SignIn({setLogin}) {
-
-     // test
-     const [file, setFile] = useState()
-     const [files, setFiles] = useState([])
-
+function SignIn({setLogin = () => {}}) {
 
     const [accName, setAccName] = useState("")
     const [password, setPassword] = useState("")
@@ -28,30 +23,6 @@ function SignIn({setLogin}) {
 
 
     const navigate = useNavigate();
-
-
-    const handleSignIn = () => {
-        const data = {
-            accName: accName,
-            password: password,
-        }
-        
-        setLoading(true)
-        axios.post(process.env.REACT_APP_BACKEND_URL+"/signin",data)
-        .then(res => {
-            console.log(res)
-            localStorage.setItem("tokens", JSON.stringify(res.data));
-
-            res.data.role === "client" && navigate(`/shoes?_page=1&_limit=${limit}`);
-            res.data.role === "admin" && navigate("/admin");
-            setLogin(res.data.role)
-            setErrMess(res.data.message)
-            setLoading(false)
-            
-        })
-        .catch(err => console.log(err))
-
-    }
 
     const handleSignIn_v2 = () => {
         const data = {
@@ -67,12 +38,13 @@ function SignIn({setLogin}) {
             if(res.data.status) {
                 const inforUser = jwtDecode(res.data.accessToken)
                 const toLocalStorage = {...inforUser.data, accessToken:res.data.accessToken}
-                // console.log(toLocalStorage)
+                console.log(toLocalStorage)
     
                 localStorage.setItem("tokens", JSON.stringify(toLocalStorage));
                 setLogin(toLocalStorage.role)
     
-                toLocalStorage.role === "client" || toLocalStorage.role === "seller" && navigate(`/shoes?_page=1&_limit=${limit}`);
+                const isClientSeller = toLocalStorage.role === "client" || toLocalStorage.role === "seller"
+                isClientSeller && navigate(`/shoes?_page=1&_limit=${limit}`);
                 toLocalStorage.role === "admin" && navigate("/admin");
                 setLoading(false)
 

@@ -50,7 +50,13 @@ function Confirming() {
     const [orders, setOrders] = useState([])
     
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL+`/orders?_status=${pagCurr}`)
+        const paramsSellerID = window.location.href.split("=")[1]
+        const urlGetOrder = paramsSellerID ? 
+            process.env.REACT_APP_BACKEND_URL+`/orders?_status=${pagCurr}&_sellerId=${paramsSellerID}` 
+            :
+            process.env.REACT_APP_BACKEND_URL+`/orders?_status=${pagCurr}`
+            
+        axios.get(urlGetOrder)
         .then(res => {
             setOrders(res.data)
         })

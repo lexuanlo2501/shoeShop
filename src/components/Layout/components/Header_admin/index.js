@@ -129,7 +129,7 @@ function Header_admin() {
                                 </li> */}
 
                                 <li onClick={handleLogout}>
-                                    Đăng xuất v2
+                                    Đăng Xuất
                                     <FontAwesomeIcon className={cx('logout_icon')}  icon={faRightFromBracket}/>
                                 </li>
                             </ul>
