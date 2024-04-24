@@ -348,7 +348,6 @@ function DetailProduct_v2({product_prop={}}) {
                             >
                             {
                                 [product.img,...product?.imgs]?.map(img => (
-
                                     <SwiperSlide key={img}>
                                         <img 
                                             onClick={() => setImgMain(img)}
