@@ -166,7 +166,8 @@
 
   .comments_add-comment {
     display: flex;
-    align-items: center;
+    gap: 10px;
+    flex-direction: column;
     input {
       border: 1px solid black;
       border-radius: 5px;
@@ -176,10 +177,11 @@
     }
 
     .comments_add-comment-btn {
-
-  
+      text-align: left;
+      width: fit-content;
       &:hover {
         color: #ee4d2d;
+      
       }
     }
   }
@@ -297,21 +299,6 @@
               &:hover {
                 color: #ee4d2d;
 
-              }
-             }
-  
-             .btn-close {
-              width: fit-content;
-              // border: 1px solid rgb(56, 56, 56);
-   
-              padding: 4px 4px ;
-              width:30px;
-              height: 30px;
-              border-radius: 5px;
-              &:hover {
-                color: #ee4d2d;
-
-               
               }
              }
            }

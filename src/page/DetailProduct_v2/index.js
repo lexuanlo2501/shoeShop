@@ -138,7 +138,7 @@ function DetailProduct_v2({product_prop={}}) {
     //option comment
     const [showoption, setShowoption] = useState(false)
     const [showInput, setShowInput] = useState(false)
-    const [addCommentBtn, setAddCommentBtn] = useState(false);
+
     const [saveBtn, setSaveBtn] = useState(true);
     const [valuecomment, setValuecomment] = useState('');
     const [valueAddcomment, setAddValuecomment] = useState('');
@@ -159,9 +159,6 @@ function DetailProduct_v2({product_prop={}}) {
             setValuecomment( i.value)
             setIdcomment(idcmt);
            setShowoption(prev => !prev)
-          
-
-
           
         }
         else if (i.accName === user.accName && i.comment_id !== idcmt) {
@@ -228,10 +225,6 @@ function DetailProduct_v2({product_prop={}}) {
        
     });
 
-    const handleCloseInput = (() => {
-        setShowInput(false)
-    })
-
     const handleOnchange= (() => {   
      setValuecomment(refinput.current.value)
     }) 
@@ -248,41 +241,77 @@ function DetailProduct_v2({product_prop={}}) {
     },[valuecomment])
 
     const handleOnchageAddComment = (() => {
-        setAddCommentBtn(true)
+       
         setAddValuecomment(refAddComment.current.value)
     });
 
     const handleAddComment = (() =>  {
     
-        axios.post(process.env.REACT_APP_BACKEND_URL + `/comments`, {
-              value: refAddComment.current.value,
-              product_id: paramToObject._id,
-              accName: user.accName
-        })
+        if(refAddComment.current.value == '') {
+            toast.error("Vui lòng không để trống trong ô nhập!", {
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
+            return;
+        }
+         
+        var trimmedStr = refAddComment.current.value.replace(/^\s+|\s+$/g, ' ');
+        if(trimmedStr === ' ') {
+            toast.error("Vui lòng không nhập nhiều khoảng trắng trong ô nhập!", {
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
+            return;
+        }
 
-        .then((res) => {
-            setTrigger(prev => !prev)
-            refAddComment.current.focus();   
-            if(comments.length > 0) {
-                setShowAddComment(prev => !prev)
-            }
-           
-        })
-    
-        .catch((error) => {
-                 console.log(error)
-        })
+        var containsSpecialChars = /[^\w\s]/.test(refAddComment.current.value);
+        if(containsSpecialChars ) {
+            toast.error("Vui lòng không nhập các ký tự đặc biệt trong ô nhập!", {
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
+            return;
+        }
+
+            axios.post(process.env.REACT_APP_BACKEND_URL + `/comments`, {
+                value: refAddComment.current.value,
+                product_id: paramToObject._id,
+                accName: user.accName
+          })
+  
+          .then((res) => {
+              setTrigger(prev => !prev)
+              toast.success("Gửi bình luận thành công", {
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
+              refAddComment.current.focus();   
+              if(comments.length > 0) {
+                  setShowAddComment(prev => !prev)
+              }
+             
+          })
+      
+          .catch((error) => {
+                   console.log(error)
+          })
+        
+        
     })
 
-    useEffect(()=> {
-        if (valueAddcomment == '') {
-            setAddCommentBtn(false)
-            }
-    }, [valueAddcomment]);
+  
    
     const handleSaveComment = ((idcomment) => {
         setLoading(true)
-        refinput.current.focus();
+       
        
         axios.patch(process.env.REACT_APP_BACKEND_URL + `/comments/${idcomment}`, {
             value: valuecomment
@@ -291,6 +320,7 @@ function DetailProduct_v2({product_prop={}}) {
             // console.log(idcomment)
             setTrigger(prev => !prev)
             setLoading(false)
+            setShowInput(prev => !prev)
         })
     });
    
@@ -605,7 +635,7 @@ function DetailProduct_v2({product_prop={}}) {
                    {admitComment.status == true && showAddComment &&
                    <div className={cx('comments_add-comment')}>
                     { <input value={valueAddcomment} ref={refAddComment} onChange={handleOnchageAddComment}/>}
-                    { addCommentBtn  && <button onClick={handleAddComment} className={cx('comments_add-comment-btn')} ><FontAwesomeIcon icon={faPenToSquare}/></button>}
+                 <button onClick={handleAddComment} className={cx('comments_add-comment-btn')} >Gửi Bình Luận</button>
                     </div>}
                 {
                     comments.map(i =>
@@ -700,7 +730,7 @@ function DetailProduct_v2({product_prop={}}) {
                                 <div style={{display:'flex', flexDirection:'column'}}>{<input  onChange={handleOnchange} ref={refinput} value={valuecomment}/>}
                                <div className={cx('wrapper-btn-input')}> {!loading && saveBtn &&<button onClick={ ()=>handleSaveComment(i.comment_id)} className={cx('btn-save')}><FontAwesomeIcon icon={faFloppyDisk}/></button>}
                                {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
-                               <button onClick={handleCloseInput} className={cx('btn-close')}><FontAwesomeIcon icon={faXmark}/></button>
+                              
                                </div>
                                 </div>}
                             </div>
