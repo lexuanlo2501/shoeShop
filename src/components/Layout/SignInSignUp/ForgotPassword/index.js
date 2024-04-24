@@ -52,6 +52,8 @@ function ForgotPassword () {
         }
     }
 
+   
+
     const { register, handleSubmit, formState: { errors, touched } } = useForm({
         mode: "onTouched",
     });

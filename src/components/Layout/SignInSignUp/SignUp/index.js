@@ -10,15 +10,54 @@ import * as yup from "yup";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {toast } from 'react-toastify';
+import emailjs from '@emailjs/browser';
+
 
 
 const cx = classNames.bind(style)
+
+const randomCode = (length) => {
+    const characters = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+    }
+    return result;
+}
 
 function SignUp() {
 
     const [accNameMess, setAccNameMess] = useState({})
     const [messErr, setMessErr] = useState("")
     const [messPassW, setMessPassW] = useState([])
+    const [codeConfirm, setCodeConfirm] = useState("")
+
+    const [expire, setExpire] = useState(60)
+    const [isCountdown, setIsCountdown] = useState(false)
+    useEffect(() => {
+        // Thiết lập interval khi component được render
+        let interval = null
+        if(isCountdown) {
+            interval = setInterval(() => {
+                setExpire((pre) => pre - 1); // Giảm giá trị đếm ngược đi 1
+            }, 1000);
+        
+            // Xóa interval khi component bị unmount hoặc khi giá trị countdown đạt 0
+            if (expire === 0) {
+              clearInterval(interval);
+              setIsCountdown(false)
+              setExpire(30)
+              setCodeConfirm("expire")
+            }
+
+        }
+    
+        return () => {
+          clearInterval(interval);
+        };
+      }, [expire, isCountdown]);
+
     
     const checkPass = (pass) => {
         let mess = []
@@ -39,41 +78,78 @@ function SignUp() {
 
     const navigate = useNavigate();
 
+    const HandleConFirmMail = (data) => {
+        console.log(data)
+        if(data.email) {
+            toast.success("Đã gửi, vui lòng vào email của bạn để lấy mã", {
+                hideProgressBar: true,
+                theme: "dark",
+                position: "top-center",
+                autoClose: 1000,
+            })
+
+            const codeSend = randomCode(6)
+            setCodeConfirm(codeSend)
+            emailjs.send("service_3r592vw","template_lpdl74k",{
+                message: `Mã xác nhận của bạn là: ${codeSend}`,
+                user_email: data.email
+            }, "vVRWCJMmPNi61x4AK");
+            setIsCountdown(true)
+        }
+       
+    }
+
     const handleSignUp = (data) => {
+        console.log("sign up")
         setMessPassW(checkPass(data.password))
 
-        // if(data.password === data.passwordCF && checkPass(data.password).length === 0 ) {
-        if(data.password === data.passwordCF ) {
+        console.log(data)
+        
+        if(codeConfirm === "expire") {
+            toast("Mã Xác Nhận Đã Hết Hạn, Vui Lòng Gửi Mã Lại", { theme: "light", position: "top-center",})
+            return
+        }
+        else if(!data.codeConfirm) {
+            toast("Vui Lòng Nhập Mã Xác Nhận", { theme: "light", position: "top-center",})
+            return
+        }
 
-            let date = data.dateOfBirth.split('-')
-            const dataPost = {
-                ...data,
-                password: data.password,
-                // dateOfBirth: `${date[2]}/${date[1]}/${date[0]}`,
-                role: 'client'
-            }
+        if(data.codeConfirm === codeConfirm) {
+
+            if(data.password === data.passwordCF ) {
     
-            // delete dataPost.passwordCF
-
-            axios.post(process.env.REACT_APP_BACKEND_URL+"/signup", dataPost)
-            .then(res => {
-                console.log(res)
-                setMessErr(res.data.message)
-                setAccNameMess(res.data)
-
-                if(res.data.status) {
-                    toast("Đăng ký thành công", {
-                        theme: "light",
-                        position: "top-center",
-                    })
-                    navigate("/signin")
+                let date = data.dateOfBirth.split('-')
+                const dataPost = {
+                    ...data,
+                    password: data.password,
+                    // dateOfBirth: `${date[2]}/${date[1]}/${date[0]}`,
+                    role: 'client'
                 }
-            })
+        
+                delete dataPost.codeConfirm
+
+                // delete dataPost.passwordCF
     
-            console.log(dataPost)
+                axios.post(process.env.REACT_APP_BACKEND_URL+"/signup", dataPost)
+                .then(res => {
+                    console.log(res)
+                    setMessErr(res.data.message)
+                    setAccNameMess(res.data)
+    
+                    if(res.data.status) {
+                        toast("Đăng ký thành công", {
+                            theme: "light",
+                            position: "top-center",
+                        })
+                        navigate("/signin")
+                    }
+                })
+            }
+            else {
+            }
         }
         else {
-            console.log("password ko trung")
+            toast("Mã Xác Nhận Không Chính Xác", { theme: "light", position: "top-center",})
         }
        
        
@@ -90,6 +166,7 @@ function SignUp() {
         passwordCF: yup.string().required("Bạn phải điền mục này").oneOf([yup.ref("password")], "Mật khẩu không khớp"),
         dateOfBirth: yup.string().required(),
         gender: yup.string().required(),
+        // codeConfirm: yup.string().required(),
 
     }).required();
 
@@ -137,12 +214,20 @@ function SignUp() {
 
                 <div className={cx('inputField')}>
                     <input type="text" placeholder="mã xác nhận email"
+                        {...register("codeConfirm")}
                     />
                     <button
-                        className={cx("sendCode_email_btn")}
-                        onClick = {() => {
+                        className={cx("comfirm_email_btn")}
+                        onClick={(e) => {
+                            
+                            handleSubmit(HandleConFirmMail)(e)
                         }}
-                    >Gửi mã</button>
+
+                    >Gửi Mã</button>
+                    {/* <span className={cx("timer")}> {expire}</span> */}
+                {
+                    isCountdown && <span className={cx("timer")}> {expire}</span>
+                }
                 </div>
 
                 <div className={cx('inputField')}>
