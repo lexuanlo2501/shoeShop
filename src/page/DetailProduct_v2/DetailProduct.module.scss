@@ -301,6 +301,18 @@
 
               }
              }
+
+             .btn-close {
+              width: fit-content;
+
+              padding: 4px 4px ;
+              width:30px;
+              height: 30px;
+              border-radius: 5px;
+              &:hover {
+                color: #ee4d2d;
+              }
+             }
            }
 
     }

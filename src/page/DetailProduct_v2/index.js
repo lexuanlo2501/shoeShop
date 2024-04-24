@@ -9,7 +9,7 @@ import axios from 'axios';
 import {priceDiscount, formatPrice} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faStar } from '@fortawesome/free-regular-svg-icons';
-import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faPenToSquare, faSpinner, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faSpinner, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
 import { HashLoader } from 'react-spinners';
 import { createAxios } from '../../createInstance';
 
@@ -322,7 +322,11 @@ function DetailProduct_v2({product_prop={}}) {
             setShowInput(prev => !prev)
         })
     });
-   
+
+    const hanleCloseInput = (() => {
+        setShowInput(prev => !prev)
+    })
+
     return (
         <div >
            
@@ -729,7 +733,7 @@ function DetailProduct_v2({product_prop={}}) {
                                 <div style={{display:'flex', flexDirection:'column'}}>{<input  onChange={handleOnchange} ref={refinput} value={valuecomment}/>}
                                <div className={cx('wrapper-btn-input')}> {!loading && saveBtn &&<button onClick={ ()=>handleSaveComment(i.comment_id)} className={cx('btn-save')}><FontAwesomeIcon icon={faFloppyDisk}/></button>}
                                {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
-                              
+                              <button onClick={hanleCloseInput} className={cx('btn-close')}> <FontAwesomeIcon icon = {faXmark}/> </button>
                                </div>
                                 </div>}
                             </div>
