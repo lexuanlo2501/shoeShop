@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import classNames from 'classnames/bind';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState, useLayoutEffect } from 'react';
 import SelectActive from '../../components/SelectActive';
 import Slider from '../../components/Slider';
 import styles from './DetailProduct.module.scss'
@@ -9,7 +9,7 @@ import axios from 'axios';
 import {priceDiscount, formatPrice} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faStar } from '@fortawesome/free-regular-svg-icons';
-import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faPenToSquare, faSpinner, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
 import { HashLoader } from 'react-spinners';
 import { createAxios } from '../../createInstance';
 
@@ -53,9 +53,7 @@ function DetailProduct_v2({product_prop={}}) {
 
     
     const [quantity_Order, setQuantity_Order] = useState(1)
-    //comments
-
-    const [comments, setComments] = useState([]);
+   
 
     
 
@@ -83,17 +81,6 @@ function DetailProduct_v2({product_prop={}}) {
 
 
     }, [trigger])
-
-    useEffect(() =>{
-            console.log("pass")
-            axios.get(process.env.REACT_APP_BACKEND_URL+`/comments?_productId=${paramToObject._id}`)
-            .then((res)=> {
-                setComments(res.data)
-                console.log(res.data)
-            })
-    }, [paramToObject._id])
-
-
 
     const addCart = (id_product) => {
         let productAdd = {
@@ -131,42 +118,177 @@ function DetailProduct_v2({product_prop={}}) {
     const size_quantiry_select = product?.inventory?.find(i => i.size === size_Order)?.quantity
     
     let user = JSON.parse(localStorage.getItem('tokens')) || {}
+
+     //comments
+     const [comments, setComments] = useState([]);
+     useEffect(() =>{
+       
+        axios.get(process.env.REACT_APP_BACKEND_URL+`/comments?_productId=${paramToObject._id}`)
+        .then((res)=> {
+            setComments(res.data)
+            setLoading(false)
+
+            if(comments.length === 0) {
+                setShowAddComment(true)
+            }
+           
+        })
+}, [trigger])
+
     //option comment
     const [showoption, setShowoption] = useState(false)
     const [showInput, setShowInput] = useState(false)
-    const [showComment, setShowComment] = useState(true)
-    const [valuecomment, setValuecomment] = useState(' ');
-    const refinput = useRef()
-    const handleShowOption = (()=> {
+    const [addCommentBtn, setAddCommentBtn] = useState(false);
+    const [saveBtn, setSaveBtn] = useState(true);
+    const [valuecomment, setValuecomment] = useState('');
+    const [valueAddcomment, setAddValuecomment] = useState('');
+    const [admitComment, setAdmitComment] = useState({})
+    const [idcomment, setIdcomment] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [showAddComment, setShowAddComment] = useState(true);
+    const refinput = useRef();
+    const refAddComment = useRef();
+
+    const handleShowOption = ((idcmt)=> {
+       
         setShowoption(prev => !prev)
        
+       comments.filter((i) => {
+        if(i.accName === user.accName && i.comment_id === idcmt) {
+            
+            setValuecomment( i.value)
+            setIdcomment(idcmt);
+          
+        }
+        else if (i.accName === user.accName && i.comment_id !== idcomment) {
+            setIdcomment(idcmt);
+            setValuecomment(i.value)
+            setShowInput(false)
+        }
+       })
+        console.log(idcmt)
     })
 
-    
+    useEffect(() => {
+        axios.post(process.env.REACT_APP_BACKEND_URL + `/checkPermitCmt`, {
+        product_id: paramToObject._id,
+        accName: user.accName
+    }) 
+    .then((res) => {
+       console.log(res.data)
+       setAdmitComment(res.data)
+    })
+    }, [paramToObject._id])
 
-    const  handleChangeComment = (() => {
+    const  handleChangeComment = ((id_cmt) => {
 
-        setShowoption(false)
-        setShowComment(false)
-        setShowInput(true)
+        // console.log(id_cmt);
+        setShowoption(false);
        
-       comments.filter(item => {
-        if(item.accName == user.accName) {
-       setValuecomment(item.value)
-    }
+      comments.filter(item => {
+           if( item.accName == user.accName && item.comment_id == id_cmt)
+         {
+             setShowInput(prev => !prev)
+             setValuecomment(item.value)
+         }
+      }
+    )
     })
-    })
-    
+
+    const handleDeleteComment = ((idcomment) => {
+        setShowoption(false)
+
+        axios.delete(process.env.REACT_APP_BACKEND_URL+`/comments/${idcomment}`)
+
+        .then((res) => {
+
+            setTrigger(prev => !prev)
+         
+
+        
+ 
+        })
+        .then(() => {
+            setAddValuecomment('')
+           
+            let currentLength = comments.length - 2
+            if(currentLength <= 0) {
+                 setShowAddComment(true)
+            }
+     
+            console.log(currentLength)
+        })
+        .catch((error) => {
+            console.error(error)
+        });
+       
+    });
+
     const handleCloseInput = (() => {
         setShowInput(false)
-        setShowComment(true)
     })
 
-    const handleOnchange= (() => {
+    const handleOnchange= (() => {   
      setValuecomment(refinput.current.value)
-
-     
     }) 
+
+    useEffect(() => {
+        if(valuecomment == '') {
+
+            setSaveBtn(false)
+        }
+        else {
+            setSaveBtn(true)
+        }
+        
+    },[valuecomment])
+
+    const handleOnchageAddComment = (() => {
+        setAddCommentBtn(true)
+        setAddValuecomment(refAddComment.current.value)
+    });
+
+    const handleAddComment = (() =>  {
+    
+        axios.post(process.env.REACT_APP_BACKEND_URL + `/comments`, {
+              value: refAddComment.current.value,
+              product_id: paramToObject._id,
+              accName: user.accName
+        })
+
+        .then((res) => {
+            setTrigger(prev => !prev)
+            refAddComment.current.focus();   
+            if(comments.length > 0) {
+                setShowAddComment(prev => !prev)
+            }
+           
+        })
+    
+        .catch((error) => {
+                 console.log(error)
+        })
+    })
+
+    useEffect(()=> {
+        if (valueAddcomment == '') {
+            setAddCommentBtn(false)
+            }
+    }, [valueAddcomment]);
+   
+    const handleSaveComment = ((idcomment) => {
+        setLoading(true)
+        refinput.current.focus();
+       
+        axios.patch(process.env.REACT_APP_BACKEND_URL + `/comments/${idcomment}`, {
+            value: valuecomment
+        })
+        .then(()=> {
+            // console.log(idcomment)
+            setTrigger(prev => !prev)
+            setLoading(false)
+        })
+    });
    
     return (
         <div >
@@ -185,7 +307,6 @@ function DetailProduct_v2({product_prop={}}) {
                 </div>
             }
 
-               
                 <div className={cx("row")}>
                     <div className={cx("row_grp1")}>
                     {
@@ -459,8 +580,7 @@ function DetailProduct_v2({product_prop={}}) {
                                 </>
                                 
                             }
-                               
-                              
+                                   
                             </div>
                         </div>
                     </div>
@@ -479,6 +599,11 @@ function DetailProduct_v2({product_prop={}}) {
                 
                     {comments.length !==0 ? <div className={cx("comments")}> 
                    <p><strong> ĐÁNH GIÁ SẢN PHẨM:</strong> </p>
+                   {admitComment.status == true && showAddComment &&
+                   <div className={cx('comments_add-comment')}>
+                    { <input value={valueAddcomment} ref={refAddComment} onChange={handleOnchageAddComment}/>}
+                    { addCommentBtn && showAddComment && <button onClick={handleAddComment} className={cx('comments_add-comment-btn')} ><FontAwesomeIcon icon={faPenToSquare}/></button>}
+                    </div>}
                 {
                     comments.map(i =>
                      (<div className={cx('comment-item')} key={i.id}>
@@ -531,8 +656,6 @@ function DetailProduct_v2({product_prop={}}) {
                               <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
                               </div>}
 
-                              
-
                         </div>
 
                          </div>
@@ -542,25 +665,24 @@ function DetailProduct_v2({product_prop={}}) {
                      <div className={cx('comment-item_date-comment')}>
                             <p className={cx('comment-item_info-user-comment_comment-date_date')}> {i.date} 
                             
-                           {user.accName==i.accName &&
+                           {user.accName==i.accName && 
                            <Tippy
                            visible={showoption}
-                           placement='right-start'
+                           placement='right'
                            interactive={true}
                            zIndex={0}
-                           render={attrs => ( showoption &&
+                           render={attrs => ( showoption && i.comment_id == idcomment &&
                              <div className={cx('option')} tabIndex="-1" {...attrs}>
-                              <button onClick={handleChangeComment
+                              <button onClick={ () => handleChangeComment(i.comment_id)
                             }
                             
                             ><FontAwesomeIcon icon={faPen}/></button>
-                              <button onClick={()=> {setShowoption(false)}}><FontAwesomeIcon icon={faDeleteLeft}/></button>
+                              <button onClick={() =>handleDeleteComment(i.comment_id)}><FontAwesomeIcon icon={faDeleteLeft}/></button>
 
                              </div>
                            )}
                          >
-                           <button onClick={ handleShowOption 
-                          
+                           <button onClick={ () =>  handleShowOption(i.comment_id)
                            
                         } className={cx('btn-option')}><FontAwesomeIcon icon={faEllipsisVertical}/>
                          </button>
@@ -568,14 +690,16 @@ function DetailProduct_v2({product_prop={}}) {
                            }
                           
                             </p>
-                                {showComment && <p className={cx('comment-item_info-user-comment_date-coment-comment')}> {i.value} </p>}
-                                {showInput && user.accName==i.accName && 
-                                <div style={{display:'flex', flexDirection:'column'}}><input onChange={handleOnchange} ref={refinput} value={valuecomment}/>
-                               <div className={cx('wrapper-btn-input')}> <button className={cx('btn-save')}><FontAwesomeIcon icon={faFloppyDisk}/></button>
+                        
+                                {!showInput && <p className={cx('comment-item_info-user-comment_date-coment-comment')}> {i.value} </p>}
+                                {showInput && i.comment_id!==idcomment && <p className={cx('comment-item_info-user-comment_date-coment-comment')}> {i.value} </p> }
+                                {showInput && user.accName==i.accName &&  i.comment_id == idcomment &&  
+                                <div style={{display:'flex', flexDirection:'column'}}>{<input  onChange={handleOnchange} ref={refinput} value={valuecomment}/>}
+                               <div className={cx('wrapper-btn-input')}> {!loading && saveBtn &&<button onClick={ ()=>handleSaveComment(i.comment_id)} className={cx('btn-save')}><FontAwesomeIcon icon={faFloppyDisk}/></button>}
+                               {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
                                <button onClick={handleCloseInput} className={cx('btn-close')}><FontAwesomeIcon icon={faXmark}/></button>
                                </div>
                                 </div>}
-                                
                             </div>
                          {i.reply.length !==0 && <div className={cx('comment-item_reply-wrapper')}>
                                  <p><strong>Phản hồi</strong></p>
