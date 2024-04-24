@@ -151,16 +151,20 @@ function DetailProduct_v2({product_prop={}}) {
 
     const handleShowOption = ((idcmt)=> {
        
-        setShowoption(prev => !prev)
+        // setShowoption(prev => !prev)
        
        comments.filter((i) => {
         if(i.accName === user.accName && i.comment_id === idcmt) {
             
             setValuecomment( i.value)
             setIdcomment(idcmt);
+           setShowoption(prev => !prev)
+          
+
+
           
         }
-        else if (i.accName === user.accName && i.comment_id !== idcomment) {
+        else if (i.accName === user.accName && i.comment_id !== idcmt) {
             setIdcomment(idcmt);
             setValuecomment(i.value)
             setShowInput(false)
