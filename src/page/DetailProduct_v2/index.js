@@ -259,7 +259,7 @@ function DetailProduct_v2({product_prop={}}) {
          
         var trimmedStr = refAddComment.current.value.replace(/^\s+|\s+$/g, ' ');
         if(trimmedStr === ' ') {
-            toast.error("Vui lòng không nhập nhiều khoảng trắng trong ô nhập!", {
+            toast.error("Vui lòng không nhập (nhiều) khoảng trắng trong ô nhập!", {
                 autoClose: 2000,
                 // theme: "colored",
                 theme: "light",
@@ -270,7 +270,7 @@ function DetailProduct_v2({product_prop={}}) {
 
         var containsSpecialChars = /[^\w\s]/.test(refAddComment.current.value);
         if(containsSpecialChars ) {
-            toast.error("Vui lòng không nhập các ký tự đặc biệt trong ô nhập!", {
+            toast.error("Vui lòng không nhập (các) ký tự đặc biệt trong ô nhập!", {
                 autoClose: 2000,
                 // theme: "colored",
                 theme: "light",
@@ -307,7 +307,6 @@ function DetailProduct_v2({product_prop={}}) {
         
     })
 
-  
    
     const handleSaveComment = ((idcomment) => {
         setLoading(true)
