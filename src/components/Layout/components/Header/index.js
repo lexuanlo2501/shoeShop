@@ -129,12 +129,12 @@ useEffect(()=> {
                     
     
                     <li className={cx("box_logo")} >
-                        <img className={cx('logo')} src={require('./logoDT-70.png')}/>
+                        {/* <img className={cx('logo')} src={require('./logoDT-70.png')}/> */}
                         <span className={cx('logo_title')}>
-                            <span className={cx('L_1')}>C</span>
-                            <span className={cx('L_2')}>D</span>
-                            <span className={cx('L_3')}>I</span>
-                            <span className={cx('L_4')}>O</span>
+                            <span className={cx('L_1')}>H</span>
+                            <span className={cx('L_2')}>A</span>
+                            <span className={cx('L_3')}>T</span>
+                            <span className={cx('L_4')}>T</span>
                         </span>
                     </li>
     

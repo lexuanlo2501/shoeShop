@@ -8,10 +8,10 @@ function SignInSignUp({children}) {
         <div className={cx("wrapper")}>
             <div className={cx("leftSide")}>
                 <h1 className={cx("logo")}>
-                    <span className={cx('L_1')}>C</span>
-                    <span className={cx('L_2')}>D</span>
-                    <span className={cx('L_3')}>I</span>
-                    <span className={cx('L_4')}>O</span>
+                    <span className={cx('L_1')}>H</span>
+                    <span className={cx('L_2')}>A</span>
+                    <span className={cx('L_3')}>T</span>
+                    <span className={cx('L_4')}>T</span>
                 </h1>
                 {children}
             </div>

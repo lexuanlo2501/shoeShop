@@ -133,7 +133,16 @@ function SignUp() {
                         {...register("email")}
                     />
                     {errors.email && <InputRequire/>}
+                </div>
 
+                <div className={cx('inputField')}>
+                    <input type="text" placeholder="mã xác nhận email"
+                    />
+                    <button
+                        className={cx("sendCode_email_btn")}
+                        onClick = {() => {
+                        }}
+                    >Gửi mã</button>
                 </div>
 
                 <div className={cx('inputField')}>

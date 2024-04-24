@@ -56,14 +56,20 @@ function Confirming() {
             :
             process.env.REACT_APP_BACKEND_URL+`/orders?_status=${pagCurr}`
             
-        axios.get(urlGetOrder)
+            axiosJWT.get(urlGetOrder, {
+                headers: {Authorization: infor_user.accessToken}
+            })
+
+       
         .then(res => {
             setOrders(res.data)
         })
     },[pagCurr, checkChange])
 
     const handleCancel = (id) => {
-        axios.delete(process.env.REACT_APP_BACKEND_URL+`/orders/`+id)
+        axiosJWT.delete(process.env.REACT_APP_BACKEND_URL+`/orders/`+id, {
+            headers: {Authorization: infor_user.accessToken}
+        })
         .then(res => {
             toast("Xóa đơn hàng thành công", {
                 theme: "light",
@@ -77,8 +83,14 @@ function Confirming() {
 
     }
 
+    // axiosJWT.get(urlGetOrder, {
+    //     headers: {Authorization: infor_user.accessToken}
+    // })
+
     const confirm_product = (order_id, status) => {
-        axios.patch(process.env.REACT_APP_BACKEND_URL+`/orders/${order_id}`, {"status": status})
+        axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/orders/${order_id}`, {"status": status}, {
+            headers: {Authorization: infor_user.accessToken}
+        })
         .then(res => {
             console.log("Xac thuc thanh cong")
         })
@@ -90,7 +102,6 @@ function Confirming() {
     const handleOrderDetail = (item) => {
         axiosJWT.get(process.env.REACT_APP_BACKEND_URL+"/accounts/"+item.client_id, {
             headers: {Authorization: infor_user.accessToken}
-
         })
         .then(res => {
             setOrder_detail({...item, ...res.data})
@@ -301,11 +312,12 @@ const Find_order = ({}) => {
             if(+inputDate.year) {
                 api+=`&_year=${inputDate.year}`
             }
-
-            const orders_callAPI = await axios.get(api)
+            const infor_user = JSON.parse(localStorage.getItem("tokens"))
+            const orders_callAPI = await axiosJWT.get(api, {headers: {Authorization: infor_user.accessToken}})
             setOrders(orders_callAPI.data)
             
         } catch (error) {
+            console.log(error)
             throw new Error('Đã xảy ra lỗi khi gọi API: ' + error.message);
         }
     }

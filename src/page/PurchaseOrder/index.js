@@ -10,11 +10,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import {  } from "@fortawesome/free-regular-svg-icons";
 import { faStarAndCrescent, faStar } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import { createAxios } from "../../createInstance";
 
 
 const cx = classNames.bind(style)
-
-
+let axiosJWT = createAxios()
 
 function PurchaseOrder({userID = JSON.parse(localStorage.getItem("tokens")).accName}) {
 
@@ -31,7 +31,10 @@ function PurchaseOrder({userID = JSON.parse(localStorage.getItem("tokens")).accN
         const controller = new AbortController();
         const user = JSON.parse(localStorage.getItem("tokens"));
 
-        axios.get(process.env.REACT_APP_BACKEND_URL+"/orders?_client_id="+userID,{signal: controller.signal})
+        axiosJWT.get(process.env.REACT_APP_BACKEND_URL+"/orders?_clientId="+userID,{
+            signal: controller.signal,
+            headers: {Authorization: user.accessToken}
+        })
         .then(res => {
 
             let orderUser = [...res.data]
