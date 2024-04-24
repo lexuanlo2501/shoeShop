@@ -596,13 +596,12 @@ function DetailProduct_v2({product_prop={}}) {
                     <img className={cx('choose_size')} src={require('../../imgData/howto.png')} alt="shoe image"/>
                     <img className={cx('choose_size')} src={require('../../imgData/chart_size.png')} alt="shoe image"/>
 
-                
                     {comments.length !==0 ? <div className={cx("comments")}> 
                    <p><strong> ĐÁNH GIÁ SẢN PHẨM:</strong> </p>
                    {admitComment.status == true && showAddComment &&
                    <div className={cx('comments_add-comment')}>
                     { <input value={valueAddcomment} ref={refAddComment} onChange={handleOnchageAddComment}/>}
-                    { addCommentBtn && showAddComment && <button onClick={handleAddComment} className={cx('comments_add-comment-btn')} ><FontAwesomeIcon icon={faPenToSquare}/></button>}
+                    { addCommentBtn  && <button onClick={handleAddComment} className={cx('comments_add-comment-btn')} ><FontAwesomeIcon icon={faPenToSquare}/></button>}
                     </div>}
                 {
                     comments.map(i =>
