@@ -575,7 +575,7 @@ function Item_order({order, setCheck}) {
 
     const [quantity, setQuantity] = useState(order.quantity)
 
-    const modifyQuantity = (add) => {
+    const modifyQuantity = (action) => {
         let cart = JSON.parse(localStorage.getItem('cart'))
         // tìm ra sản phẩm đang select
         let tmp = cart.find(i => i.id === order.id && i.size === order.size)
@@ -583,21 +583,26 @@ function Item_order({order, setCheck}) {
         // lấy ra array mà k có sản phẩm đang select
         cart = cart.filter(i => i.id + i.size !== order.id + order.size)
         
-        // console.log(tmp)
-        // console.log(cart)
+        // let quantityUpdate = order.quantity
+        let quantityUpdate = quantity
 
-        let quantityUpdate = order.quantity
-        if(add) {
-            setQuantity(pre =>{ 
-                return pre+1
-            })
+        if(action === 'add') {
+            setQuantity(pre => pre+1)
             quantityUpdate +=1 
         }
-        else {
+        else if(action === 'sub') {
             if(quantity>=1) {
                 setQuantity(pre => pre-1)
                 quantityUpdate -=1 
             }
+        }
+        else {
+            console.log("use onchange event")
+            console.log(action.target.value)
+            setQuantity(+(action.target.value))
+            quantityUpdate = +(action.target.value)
+
+
         }
         // console.log(quantityUpdate)
 
@@ -610,10 +615,14 @@ function Item_order({order, setCheck}) {
             }
         )
         localStorage.setItem('cart', JSON.stringify(newCart))
-        console.log(newCart)
+        // console.log(newCart)
 
         setCheck(pre => !pre)
         
+    }
+
+    const modifyQuantity_input = (e) => {
+        setQuantity(e.target.value)
     }
 
     const [size, setSize] = useState(order?.size)
@@ -646,7 +655,6 @@ function Item_order({order, setCheck}) {
 
     const sizeValues = ['36', '37', '38', '39', '40', '41', '42', '43']
 
-    
     return (
         <div className={cx("content_description_wrapper")}>
             {/* <i className="ti-close remove_product"></i> */}
@@ -707,13 +715,20 @@ function Item_order({order, setCheck}) {
                     <div className={cx("wrapper")}>
                         <span className={cx("minus")}
                             onClick={() => {
-                                modifyQuantity()
+                                modifyQuantity('sub')
                             }}
                         >-</span>
-                        <span className={cx("num")}>{quantity}</span>
+                        {/* <span className={cx("num")}>{quantity}</span> */}
+                        <input className={cx("num_input")} 
+                            value={quantity}                       
+                            type="number" 
+                            min='0'
+                            onChange={e => {modifyQuantity(e)}}
+                          
+                        />
                         <span className={cx("plus")}
                             onClick={() => {
-                                modifyQuantity(true)
+                                modifyQuantity('add')
                             }}
                         >+</span>
                     </div>

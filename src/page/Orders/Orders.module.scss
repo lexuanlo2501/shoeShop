@@ -358,13 +358,19 @@ li.cart_btn:hover .header_cart-list {
     cursor: pointer;
     user-select: none;
 }
-.wrapper span.num{
-    width: 231px;
+.wrapper .num{
+    // width: 231px;
     font-weight: 500;
     font-size: 16px;
     border-right: 2px solid rgba(0,0,0,0.2);
     border-left: 2px solid rgba(0,0,0,0.2);
     pointer-events: none;
+}
+
+.num_input {
+    width: 40px;
+    border: 1.5px solid black;
+    text-align: center;
 }
 
 .quantity{
