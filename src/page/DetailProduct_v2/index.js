@@ -127,10 +127,6 @@ function DetailProduct_v2({product_prop={}}) {
         .then((res)=> {
             setComments(res.data)
             setLoading(false)
-
-            if(comments.length === 0) {
-                setShowAddComment(true)
-            }
            
         })
 }, [trigger])
@@ -211,14 +207,15 @@ function DetailProduct_v2({product_prop={}}) {
 
         console.log(id_cmt);
         setShowoption(false);
+        
+        
+        comments.filter(item => {
+            if( item.accName == user.accName && item.comment_id == id_cmt)
+            {
+                setShowInput(prev => !prev)
+                setValuecomment(item.value)
+            }
        
-      
-      comments.filter(item => {
-           if( item.accName == user.accName && item.comment_id == id_cmt)
-         {
-             setShowInput(prev => !prev)
-             setValuecomment(item.value)
-         }
          return;
       }
     )
@@ -254,6 +251,14 @@ function DetailProduct_v2({product_prop={}}) {
             }
      
             console.log(currentLength)
+        })
+        .then(() => {
+            toast.success("Đã xóa bình luận thành công!", {
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
         })
         .catch((error) => {
             console.error(error)
@@ -303,8 +308,8 @@ function DetailProduct_v2({product_prop={}}) {
             return;
         }
 
-        var containsSpecialChars = /[^\w\s]/.test(refAddComment.current.value);
-        if(containsSpecialChars ) {
+        var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(refAddComment.current.value);
+        if(containsSpecialChars) {
             toast.error("Vui lòng không nhập (các) ký tự đặc biệt trong ô nhập!", {
                 autoClose: 2000,
                 // theme: "colored",
@@ -319,8 +324,8 @@ function DetailProduct_v2({product_prop={}}) {
                 product_id: paramToObject._id,
                 accName: user.accName
           })
-  
-          .then((res) => {
+
+          .then(() => {
               setTrigger(prev => !prev)
               toast.success("Gửi bình luận thành công", {
                 autoClose: 2000,
@@ -328,12 +333,13 @@ function DetailProduct_v2({product_prop={}}) {
                 theme: "light",
                 position: "top-right",
             })
-              refAddComment.current.focus();   
+             
               if(comments.length > 0) {
                   setShowAddComment(prev => !prev)
               }
-             
+           
           })
+         
       
           .catch((error) => {
                    console.log(error)
