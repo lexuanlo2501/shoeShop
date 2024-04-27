@@ -747,7 +747,7 @@ function DetailProduct_v2({product_prop={}}) {
                      <div className={cx('comment-item_date-comment')}>
                             <p className={cx('comment-item_info-user-comment_comment-date_date')}> {i.date} 
                             
-                           {user.accName==i.accName && user.role == "client" &&
+                           {user.accName==i.accName &&
                            <Tippy
                            visible={showoption}
                            placement='right'
