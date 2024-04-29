@@ -1,6 +1,6 @@
 export const limit = 16
 
-export const formatPrice = (price) => {
+export const formatPrice = (price=0) => {
     if(Number.isFinite(price)) {
         return  price.toLocaleString('vi', {style : 'currency', currency : 'VND'})
     }

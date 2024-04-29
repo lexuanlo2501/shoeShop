@@ -1,0 +1,58 @@
+.wrapper {
+    padding: 30px;
+
+    h1 {
+        margin: 20px 0;
+        text-transform: capitalize;
+        color: #878787;
+    }
+}
+
+
+.status_btn {
+    border: 1px solid #bebbbb;
+    margin: 0 10px;
+    width: 70px;
+    display: flex;
+    padding: 4px 8px;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+
+    &:hover {
+        opacity: 0.8;
+    }
+    &:active {
+        opacity: 0.9;
+    }
+
+    &.lock {
+        background-color: rgb(230, 145, 114);
+        color: #fff;
+    }
+    &.unlock {
+        background-color: rgb(146, 202, 150);
+        color: #fff;
+
+    }
+}
+
+.btn_del_cmt {
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+        background-color: rgb(241, 151, 151);
+    }
+
+    &:hover .icon_del_cmt {
+        color: #fff;
+
+    }
+
+    .icon_del_cmt {
+        color: rgb(223, 129, 129);
+        font-size: 16px;
+
+    }
+}

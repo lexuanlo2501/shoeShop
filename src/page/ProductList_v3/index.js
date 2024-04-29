@@ -28,7 +28,7 @@ function ProductList_v3({ re_render }) {
 
 
     let currentUrl = window.location.href;
-    let param = currentUrl.split("?")[1]
+    let param = currentUrl.split("?")[1] + "&_hideLock=true"
     let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
     // console.log(currentUrl)
 

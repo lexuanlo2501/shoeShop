@@ -406,7 +406,6 @@ function ModifyProducts() {
                                     >
                                         <td className={cx(['btn_modify','del'])}>
                                             <FontAwesomeIcon className={cx('btn_modify')} icon={faTrashCan}/>
-
                                         </td>
                                     </ConfirmModal_v2>
 

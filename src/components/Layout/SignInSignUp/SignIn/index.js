@@ -31,8 +31,8 @@ function SignIn({setLogin = () => {}}) {
         }
         setLoading(true)
 
-        // axios.post(process.env.REACT_APP_BACKEND_URL+"/signin_2",data, { withCredentials: true})
-        axios.post(process.env.REACT_APP_BACKEND_URL+"/signin_2",data)
+        axios.post(process.env.REACT_APP_BACKEND_URL+"/signin_2",data, { withCredentials: true})
+        // axios.post(process.env.REACT_APP_BACKEND_URL+"/signin_2",data)
         .then(res => {
             console.log(res)
             if(res.data.status) {

@@ -44,6 +44,7 @@ import Exchange_Return from './components/Layout/components/Footer/FooterPage/Ex
 import SecurityPolicy from './components/Layout/components/Footer/FooterPage/SecurityPolicy';
 import SaleChannel from './page/SaleChannel';
 import RegisterSale from './page/RegisterSale';
+import CommentsAdmin from './page/CommentsAdmin';
 
 export const CartContext = createContext()
 
@@ -110,6 +111,13 @@ function App() {
               <Route
                 path='admin/comfirming'
                 element={<DefaultLayout_Admin> <Confirming /> </DefaultLayout_Admin>}
+              />
+            }
+            {
+              (login === "admin" || login === "seller") &&
+              <Route
+                path='admin/comments'
+                element={<DefaultLayout_Admin> <CommentsAdmin /> </DefaultLayout_Admin>}
               />
             }
             {

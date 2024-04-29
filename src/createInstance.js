@@ -17,7 +17,7 @@ const refreshToken_v2 = async () => {
     const user_infor = JSON.parse(localStorage.getItem("tokens"))
 
     try {
-        const res = await axios.post(process.env.REACT_APP_BACKEND_URL+"/refreshToken_v2",{accName:user_infor.accName})
+        const res = await axios.post(process.env.REACT_APP_BACKEND_URL+"/refreshToken_v2",{accName:user_infor.accName}, {withCredentials: true})
         return res.data
     } catch (error) {
         console.log(error)
@@ -36,13 +36,10 @@ export const createAxios = () => {
             
             const infor_user = JSON.parse(localStorage.getItem("tokens"))
 
-
             const decodedToken = jwtDecode(infor_user?.accessToken)
             if(decodedToken.exp < date.getTime()/1000) {
                 const data = await refreshToken_v2()
                 console.log(data)
-
-
 
                 const refreshUser = {
                     ...infor_user,
@@ -50,7 +47,6 @@ export const createAxios = () => {
                 }
 
                 localStorage.setItem("tokens", JSON.stringify(refreshUser))
-
 
                 // Authorization là prope ở header
                 config.headers["Authorization"] = data.accessToken

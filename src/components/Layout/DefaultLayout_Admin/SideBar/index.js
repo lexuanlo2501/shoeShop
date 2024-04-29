@@ -1,9 +1,9 @@
-import classNames from "classnames/bind";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import classNames from "classnames/bind";
 import styles from './sideBar.module.scss'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faBars, faCircleDollarToSlot, faClockRotateLeft, faHome, faLayerGroup, faPenToSquare, faTrashCan, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faBars, faCircleDollarToSlot, faClockRotateLeft, faComments, faHome, faLayerGroup, faPenToSquare, faTrashCan, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles)
 
@@ -55,6 +55,12 @@ function SideBar() {
             show: showAdmin
         },
         {
+            route: showSeller ? `comments?_sellerID=${inforUser.accName}` : "comments",
+            Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faComments}/>,
+            title: "bình luận",
+            show: showAdmin || showSeller
+        },
+        {
             route:"history",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faClockRotateLeft}/>,
             title: "lịch sử",
@@ -67,8 +73,6 @@ function SideBar() {
             show: showAdmin
         },
     ]
-
-    console.log(dataSideBar)
 
     return (
         <div className={cx('wrapper')}>
