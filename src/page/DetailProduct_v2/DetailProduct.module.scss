@@ -167,20 +167,26 @@
   .comments_add-comment {
     display: flex;
     gap: 10px;
-    flex-direction: column;
+
     input {
       border: 1px solid black;
       border-radius: 5px;
       padding-left: 4px;
-      margin-right: 10px;
+      margin-right: 4px;
       width: 330px;
     }
 
     .comments_add-comment-btn {
       text-align: left;
       width: fit-content;
+      border: 1px solid transparent;
+      padding: 4px 4px;
+
       &:hover {
         color: #ee4d2d;
+        border: 1px solid #969696;
+        border-radius: 5px;
+        background-color: #fefefe;
       
       }
     }
@@ -257,11 +263,9 @@
 
               &:hover {
                 color: #ee4d2d;
-
                 
               }
-              
-                        
+                   
            }
         }
           }
@@ -348,9 +352,83 @@
         p {
           color:#8a8a8a;
         }
+
+       
+        
+        
+    
+
+         
+        
+
+        .wrapper_value-reply-del-btn {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+        
+          li {
+            margin-bottom: 0;
+          }
+
+          .btn-del-reply{
+            margin-left: 10px;
+
+            &:hover {
+              color: #ee4d2d;
+            }
+          }
+        }
+        
        }
+       
       }
+      
     }
+    .wrapper_reply {
+     margin-left: 60px;
+
+      .input-reply {
+        border: 1px solid black;
+        width: 400px;
+        border-radius: 5px;
+        padding-left: 4px;
+      }
+
+      .wrapper-input-send-btn{
+
+        input {
+          height: 33px;
+        }
+
+        .btn-send-reply{
+            margin-left: 10px;
+            padding: 4px 4px;
+            border: 1px solid transparent;
+            &:hover {
+              color: #ee4d2d;
+              border-radius: 5px;
+              background-color: #fefefe;
+              border: 1px solid #969696;
+
+            }
+
+         
+        }
+      }
+      .btn_reply{
+        padding: 4px 4px;
+
+        &:hover {
+          color: #ee4d2d;
+          border-radius: 5px;
+          text-decoration: underline;
+
+        }
+      }
+
+    }
+    
+
   }
 }
 

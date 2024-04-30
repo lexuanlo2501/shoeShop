@@ -9,7 +9,7 @@ import axios from 'axios';
 import {priceDiscount, formatPrice} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faStar } from '@fortawesome/free-regular-svg-icons';
-import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faSpinner, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faSpinner, faTrash, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
 import { HashLoader } from 'react-spinners';
 import { createAxios } from '../../createInstance';
 
@@ -127,9 +127,11 @@ function DetailProduct_v2({product_prop={}}) {
         .then((res)=> {
             setComments(res.data)
             setLoading(false)
+            // console.log(product.id)
+            // console.log(product)
            
         })
-}, [trigger])
+}, [trigger, paramToObject._id])
 
     //option comment
     const [showoption, setShowoption] = useState(false)
@@ -143,9 +145,12 @@ function DetailProduct_v2({product_prop={}}) {
     const [loading, setLoading] = useState(false);
     const [showAddComment, setShowAddComment] = useState(true);
     const [indexcomment, setIndexComment] = useState(-1);
+    const [btnReply, setBtnReply] = useState(true);
+    const [inputReply, setInputReply] = useState(false);
 
     const refinput = useRef();
     const refAddComment = useRef();
+    const refInputReply = useRef();
 
     const handleShowOption = ((idcmt, role, index, accName, value)=> {
        
@@ -198,7 +203,7 @@ function DetailProduct_v2({product_prop={}}) {
         accName: user.accName
     }) 
     .then((res) => {
-       console.log(res.data)
+    //    console.log(res.data)
        setAdmitComment(res.data)
     })
     }, [paramToObject._id])
@@ -339,15 +344,11 @@ function DetailProduct_v2({product_prop={}}) {
               }
            
           })
-         
-      
+
           .catch((error) => {
                    console.log(error)
           })
-        
-        
     })
-
    
     const handleSaveComment = ((idcomment, e) => {
         setLoading(true)
@@ -363,7 +364,6 @@ function DetailProduct_v2({product_prop={}}) {
           setLoading(false)
           setShowInput(prev => !prev)
          
-         
         })
 
         
@@ -373,6 +373,105 @@ function DetailProduct_v2({product_prop={}}) {
         setShowInput(prev => !prev)
     })
 
+    const handleReply = ((id_cmt, seller_id, accName) => {
+        setIdcomment(id_cmt)
+      if(user.role =="admin" ) {
+          setBtnReply(prev => !prev);
+          setInputReply(prev => !prev);
+          console.log(id_cmt)
+        
+      }
+
+      else if (accName == seller_id) {
+
+
+          setBtnReply(prev => !prev);
+          setInputReply(prev => !prev);
+          console.log(id_cmt)
+      }
+
+ 
+           
+
+     
+      
+
+       
+    })
+
+    const handleSendReply = ((id_cmt) => {
+
+        if(refInputReply.current.value == '') {
+            toast.error("Vui lòng không để trống trong ô nhập!", {
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
+            return;
+        }
+         
+        var trimmedStr = refInputReply.current.value.replace(/^\s+|\s+$/g, ' ');
+        if(trimmedStr === ' ') {
+            toast.error("Vui lòng không nhập (nhiều) khoảng trắng trong ô nhập!", {
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
+            return;
+        }
+
+        var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(refInputReply.current.value);
+        if(containsSpecialChars) {
+            toast.error("Vui lòng không nhập (các) ký tự đặc biệt trong ô nhập!", {
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
+            return;
+        }
+
+        axios.post( process.env.REACT_APP_BACKEND_URL + `/replycomments`, {
+            value: refInputReply.current.value,
+            comment_id: id_cmt,
+         })
+
+       .then (() => {
+         setTrigger(prev => !prev);
+        
+         refInputReply.current.value = '';
+         console.log(comments)
+
+         toast.success("Đã gửi phản hồi thành công!", {
+            autoClose: 2000,
+            // theme: "colored",
+            theme: "light",
+            position: "top-right",
+        })
+       })
+
+    });
+
+    const handleDelReply = ((id_cmt) => {
+
+          axios.delete( process.env.REACT_APP_BACKEND_URL + `/replycomments/${id_cmt}`)
+
+          .then(() => {
+            setTrigger(prev => !prev)
+            console.log(id_cmt)
+
+            toast.success("Đã xóa phản hồi thành công!", {
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
+
+            
+          })
+    })
     return (
         <div >
            
@@ -683,7 +782,7 @@ function DetailProduct_v2({product_prop={}}) {
                    <p><strong> ĐÁNH GIÁ SẢN PHẨM:</strong> </p>
                    {admitComment.status == true && showAddComment &&
                    <div className={cx('comments_add-comment')}>
-                    { <input value={valueAddcomment} ref={refAddComment} onChange={handleOnchageAddComment}/>}
+                     <input value={valueAddcomment} ref={refAddComment} onChange={handleOnchageAddComment}/>
                  <button onClick={handleAddComment} className={cx('comments_add-comment-btn')} >Gửi Bình Luận</button>
                     </div>}
                 {
@@ -753,7 +852,6 @@ function DetailProduct_v2({product_prop={}}) {
                            placement='right'
                            interactive={true}
                            zIndex={0}
-                        // onClickOutside={()=>setShowoption(prev => !prev)}
                            render={attrs => showoption && idcomment == i.comment_id &&
                              <div className={cx('option')}tabIndex="-1" {...attrs}>
                               <button onClick={ () => handleChangeComment(i.comment_id, index)
@@ -777,7 +875,6 @@ function DetailProduct_v2({product_prop={}}) {
                            placement='right'
                            interactive={true}
                            zIndex={0}
-                        // onClickOutside={()=>setShowoption(prev => !prev)}
                            render={attrs => (showoption &&  user.role == "admin"  && index == indexcomment && idcomment == i.comment_id &&
                              <div className={cx('option')} tabIndex="-1" {...attrs}>
                               <button onClick={ () => handleChangeComment(i.comment_id, index)
@@ -827,12 +924,52 @@ function DetailProduct_v2({product_prop={}}) {
                                          <p >Người bán</p>
                                              <p className={cx('comment-item_reply_reply-date_date')}>{i.date}</p>
                                     </div>
-                                       <li>{i.value}</li>
+                                    
+                                       <div className={cx('wrapper_value-reply-del-btn')}>
+                                           <li>{i.value}</li>
+                                           { user.role == "admin" &&  <button onClick={()=>{handleDelReply(i.id)}} className={cx('btn-del-reply')}><FontAwesomeIcon icon={faTrash} /></button>}
+   
+                                           {
+                                            user.accName == product.seller_id &&<button onClick={()=>{handleDelReply(i.id)}} className={cx('btn-del-reply')}><FontAwesomeIcon icon={faTrash} /></button>
+                                           }
+
+                                       </div>
+                                       
                                    </div>
                                   )
                                   )}
                             </ul>
+                            
                             </div>} 
+
+                            <div className={cx('wrapper_reply')}>
+                               {inputReply && idcomment == i.comment_id && user.accName == product.seller_id  && <div className={cx('wrapper-input-send-btn')}> 
+                                  <input ref={refInputReply} className={cx('input-reply')} />
+    
+                                     <button onClick= {() => {handleSendReply(i.comment_id)}} className={cx('btn-send-reply')}>Gửi</button>
+                               </div>}
+
+                               {inputReply && idcomment == i.comment_id && user.role == "admin" && <div className={cx('wrapper-input-send-btn')}> 
+                                  <input ref={refInputReply} className={cx('input-reply')} />
+    
+                                     <button onClick= {() => {handleSendReply(i.comment_id)}} className={cx('btn-send-reply')}>Gửi</button>
+                               </div>}
+
+                                                 {btnReply && user.role == "admin"  && <button onClick={()=>handleReply(i.comment_id, product.seller_id, i.accName)} className={cx('btn_reply')}><strong>Trả lời</strong></button>}
+
+                                                 {!btnReply && user.role == "admin" && i.comment_id!==idcomment&& <button onClick={()=>handleReply(i.comment_id)} className={cx('btn_reply')}><strong>Trả lời</strong></button>}
+
+                                                
+                                                 {
+                                                    btnReply && user.accName == product.seller_id&& <button onClick={()=>handleReply(i.comment_id)} className={cx('btn_reply')}><strong>Trả lời</strong></button>
+                                                 }
+
+                                                {
+                                                   !btnReply && user.accName == product.seller_id&& i.comment_id !== idcomment && <button onClick={()=>handleReply(i.comment_id)} className={cx('btn_reply')}><strong>Trả lời</strong></button>
+                                                 }
+                                         
+                            </div>
+
                     </div>))
                 }
                 </div> : (
