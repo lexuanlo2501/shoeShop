@@ -324,7 +324,7 @@ const Rating = ({order_detail}) => {
                         // console.log(dataP)
                     }
                     else {
-                        console.log("Vui lòng đánh giá số sao")
+                        toast("Vui lòng đánh giá số sao")
                     }
                 }}
 
