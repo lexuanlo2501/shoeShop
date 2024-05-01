@@ -158,8 +158,10 @@ function DetailProduct_v2({product_prop={}}) {
         setValuecomment(value)
         setIndexComment(index)
         setIdcomment(idcmt);
+      
         if(accName === user.accName && index === indexcomment && idcmt == idcomment ) {
            setShowoption(prev => !prev)
+          
         //    alert('ok')
           
         }
@@ -171,6 +173,9 @@ function DetailProduct_v2({product_prop={}}) {
          
             setValuecomment(value)
             setShowInput(false)
+        
+
+
             console.log(index )
             console.log(indexcomment)
 
@@ -179,11 +184,14 @@ function DetailProduct_v2({product_prop={}}) {
        if (role == "admin" ) {
             setIndexComment(index);
             setIdcomment(idcmt);
+
+
             
             if(role == "admin" && idcmt == idcomment && index == indexcomment) {
                 setShowoption(prev => !prev)
                     setShowInput(false)
                     setValuecomment( value)
+
             }
             else if (role == "admin" && idcmt!==idcomment && index !== indexcomment) {
                 setIndexComment(index);
@@ -191,6 +199,8 @@ function DetailProduct_v2({product_prop={}}) {
                 setShowoption(prev => !prev) 
                     setShowInput(false)
                     setValuecomment( value)
+         
+
             
             }    
         }
@@ -366,7 +376,6 @@ function DetailProduct_v2({product_prop={}}) {
          
         })
 
-        
     });
 
     const hanleCloseInput = (() => {
@@ -374,8 +383,8 @@ function DetailProduct_v2({product_prop={}}) {
     })
 
     const handleReply = ((id_cmt, seller_id, accName) => {
-        setIdcomment(id_cmt)
-      if(user.role =="admin" ) {
+        if(user.role =="admin") {
+          setIdcomment(id_cmt)
           setBtnReply(prev => !prev);
           setInputReply(prev => !prev);
           console.log(id_cmt)
@@ -384,10 +393,12 @@ function DetailProduct_v2({product_prop={}}) {
 
       else if (accName == seller_id) {
 
-
           setBtnReply(prev => !prev);
           setInputReply(prev => !prev);
+        setIdcomment(id_cmt)
+
           console.log(id_cmt)
+
       }
 
  
@@ -422,7 +433,7 @@ function DetailProduct_v2({product_prop={}}) {
             return;
         }
 
-        var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(refInputReply.current.value);
+        var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|,<>\/]+/.test(refInputReply.current.value);
         if(containsSpecialChars) {
             toast.error("Vui lòng không nhập (các) ký tự đặc biệt trong ô nhập!", {
                 autoClose: 2000,
