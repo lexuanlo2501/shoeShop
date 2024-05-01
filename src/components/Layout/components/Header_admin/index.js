@@ -28,12 +28,14 @@ function Header_admin() {
 
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL+"/notify?_to_admin_all=admin")
+        const controller = new AbortController()
+        axios.get(process.env.REACT_APP_BACKEND_URL+"/notify?_to_admin_all=admin",{signal:controller.signal})
         .then(res => {
             setNotify(res.data)
             console.log(res.data)
         })
-        
+
+        return () => controller.abort()
     }, [trigger])
     
     const handleDelete_notify = (id) => {

@@ -868,7 +868,7 @@ function QuantityModal({size,idPro, quantity}) {
             "size": size
         }
         // console.log(dataPost)
-        axiosJWT.post(process.env.REACT_APP_BACKEND_URL+`/import_prod`,dataPost, {
+        axiosJWT.post(process.env.REACT_APP_BACKEND_URL+`/import_prod/${dataPost.product_id}`,dataPost, {
             headers: {Authorization: infor_user.accessToken}
         })
         .then(res => {

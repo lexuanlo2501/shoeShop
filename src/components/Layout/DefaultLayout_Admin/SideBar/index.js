@@ -30,7 +30,7 @@ function SideBar() {
 
         },
         {
-            route: showSeller ? `modifyProducts?_sellerId=${inforUser.accName}` : "modifyProducts",
+            route: showSeller ? `modifyProducts?_sellerId=${inforUser.accName}&_limit=20&_page=1` : "modifyProducts?_limit=20&_page=1",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faPenToSquare}/>,
             title: "hiệu chỉnh SP",
             show: showAdmin || showSeller
@@ -55,7 +55,7 @@ function SideBar() {
             show: showAdmin
         },
         {
-            route: showSeller ? `comments?_sellerID=${inforUser.accName}` : "comments",
+            route: showSeller ? `comments?_sellerID=${inforUser.accName}&_limit=20&_page=1` : "comments?_limit=20&_page=1",
             Icon :<FontAwesomeIcon className={cx('icon_barItem')} icon={faComments}/>,
             title: "bình luận",
             show: showAdmin || showSeller

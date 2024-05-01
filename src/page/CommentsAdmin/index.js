@@ -16,24 +16,25 @@ function CommentsAdmin() {
     const [trigger, setTrigger] = useState(false)
     const [numberOfPage, setNumberOfPage] = useState([])
 
-    
-    const arrPage = (n) => {
-        const limit = 2
-        let arr = Array(Math.ceil(n/limit)).fill(0).map((_, index) => index+1)
-        return arr
-    }
-
     const userInfor = JSON.parse(localStorage.getItem("tokens"))
     
     let currentUrl = window.location.href;
     let param = currentUrl?.split("?")[1]
     let paramToObject = param && JSON.parse('{"' + decodeURI(param?.replace(/&/g, "\",\"")?.replace(/=/g,"\":\"")) + '"}') || {}
-    
+    const limit = paramToObject._limit
+       
+    const arrPage = (n) => {
+        let arr = Array(Math.ceil(n/limit)).fill(0).map((_, index) => index+1)
+        return arr
+    }
+
     useEffect(() => {
         const controller = new AbortController()
       
         let api = process.env.REACT_APP_BACKEND_URL+'/comments'
-        api += paramToObject._sellerID ? `?_sellerID=${userInfor.accName}&_showLock=true` : "?_showLock=true"
+        api += paramToObject._sellerID ? `?_sellerID=${userInfor.accName}&_showLock=true` : "?_showLock=true&"
+        api += param
+
         axios.get(api, {signal:controller.signal})
         .then(res => {
             setCmts(res.data)
@@ -68,7 +69,6 @@ function CommentsAdmin() {
 
     const handleLockCmt = (cmtID) => {
         const currentStatusCmt = (cmts.find(i => i.comment_id === cmtID)).isLock
-        console.log(cmts.find(i => i.comment_id === cmtID))
         axios.patch(process.env.REACT_APP_BACKEND_URL+'/comments/'+cmtID,{isLock:currentStatusCmt ? 0 : 1})
         .then(res => {
             if(res.status) {
@@ -137,29 +137,29 @@ function CommentsAdmin() {
                 </table>
             </div>
             <div className={cx('pagination')}>
-                    <div className={cx('pagination_container')}>
+                <div className={cx('pagination_container')}>
+            {
+                numberOfPage.map((item, index) => 
                 {
-                    numberOfPage.map((item, index) => 
-                    {
-                        let active = +paramToObject?._page  === item ? 'active' : ''
-                        return (
-                            <Link 
-                                key={index} 
-                                onClick={ () => { 
-                                   
-                                }}
-                                className={cx(['page_number', active])}
-                                // to={`/shoes?${param?.replace(`page=${paramToObject._page}`,`page=${item}`)}`} 
-                                // to={`/admin/modifyProducts?${param?.replace(`page=${paramToObject._page}`,`page=${item}`)}`} 
-                                
-                            >
-                                {item}
-                            </Link>
-                        )
-                    })
-                }
-                    </div>
+                    let active = +paramToObject?._page  === item ? 'active' : ''
+                    return (
+                        <Link 
+                            key={index} 
+                            onClick={ () => { 
+                                setTrigger(pre => !pre)
+                            }}
+                            className={cx(['page_number', active])}
+                            // to={`/shoes?${param?.replace(`page=${paramToObject._page}`,`page=${item}`)}`} 
+                            to={`/admin/comments?${param?.replace(`page=${paramToObject._page}`,`page=${item}`)}`} 
+                            
+                        >
+                            {item}
+                        </Link>
+                    )
+                })
+            }
                 </div>
+            </div>
 
         </div>
     );

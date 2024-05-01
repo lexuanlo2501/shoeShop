@@ -134,8 +134,6 @@ function App() {
                 element={<DefaultLayout_Admin> <ListAccount /> </DefaultLayout_Admin>}
               />
             }
-            
-            
             <Route
               path="saleHome"
               element={<HeaderOnly><SaleChannel/></HeaderOnly>}
@@ -144,12 +142,6 @@ function App() {
               path="registerSale"
               element={<HeaderOnly><RegisterSale/></HeaderOnly>}
             />
-
-            
-
-
-
-
             <Route
               path="signIn"
               element={<SignInSignUp><SignIn setLogin={setLogin}/></SignInSignUp>}
@@ -181,7 +173,7 @@ function App() {
             }
 
             {
-              login === "client" || login === "seller" &&
+              (login === "client" || login === "seller") &&
                 <Route
                   path="PurchaseOrder"
                   element={<DefaultLayout> <LayoutUserInfor><PurchaseOrder  /></LayoutUserInfor> </DefaultLayout>}
@@ -195,9 +187,6 @@ function App() {
                 element={ <HeaderOnly> <Orders/> </HeaderOnly>}
               />
             }
-
-
-
             <Route
               path="shoes/detail_product"
               element={ <HeaderOnly> <DetailProduct_v2/> </HeaderOnly>}
@@ -218,52 +207,42 @@ function App() {
             />
 
           {/* PAGE FOOTER */}
-          <Route
+            <Route
               path="deliveryPolicy"
               // DefaultLayout
               element={<HeaderOnly><DeliveryPolicy/></HeaderOnly>}
 
             />
-
             <Route
               path="contact"
               // DefaultLayout
               element={<HeaderOnly><Contact/></HeaderOnly>}
 
             />
-
             <Route
               path="guidepicksize"
               // DefaultLayout
               element={<HeaderOnly><GuidePickSize/></HeaderOnly>}
 
             />
-
-<Route
+            <Route
               path="conditionClause"
               // DefaultLayout
               element={<HeaderOnly><Condition_Clause/></HeaderOnly>}
 
             />
-
-<Route
+            <Route
               path="exchangeReturn"
               // DefaultLayout
               element={<HeaderOnly><Exchange_Return/></HeaderOnly>}
 
             />
-
-<Route
+            <Route
               path="securityPolicy"
               // DefaultLayout
               element={<HeaderOnly><SecurityPolicy/></HeaderOnly>}
 
             />
-
-            
-
-              
-            
 
           </Routes>
 

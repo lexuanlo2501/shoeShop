@@ -1088,6 +1088,35 @@ ul {
 }
 
 
+.status_btn {
+    border: 1px solid #bebbbb;
+    margin: 0 10px;
+    width: 70px;
+    display: flex;
+    padding: 4px 8px;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+
+    &:hover {
+        opacity: 0.8;
+    }
+    &:active {
+        opacity: 0.9;
+    }
+
+    &.lock {
+        background-color: rgb(230, 145, 114);
+        color: #fff;
+    }
+    &.unlock {
+        background-color: rgb(146, 202, 150);
+        color: #fff;
+
+    }
+}
+
+
 
 
 

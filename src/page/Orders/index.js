@@ -25,10 +25,7 @@ const axiosJWT = createAxios()
 
 function Orders() {
 
-
-
     const [user, setUser] = useState({})
-
 
     const [orderItem, setOrderItem] = useState([])
     const [check, setCheck] = useState(false)
@@ -59,9 +56,6 @@ function Orders() {
     const handleShow = () => setShow(true);
     const navigate = useNavigate();
    
-
-
-
     useEffect(() => {
         
         let cart = JSON.parse(localStorage.getItem('cart'))
@@ -140,7 +134,8 @@ function Orders() {
 
     const schema = yup.object().shape({
         description: yup.string(),
-        address: yup.string().required(),
+        // address: yup.string().required(),
+        address: yup.string(),
 
     }).required();
 
@@ -214,19 +209,13 @@ function Orders() {
         
     }, [trigger])
 
-    
-
-    
-
-
     //Add address
 
     const [addAddress, setAddaddress] = useState('');
-   
-   const [iconAddaddress, setIconAddaddress] = useState(false);
-   const [loadIcon1, setLoadicon1] = useState(false);
-
-   const [loadIcon2, setLoadicon2] = useState(false);
+    
+    const [iconAddaddress, setIconAddaddress] = useState(false);
+    const [loadIcon1, setLoadicon1] = useState(false);
+    const [loadIcon2, setLoadicon2] = useState(false);
 
 
     const handleAddaddress = (value) => {
@@ -354,6 +343,11 @@ function Orders() {
                                                     navigate("/signin")
                                                 }
 
+                                                if(!addressList.length) {
+                                                    toast.error("Vui Lòng Thêm Địa chỉ Nhận Hàng")
+                                                    refinputAddress.current.focus();
+                                                    return
+                                                }
                                                 handleSubmit(handleOrder)(e)
                                                 
                                             }}
@@ -375,7 +369,6 @@ function Orders() {
                 <div className={cx('fillOut_infor')}>
                     <h1>thông tin người nhận</h1>
                     
-                
                     <div className={cx('input_infor')}>
                         <label>địa chỉ:</label>
                         {/* <input id="input_5" {...register("address")}/> 
@@ -385,7 +378,7 @@ function Orders() {
                         {/* <p>Tỉnh/Thành phố, Quận/Huyện, Phường/Xã</p> */}
 
                         <div style={{display:"flex", alignItems:"center", height:"42px", position:"relative"}}>
-                            <select className={cx('select_address')} {...register("address")}>
+                            <select className={cx('select_address')} defaultValue={addressList[0]} {...register("address")}>
                             {
                                 addressList?.map(i => <option ref={refinputSelect}  key={i.id} value={i.id}>{i.addressName}</option>)
                             }
@@ -393,9 +386,7 @@ function Orders() {
                             {iconDel && <button onClick={(e)=>{handleSubmit(handleDelAddress)(e)}}><FontAwesomeIcon style={{height:"24px", marginTop:5, color: "#8c8c8c"}} icon={faTrashCan} /></button>}
                              
                             {loadIcon2 && <FontAwesomeIcon className={cx("loading2")} icon = {faSpinner}/>}
-
                         </div>
-
                                
                         {/* <button onClick={(e)=>{handleSubmit(handleLogAddress)(e)}}>Test</button> */}
 

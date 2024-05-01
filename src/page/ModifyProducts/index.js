@@ -14,7 +14,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 
-import { faFileImage, faFilter, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faFileImage, faFilter, faLock, faSearch, faUnlock } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import {toast } from 'react-toastify';
@@ -32,12 +32,7 @@ const cx = classNames.bind(styles)
 let axiosJWT = createAxios()
 
 
-const limit = 20
 
-const arrPage = (n) => {
-    let arr = Array(Math.ceil(n/limit)).fill(0).map((_, index) => index+1)
-    return arr
-}
 
 const handleClickScroll = () => {
     const element = document.getElementById('scrollTo');
@@ -87,34 +82,27 @@ function ModifyProducts() {
 
 
     const [atri_prod, setAtri_prod] = useState({}) // {brands: [],types: [],discounts: []}
-
         
     let currentUrl = window.location.href;
     let param = currentUrl?.split("?")[1]
     let paramToObject = param && JSON.parse('{"' + decodeURI(param?.replace(/&/g, "\",\"")?.replace(/=/g,"\":\"")) + '"}') || {}
 
-    // check nếu url ko có tham số page thì gán mặc định là page 1
-    if(!paramToObject?._page) {
-        paramToObject._page='1'
-        if(param) {
-            param+="&_page=1&_limit="+limit
-        }
-        else {
-            param="_page=1&_limit="+limit
-        }
-    }
+    const limit = paramToObject._limit
 
-    
+    const arrPage = (n) => {
+        let arr = Array(Math.ceil(n/limit)).fill(0).map((_, index) => index+1)
+        return arr
+    }
 
     // ADMIN
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("tokens"));
-
+        const controller = new AbortController()
         const handle_CallAIP = async () => {
-            const brands_data = await axios(process.env.REACT_APP_BACKEND_URL+"/brands")
-            const types_data = await axios(process.env.REACT_APP_BACKEND_URL+"/types")
-            const discount_data = await axios(process.env.REACT_APP_BACKEND_URL+"/discounts")
-            const caregory_data = await axios(process.env.REACT_APP_BACKEND_URL+"/category")
+            const brands_data = await axios(process.env.REACT_APP_BACKEND_URL+"/brands", {signal:controller.signal})
+            const types_data = await axios(process.env.REACT_APP_BACKEND_URL+"/types", {signal:controller.signal})
+            const discount_data = await axios(process.env.REACT_APP_BACKEND_URL+"/discounts", {signal:controller.signal})
+            const caregory_data = await axios(process.env.REACT_APP_BACKEND_URL+"/category", {signal:controller.signal})
 
 
             const combineData = {brands: brands_data.data, types: types_data.data, discounts: discount_data.data, caregory: caregory_data.data}
@@ -122,6 +110,8 @@ function ModifyProducts() {
             setAtri_prod(combineData)
         }
         handle_CallAIP()
+
+        return () => controller.abort()
 
     }, [])
 
@@ -170,6 +160,19 @@ function ModifyProducts() {
         })
         .catch(() => {
             toast.error("SÚ")
+        })
+    }
+
+    const handleLockPord = (prodID) => {
+        const currentStatusProd = (products.find(i => i.id === prodID)).isLock
+        axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/shoes_update/${prodID}`,{isLock:currentStatusProd ? 0 : 1}, {
+            headers: {Authorization: infor_user.accessToken}
+        })
+        .then(res => {
+            setCheckUpd(pre => !pre)
+        })
+        .catch(err => {
+            console.log(err)
         })
     }
 
@@ -332,11 +335,7 @@ function ModifyProducts() {
                         <button className={cx(["removeDiscount_btn","option","mb_2_custom"])} >Thay đổi khuyến mãi</button>
                     </ConfirmModal_v2>
                 }
-                    
-
-
                 </div>
-               
 
                 {
                 loading ? 
@@ -355,6 +354,7 @@ function ModifyProducts() {
                                 <th scope="col" >mô tả</th>
                                 <th scope="col" >ảnh</th>
                                 <th scope="col" >màu nền</th>
+                                <th scope="col" >khóa</th>
                                 <th scope="col" >xóa</th>
                                 <th scope="col" >sửa</th>
 
@@ -398,6 +398,16 @@ function ModifyProducts() {
                                     
                                     <td className={cx('tdClass_BCcolor')}>
                                         <span className={cx(item.BC_color)}></span>
+                                    </td>
+                                    <td style={{verticalAlign: "middle"}}>
+                                    {
+                                        <button className={cx(['status_btn',{"lock":item.isLock===0, "unlock":item.isLock===1}])}
+                                            onClick={() => handleLockPord(item.id)}
+                                        >
+                                            <FontAwesomeIcon icon={item.isLock? faUnlock : faLock}/>
+                                            <span>{item.isLock? "Mở" : "Khóa"}</span>
+                                        </button>
+                                    }
                                     </td>
                                     <ConfirmModal_v2
                                         title={`Xóa Sản Phẩm  -  ID: ${item.id}`}

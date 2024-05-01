@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { Placeholder, Spinner } from 'react-bootstrap';
 import { BeatLoader, FadeLoader, MoonLoader } from 'react-spinners';
 import SearchItem from '../../components/SearchItem';
-import {limit, formatPrice, priceDiscount} from "../../common"
+import {formatPrice, priceDiscount} from "../../common"
 import { createAxios } from '../../createInstance';
 import ConfirmModal_v2 from "../../components/ConfirmModal_v2"
 import QuickProduct from '../../components/QuickProduct';
@@ -28,9 +28,10 @@ function ProductList_v3({ re_render }) {
 
 
     let currentUrl = window.location.href;
-    let param = currentUrl.split("?")[1] + "&_hideLock=true"
+    let param = currentUrl.split("?")[1]
     let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
     // console.log(currentUrl)
+    const limit = paramToObject._limit
 
     const [products, setProducts] = useState([])
     const [pageChange, setPageChange] = useState(+paramToObject._page)
@@ -57,9 +58,9 @@ function ProductList_v3({ re_render }) {
         // axios.get(`http://localhost:5000/shoes?${param}`)
         axios.get(
             paramToObject._favorite === "true" ? 
-            `${process.env.REACT_APP_BACKEND_URL}/shoesList/${inforUser.favorite.toString()}?${param}`
+            `${process.env.REACT_APP_BACKEND_URL}/shoesList/${inforUser.favorite.toString()}?${param}&_hideLock=true`
             :
-            `${process.env.REACT_APP_BACKEND_URL}/shoes?${param}`
+            `${process.env.REACT_APP_BACKEND_URL}/shoes?${param}&_hideLock=true`
         )
         .then(res => {
             setProducts(res.data)
@@ -107,7 +108,7 @@ function ProductList_v3({ re_render }) {
                 {
                     paramToObject._isDiscount && <><span>&#8594; Giảm Giá</span> </>
                 }
-                 {
+                {
                     paramToObject._favorite && <><span>&#8594; Yêu Thích</span> </>
                 }
                 </div>
