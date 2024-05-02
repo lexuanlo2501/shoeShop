@@ -303,34 +303,17 @@ function DetailProduct_v2({product_prop={}}) {
     const handleAddComment = (() =>  {
     
         if(refAddComment.current.value == '') {
-            toast.error("Vui lòng không để trống trong ô nhập!", {
-                autoClose: 2000,
-                // theme: "colored",
-                theme: "light",
-                position: "top-right",
-            })
             return;
         }
          
         var trimmedStr = refAddComment.current.value.replace(/^\s+|\s+$/g, ' ');
         if(trimmedStr === ' ') {
-            toast.error("Vui lòng không nhập (nhiều) khoảng trắng trong ô nhập!", {
-                autoClose: 2000,
-                // theme: "colored",
-                theme: "light",
-                position: "top-right",
-            })
             return;
         }
 
         var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(refAddComment.current.value);
         if(containsSpecialChars) {
-            toast.error("Vui lòng không nhập (các) ký tự đặc biệt trong ô nhập!", {
-                autoClose: 2000,
-                // theme: "colored",
-                theme: "light",
-                position: "top-right",
-            })
+            
             return;
         }
 
@@ -399,48 +382,26 @@ function DetailProduct_v2({product_prop={}}) {
 
           console.log(id_cmt)
 
-      }
-
- 
-           
-
-     
-      
-
+      }       
        
     })
 
     const handleSendReply = ((id_cmt) => {
 
         if(refInputReply.current.value == '') {
-            toast.error("Vui lòng không để trống trong ô nhập!", {
-                autoClose: 2000,
-                // theme: "colored",
-                theme: "light",
-                position: "top-right",
-            })
+           
             return;
         }
          
         var trimmedStr = refInputReply.current.value.replace(/^\s+|\s+$/g, ' ');
         if(trimmedStr === ' ') {
-            toast.error("Vui lòng không nhập (nhiều) khoảng trắng trong ô nhập!", {
-                autoClose: 2000,
-                // theme: "colored",
-                theme: "light",
-                position: "top-right",
-            })
+            
             return;
         }
 
         var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|,<>\/]+/.test(refInputReply.current.value);
         if(containsSpecialChars) {
-            toast.error("Vui lòng không nhập (các) ký tự đặc biệt trong ô nhập!", {
-                autoClose: 2000,
-                // theme: "colored",
-                theme: "light",
-                position: "top-right",
-            })
+           
             return;
         }
 
