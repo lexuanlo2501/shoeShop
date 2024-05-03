@@ -126,7 +126,8 @@ function Orders() {
 
         let checkAddress = addressList.find(i => i.id == data.address)
 
-        localStorage.setItem("tokens", JSON.stringify({...user, address:checkAddress?data.address:(addressList[0])?.id, description:data.description}))
+        // localStorage.setItem("tokens", JSON.stringify({...user, address:checkAddress?data.address:(addressList[0])?.id, description:data.description}))
+        localStorage.setItem("tokens", JSON.stringify({...user, address:checkAddress?checkAddress.addressName:(addressList[0])?.addressName, description:data.description}))
        
         
 
@@ -154,7 +155,8 @@ function Orders() {
             const order = {
                 "client_id" : user.accName,
                 "description": data.description,
-                "address": addressList.find(i => i.id == user?.address)?.addressName,
+                // "address": addressList.find(i => i.id == user?.address)?.addressName,
+                "address": user?.address,
                 "products": orderItem.filter(i => i.quantity!=0).map(prod => ({
                     "product_id": prod.id,
                     "size": prod.size,
@@ -179,7 +181,7 @@ function Orders() {
                         position: "top-center",
                     })
                 }
-                console.log(res)
+                // console.log(res)
             })
             .catch(err => {
                 toast("Đặt hàng thất bại", {
@@ -189,7 +191,7 @@ function Orders() {
                 console.log(err)
             })
     
-            console.log(order)
+            // console.log(order)
 
         }
     }
@@ -201,12 +203,12 @@ function Orders() {
         axios.get(process.env.REACT_APP_BACKEND_URL+`/addresses/${userInfor?.accName}`)
         .then(res => {
             setAddressList(res.data)
-            localStorage.setItem("tokens", JSON.stringify({...userInfor, address :  res.data[0].id }))
-            console.log(res.data)
+            // localStorage.setItem("tokens", JSON.stringify({...userInfor, address :  res.data[0].id }))
+            localStorage.setItem("tokens", JSON.stringify({...userInfor, address :  res.data[0].addressName }))
+
+            // console.log(res.data)
         
         })
-
-        
     }, [trigger])
 
     //Add address
@@ -375,7 +377,6 @@ function Orders() {
                         {
                             errors.address && <ComponentRequire/>
                         } */}
-                        {/* <p>Tỉnh/Thành phố, Quận/Huyện, Phường/Xã</p> */}
 
                         <div style={{display:"flex", alignItems:"center", height:"42px", position:"relative"}}>
                             <select className={cx('select_address')} defaultValue={addressList[0]} {...register("address")}>
@@ -417,6 +418,7 @@ function Orders() {
 
                                   { loadIcon1 && <FontAwesomeIcon className={cx("loading1")} icon = {faSpinner}/>}
                        </div>
+                       <p>Tỉnh/Thành phố, Quận/Huyện, Phường/Xã</p>
 
                        <div style={{display:"flex", flexDirection:"column", gap:"4px", width:"300px"}}>
                         <label htmlFor="input_4">Ghi Chú:</label>
@@ -499,9 +501,14 @@ function Orders() {
                                 <span className={cx('title')} title="Phương thức dành cho khách hàng có tài khoản và lựa chọn thanh toán qua ví điện tử MoMo. Vui lòng đọc kĩ các cam kết về phương thức này trước khi quyết định. Phí thanh toán đang được áp dụng là 1% trên tổng thanh toán.">?</span>
                                 <img src={require('./MoMo_Logo.png')}/>
                             </div>
-                            <h3>Địa chỉ: {
+                            <h3>Địa chỉ: 
+                            {/* {
                                 addressList.find(address => address.id ==  JSON.parse(localStorage.getItem("tokens")).address)?.addressName ||  addressList[0]?.addressName
-                             }</h3>
+                            } */}
+                            {
+                                JSON.parse(localStorage.getItem("tokens")).address
+                            }
+                             </h3>
                             <p className='text-danger'>{optionPay === "momo" && <span>Hiện chưa có phương thức này</span>} </p>
 
                         </div>

@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { Link } from "react-router-dom";
+import { createAxios } from "../../createInstance";
+const axiosJWT = createAxios()
 
 
 const cx = classNames.bind(styles)
@@ -37,7 +39,9 @@ function SuccessPay() {
                         product_id: prod.id
                     })),
                 }
-                axios.post(process.env.REACT_APP_BACKEND_URL+'/orders', order)
+                axiosJWT.post(process.env.REACT_APP_BACKEND_URL+'/orders', order,{
+                    headers: {Authorization: user.accessToken}
+                })
             }
         }
        time_render++

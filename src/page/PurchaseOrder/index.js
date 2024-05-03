@@ -124,7 +124,10 @@ function Orders({orders, setRerender, userID}) {
 
 
     const cancleOrder = (id) => {
-        axios.delete(process.env.REACT_APP_BACKEND_URL+"/orders/"+id)
+        const userInfor = JSON.parse(localStorage.getItem("tokens"))
+        axiosJWT.delete(process.env.REACT_APP_BACKEND_URL+"/orders/"+id, {
+            headers: {Authorization: userInfor.accessToken}
+        })
         .then(res => {
             console.log("xoa thanh cong don hang " + id)
 
@@ -286,6 +289,8 @@ export function CardOrder({data, status}) {
 
 const Rating = ({order_detail}) => {
     const [numberStar, setNumberStar] = useState(order_detail.rating)
+    const [isRating, setIsRating] = useState(false)
+
     let arrStar = [1,2,3,4,5]
     return (
         <div className={cx("rating_wrapper")}>
@@ -294,7 +299,7 @@ const Rating = ({order_detail}) => {
                 arrStar.map(i => (
                     <FontAwesomeIcon key={i} className={cx("star",{"check":numberStar>=i})} icon={faStar}
                         onClick={() => {
-                            if(!order_detail.rating) {
+                            if(!order_detail.rating && !isRating) {
                                 setNumberStar(i)
                             }
                         }}
@@ -304,7 +309,7 @@ const Rating = ({order_detail}) => {
             </div>
 
         {
-            !order_detail.rating &&
+            !order_detail.rating && !isRating &&
             <button
                 className={cx("rating_send_btn")}
                 onClick = {() => {
@@ -317,6 +322,7 @@ const Rating = ({order_detail}) => {
                         axios.post(process.env.REACT_APP_BACKEND_URL+"/rating", dataP)
                         .then((res) => {
                             toast.success("Gửi đánh giá thành công")
+                            setIsRating(true)
                         })
                         .catch((err) => {
                             console.log(err)
