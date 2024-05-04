@@ -778,7 +778,7 @@ function DetailProduct_v2({product_prop={}}) {
                      <input value={valueAddcomment} ref={refAddComment} onChange={handleOnchageAddComment}/>
                  <button onClick={handleAddComment} className={cx('comments_add-comment-btn')} >Gửi Bình Luận</button>
                     </div>}
-                   { showAddComment && <div className={cx("stars")}>
+                   { admitComment.status == true && <div className={cx("stars")}>
                     {
                         arrStar.map(i => (
                             <FontAwesomeIcon key={i} className={cx("star",{"check":numberStar>=i})} icon={starPick}
