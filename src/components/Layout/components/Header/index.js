@@ -541,7 +541,7 @@ useEffect(()=> {
                                     <h2 className={cx('block_clothes_header')}>Quần</h2>
                                 
                                     {item.detail.map((item, index) =>item.type_name.startsWith('Quần') &&  
-                                        <li key={index}><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`}
+                                        <li key={item.id}><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`}
                                         onClick={() => {
                                             window.scrollTo(0, 0)
                                             setRe_render(pre => !pre)

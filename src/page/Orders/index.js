@@ -204,7 +204,7 @@ function Orders() {
         .then(res => {
             setAddressList(res.data)
             // localStorage.setItem("tokens", JSON.stringify({...userInfor, address :  res.data[0].id }))
-            localStorage.setItem("tokens", JSON.stringify({...userInfor, address :  res.data[0].addressName }))
+            localStorage.setItem("tokens", JSON.stringify({...userInfor, address :  res?.data[0]?.addressName }))
 
             // console.log(res.data)
         
