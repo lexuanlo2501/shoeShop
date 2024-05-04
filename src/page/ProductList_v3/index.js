@@ -16,6 +16,7 @@ import QuickProduct from '../../components/QuickProduct';
 import DetailProduct_v2 from '../DetailProduct_v2';
 
 import { TfiLayoutColumn4Alt, TfiLayoutColumn3Alt, TfiLayoutColumn2Alt, TfiLayoutListThumbAlt  } from "react-icons/tfi";
+import { controllers } from 'chart.js';
 
 
 const cx = classNames.bind(styles)
@@ -51,7 +52,7 @@ function ProductList_v3({ re_render }) {
     const [trigger, setTrigger] = useState(false)
 
     useEffect(() => {
-       
+        const controller = new AbortController()
         const inforUser = JSON.parse(localStorage.getItem("tokens"));
         setLoading_page(true)
 
@@ -60,7 +61,7 @@ function ProductList_v3({ re_render }) {
             paramToObject._favorite === "true" ? 
             `${process.env.REACT_APP_BACKEND_URL}/shoesList/${inforUser.favorite.toString()}?${param}&_hideLock=true`
             :
-            `${process.env.REACT_APP_BACKEND_URL}/shoes?${param}&_hideLock=true`
+            `${process.env.REACT_APP_BACKEND_URL}/shoes?${param}&_hideLock=true`, {signal:controller.signal}
         )
         .then(res => {
             setProducts(res.data)
@@ -72,9 +73,8 @@ function ProductList_v3({ re_render }) {
 
 
         })
-        return () => {
+        return () => controller.abort()
 
-        }
     }, [re_render, pageChange, trigger])
 
     const previousPage = () => {
