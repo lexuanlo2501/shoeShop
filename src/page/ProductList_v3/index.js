@@ -153,7 +153,7 @@ function ProductList_v3({ re_render }) {
 
             {
                 loading && 
-                Array(limit).fill(0).map((item, index) => <CardLoading key={index}/>)
+                Array(16).fill(0).map((item, index) => <CardLoading key={index}/>)
             }
 
             {   
