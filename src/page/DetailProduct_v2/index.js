@@ -8,7 +8,8 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import {priceDiscount, formatPrice} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faStar } from '@fortawesome/free-regular-svg-icons';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import {  faStar as emptyStar  } from '@fortawesome/free-regular-svg-icons';
 import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faSpinner, faTrash, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
 import { HashLoader } from 'react-spinners';
 import { createAxios } from '../../createInstance';
@@ -302,7 +303,17 @@ function DetailProduct_v2({product_prop={}}) {
 
     const handleAddComment = (() =>  {
     
-        if(refAddComment.current.value == '') {
+        if ( numberStar === 0 ) {
+            toast.error("Vui lòng đánh giá sao!", {
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
+            return;
+        }
+
+        if(refAddComment.current.value == '' ) {
             return;
         }
          
@@ -322,26 +333,33 @@ function DetailProduct_v2({product_prop={}}) {
                 product_id: paramToObject._id,
                 accName: user.accName
           })
+          
+          axios.post(process.env.REACT_APP_BACKEND_URL + `/rating`, {
+            rating: numberStar,
+            detail_order_id: admitComment.detailOrder_ID
+        })    
 
-          .then(() => {
-              setTrigger(prev => !prev)
-              toast.success("Gửi bình luận thành công", {
-                autoClose: 2000,
-                // theme: "colored",
-                theme: "light",
-                position: "top-right",
-            })
-             
-              if(comments.length > 0) {
-                  setShowAddComment(prev => !prev)
-              }
+        .then((res) => {
+            setTrigger(prev => !prev)
+            toast.success(`${res.data}`, {
+              autoClose: 2000,
+              // theme: "colored",
+              theme: "light",
+              position: "top-right",
+          })
            
-          })
+            if(comments.length > 0) {
+                setShowAddComment(prev => !prev)
+            }
+         
+        })
 
-          .catch((error) => {
-                   console.log(error)
-          })
+        .catch((error) => {
+            console.log(error)
+   })
     })
+
+    // console.log(admitComment)
    
     const handleSaveComment = ((idcomment, e) => {
         setLoading(true)
@@ -425,6 +443,9 @@ function DetailProduct_v2({product_prop={}}) {
        })
 
     });
+
+    const [numberStar, setNumberStar] = useState(0)
+    let arrStar = [1,2,3,4,5]
 
     const handleDelReply = ((id_cmt) => {
 
@@ -757,6 +778,17 @@ function DetailProduct_v2({product_prop={}}) {
                      <input value={valueAddcomment} ref={refAddComment} onChange={handleOnchageAddComment}/>
                  <button onClick={handleAddComment} className={cx('comments_add-comment-btn')} >Gửi Bình Luận</button>
                     </div>}
+                   { showAddComment && <div className={cx("stars")}>
+                    {
+                        arrStar.map(i => (
+                            <FontAwesomeIcon key={i} className={cx("star",{"check":numberStar>=i})} icon={starPick}
+                                onClick={() => {
+                                        setNumberStar(i)
+                                }}
+                            />
+                        ))
+                    }
+                    </div>}
                 {
                     comments.map((i,index) =>
                      (<div className={cx('comment-item')} key={i.comment_id}>
@@ -767,39 +799,33 @@ function DetailProduct_v2({product_prop={}}) {
                             <div className={cx('wrapper_star-name')}>
                                 <p className={cx('name')}> {i.fullName} </p>
 
-                                { i.rating == 0  && <div className={cx('wrapper-star')}>
-                                <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                                <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                                <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                                <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                                <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                              </div>}
+                               
                               { i.rating == 1  && <div className={cx('wrapper-star')}> <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
-                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={emptyStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={emptyStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={emptyStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={emptyStar} />
                               
                               </div>}
                               {i.rating == 2  && <div className={cx('wrapper-star')}> <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
                               <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
-                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={emptyStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={emptyStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={emptyStar} />
                               </div>}
 
                               { i.rating == 3  && <div className={cx('wrapper-star')}> <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
                               <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
                               <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
-                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
-                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={emptyStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={emptyStar} />
                               </div>}
 
                               { i.rating == 4  && <div className={cx('wrapper-star')}> <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
                               <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
                               <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
                               <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
-                              <FontAwesomeIcon className={cx('star-empty')}  icon={faStar} />
+                              <FontAwesomeIcon className={cx('star-empty')}  icon={emptyStar} />
                               </div>}
 
                               { i.rating == 5  && <div className={cx('wrapper-star')}> <FontAwesomeIcon className={cx('star-pick')}  icon={starPick} />
@@ -870,7 +896,7 @@ function DetailProduct_v2({product_prop={}}) {
                                 {showInput && i.comment_id!==idcomment  && user.role !=="admin" && <p className={cx('comment-item_info-user-comment_date-coment-comment')}> {i.value} </p>}
                                 {showInput && i.comment_id!==idcomment  && user.role =="admin" && <p className={cx('comment-item_info-user-comment_date-coment-comment')}> {i.value} </p> }
                                 {showInput && user.accName==i.accName && i.comment_id == idcomment   &&  
-                                <div style={{display:'flex', flexDirection:'column'}}>{<input  onChange={handleOnchange} ref={refinput} value={valuecomment}/>}
+                                <div className={cx('wrapper_edit-comment')}>{<input  onChange={handleOnchange} ref={refinput} value={valuecomment}/>}
                                <div className={cx('wrapper-btn-input')}> {!loading && saveBtn &&<button  onClick={ ()=>handleSaveComment(i.comment_id)} className={cx('btn-save')}><FontAwesomeIcon icon={faFloppyDisk}/></button>}
                                {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
                               <button onClick={hanleCloseInput} className={cx('btn-close')}> <FontAwesomeIcon icon = {faXmark}/> </button>
