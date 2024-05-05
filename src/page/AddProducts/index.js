@@ -77,7 +77,7 @@ function AddProducts({default_value={}, atri_prod_, isUpdateForm, trigger=()=>{}
         description: yup.string().required()
     }).required();
 
-    const { register, handleSubmit, watch, setValue,formState: { errors } } = useForm({
+    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
     });
 

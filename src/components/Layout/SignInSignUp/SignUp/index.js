@@ -103,7 +103,7 @@ function SignUp() {
         console.log("sign up")
         setMessPassW(checkPass(data.password))
 
-        console.log(data)
+        // console.log(data)
         
         if(codeConfirm === "expire") {
             toast("Mã Xác Nhận Đã Hết Hạn, Vui Lòng Gửi Mã Lại", { theme: "light", position: "top-center",})

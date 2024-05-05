@@ -32,7 +32,7 @@ function Header_admin() {
         axios.get(process.env.REACT_APP_BACKEND_URL+"/notify?_to_admin_all=admin",{signal:controller.signal})
         .then(res => {
             setNotify(res.data)
-            console.log(res.data)
+            // console.log(res.data)
         })
 
         return () => controller.abort()

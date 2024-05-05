@@ -11,11 +11,31 @@ import { Modal } from 'react-bootstrap';
 import PurchaseOrder from '../PurchaseOrder';
 import { createAxios } from '../../createInstance';
 
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+import emailjs from '@emailjs/browser';
+import {toast } from 'react-toastify';
+
+
+
+
 
 let axiosJWT = createAxios()
 
 
 const cx = classNames.bind(style)
+
+
+const randomCode = (length) => {
+    const characters = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+    }
+    return result;
+}
 
 function ListAccount() {
     let infor_user = JSON.parse(localStorage.getItem("tokens"))
@@ -30,7 +50,10 @@ function ListAccount() {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = (user) => {
+        setUserSelect(user)
+        setShow(true)
+    };
 
     useEffect(() => {
         axiosJWT.get(process.env.REACT_APP_BACKEND_URL+'/accounts', {
@@ -89,8 +112,8 @@ function ListAccount() {
                                 </td>
                                 <td 
                                     onClick={() => {
-                                        handleShow()
-                                        setUserSelect(item)
+                                        handleShow(item)
+                                        // setUserSelect(item)
                                     }}
                                 >
                                     <button className={cx(['status_btn'])}>
@@ -136,6 +159,112 @@ function ListAccount() {
 }
 
 function ModalInforUser({show, handleClose, userSelect}) {
+    const [codeConfirm, setCodeConfirm] = useState("")
+    const [expire, setExpire] = useState(60)
+    const [isCountdown, setIsCountdown] = useState(false)
+
+    useEffect(() => {
+        // Thiết lập interval khi component được render
+        let interval = null
+        if(isCountdown) {
+            interval = setInterval(() => {
+                setExpire((pre) => pre - 1); // Giảm giá trị đếm ngược đi 1
+            }, 1000);
+        
+            // Xóa interval khi component bị unmount hoặc khi giá trị countdown đạt 0
+            if (expire === 0) {
+              clearInterval(interval);
+              setIsCountdown(false)
+              setExpire(30)
+              setCodeConfirm("expire")
+            }
+
+        }
+    
+        return () => {
+          clearInterval(interval);
+        };
+      }, [expire, isCountdown]);
+
+    const preLoadedValue = {
+        fullName: "",
+        gender: "",
+        dateOfBirth: ""
+    }
+
+    const { register, handleSubmit, watch, setValue,reset, formState: { errors } } = useForm({
+        defaultValues: preLoadedValue
+    });
+
+    const handleUpdateInforUser = (data) => {
+        const {newPassword, codeConfirm,...restData} = data
+        if(data.email !== userSelect.email) {
+            if(codeConfirm === "expire") {
+                toast("Mã Xác Nhận Đã Hết Hạn, Vui Lòng Gửi Mã Lại", { theme: "light", position: "top-center",})
+                return
+            }
+            else if(!data.codeConfirm ) {
+                toast("Vui Lòng Nhập Mã Xác Nhận", { theme: "light", position: "top-center",})
+                return
+            }
+            else if(data.codeConfirm !== codeConfirm) {
+                toast("Mã xác nhận không chính xác", { theme: "light", position: "top-center",})
+                return
+            }
+        }
+
+        
+        const dataFormArr = Object.keys(restData)
+        const dataPatch = {}
+        dataFormArr.forEach((keyObj) => {
+            if(data[keyObj] !== userSelect[keyObj]) {
+                dataPatch[keyObj] = data[keyObj]
+            }
+        })
+        console.log(dataPatch)
+
+
+
+            
+        
+
+        
+    }
+    const HandleConFirmMail = (data) => {
+        console.log(data)
+        if(data.email === userSelect.email) {
+            toast("Đây là email hiện tại của bạn", { theme: "light", position: "top-center",})
+        }
+        else if(data.email) {
+            toast.success("Đã gửi, vui lòng vào email của bạn để lấy mã", {
+                hideProgressBar: true,
+                theme: "dark",
+                position: "top-center",
+                autoClose: 1000,
+            })
+
+            const codeSend = randomCode(6)
+            setCodeConfirm(codeSend)
+            emailjs.send("service_3r592vw","template_lpdl74k",{
+                message: `Mã xác nhận của bạn là: ${codeSend}`,
+                user_email: data.email
+            }, "vVRWCJMmPNi61x4AK");
+            setIsCountdown(true)
+        }
+    }
+
+    useEffect(() => {
+        setValue('fullName', userSelect.fullName)
+        setValue('dateOfBirth', userSelect.dateOfBirth)
+        setValue('gender', userSelect.gender)
+        setValue('email', userSelect.email)
+        setValue('phoneNumber', userSelect.phoneNumber)
+
+        
+
+        console.log(userSelect)
+    }, [userSelect])
+
     return (
         <div>
             <Modal show={show} onHide={handleClose} backdrop="static"
@@ -150,14 +279,34 @@ function ModalInforUser({show, handleClose, userSelect}) {
                 <Modal.Body>
                     <div className={cx('body_modal')}>
                         <div className={cx('user_info')}>
+                            <p><span>ngày tạo</span>: {userSelect.date_create}</p>
                             <p><span>vai trò</span>: {userSelect.role}</p>
                             <p><span>tài khoản</span>: {userSelect.accName}</p>
-                            <p><span>email</span>: {userSelect.email}</p>
-                            <p><span>tên</span>: {userSelect.fullName}</p>
-                            <p><span>SĐT</span>: {userSelect.phoneNumber}</p>
-                            <p><span>ngày sinh</span>: {userSelect.dateOfBirth}</p>
-                            <p><span>ngày đăng ký</span>: {userSelect.date_create}</p>
-                            <p><span>giới tính</span>: {userSelect.gender === "Male" && "Nam"} {userSelect.gender === "Female" && "Nữ"} {userSelect.gender === "female" && "Khác"}</p>
+                            <p><span>email</span>: <input type='text' {...register("email")}/> </p>
+                            <p >
+                                <span>
+                                {
+                                    isCountdown && <span className={cx("timer")}> {expire}</span>
+                                }
+                                </span>|
+                                <input placeholder='Mã xác nhận email mới' type='text' {...register("codeConfirm")}/>
+                                <button className={cx("send_code_btn")} onClick={(e) => {handleSubmit(HandleConFirmMail)(e)}}>Gửi Mã</button>
+                           
+                            </p>
+                            <p><span>tên</span>: <input type='text' {...register("fullName")}/></p>
+                            <p><span>SĐT</span>: <input type='text' {...register("phoneNumber")}/></p>
+                            <p><span>ngày sinh</span>: 
+                                <input type='date' placeholder="..." {...register("dateOfBirth")}/>
+                            </p>
+                            <p><span>giới tính</span>: 
+                                <input type="radio" name="gender" value='Male' id="g1" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g1">Nam</label>
+                                <input type="radio" name="gender" value='Female' id="g2" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g2">Nữ</label>
+                                <input type="radio" name="gender" value='Other' id="g3" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g3">Khác</label>
+                            </p>
+                            <p><span>Mật Khẩu</span>: 
+                                <input type='text' placeholder="Đặt mật khẩu mới" {...register("newPassword")}/>
+                            </p>
+                            <button className={cx("update_infor_btn")} onClick={(e) => {handleSubmit(handleUpdateInforUser)(e)}}>Lưu</button>
                         </div>
 
                         <PurchaseOrder userID={userSelect.accName}/>

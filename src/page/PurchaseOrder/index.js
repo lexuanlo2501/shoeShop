@@ -61,7 +61,7 @@ function PurchaseOrder({userID = JSON.parse(localStorage.getItem("tokens")).accN
                 }
                 setOrders(orderUser.reverse())
 
-                console.log(res.data)
+                // console.log(res.data)
     
           
             }
@@ -129,7 +129,7 @@ function Orders({orders, setRerender, userID}) {
             headers: {Authorization: userInfor.accessToken}
         })
         .then(res => {
-            console.log("xoa thanh cong don hang " + id)
+            // console.log("xoa thanh cong don hang " + id)
 
             // trigger to re-render (dependence of useEffect)
             setRerender(pre => !pre) 
@@ -317,7 +317,7 @@ const Rating = ({order_detail}) => {
 
                     if(numberStar) {
                         const dataP = {rating:numberStar, detail_order_id:order_detail.detail_order_id}
-                        console.log(dataP)
+                        // console.log(dataP)
 
                         axios.post(process.env.REACT_APP_BACKEND_URL+"/rating", dataP)
                         .then((res) => {
