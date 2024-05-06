@@ -105,7 +105,7 @@ function InforUser() {
             headers: {Authorization: infor_user.accessToken}
         })
         .then(res => {
-            // console.log(res)
+            console.log(res)
             localStorage.setItem('tokens', JSON.stringify({...infor_user, fullName:dataPatch.fullName}))
             toast(res.data.message, {
                 theme: "light",
