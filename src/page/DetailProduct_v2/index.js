@@ -972,7 +972,26 @@ function DetailProduct_v2({product_prop={}}) {
                 }
                 </div> : (
                     <div className={cx("comments")}>
+
                         <p><strong>ĐÁNH GIÁ SẢN PHẨM:</strong></p>
+                        {admitComment.status == true && showAddComment &&
+                   <div className={cx('comments_add-comment')}>
+                     <input value={valueAddcomment} ref={refAddComment} onChange={handleOnchageAddComment}/>
+                 <button onClick={handleAddComment} className={cx('comments_add-comment-btn')} >Gửi Bình Luận</button>
+                    </div>}
+
+                    { admitComment.status == true && showAddComment && <div className={cx("stars")}>
+                    {
+                        arrStar.map(i => (
+                            <FontAwesomeIcon key={i} className={cx("star",{"check":numberStar>=i})} icon={starPick}
+                                onClick={() => {
+                                        setNumberStar(i)
+                                }}
+                            />
+                        ))
+                    }
+                    </div>}
+
                         <p>Chưa có đánh giá sản phẩm</p>
                     </div>
                 )}
