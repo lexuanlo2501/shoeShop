@@ -82,7 +82,7 @@ function InforUser() {
             // dateOfBirth: fomatDate(data.dateOfBirth, 2)
         }
 
-        const {pass_confirm,newPass, oldPass, codeConfirm: codeConfirm_form,...dataPatch} = data
+        const {pass_confirm,newPass, oldPass, codeConfirm: codeConfirm_form,address,...dataPatch} = data
         console.log(dataPatch)
 
 
@@ -212,6 +212,17 @@ function InforUser() {
 
 
     const handleAddaddress = (value) => {
+       
+        var trimmedStr = refinputAddress.current.value.replace(/^\s+|\s+$/g, ' ');
+        if(trimmedStr === ' ') {
+            return;
+        }
+
+        var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|.<>\?]+/.test(refinputAddress.current.value);
+        if(containsSpecialChars) {
+            
+            return;
+        }
         setLoadicon1(true);
         setIconAddaddress(false);
         const userInfor = JSON.parse(localStorage.getItem("tokens"))
