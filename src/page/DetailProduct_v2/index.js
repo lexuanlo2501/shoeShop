@@ -342,14 +342,14 @@ function DetailProduct_v2({product_prop={}}) {
         .then((res) => {
             setTrigger(prev => !prev)
             toast.success(`${res.data}`, {
-              autoClose: 2000,
-              // theme: "colored",
-              theme: "light",
-              position: "top-right",
-          })
+                autoClose: 2000,
+                // theme: "colored",
+                theme: "light",
+                position: "top-right",
+            })
         
          
-            console.log('asdasda')
+     
             setShowAddComment(prev => !prev)
         })
 
