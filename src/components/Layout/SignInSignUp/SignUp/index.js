@@ -47,7 +47,7 @@ function SignUp() {
             if (expire === 0) {
               clearInterval(interval);
               setIsCountdown(false)
-              setExpire(30)
+              setExpire(60)
               setCodeConfirm("expire")
             }
 
@@ -79,8 +79,9 @@ function SignUp() {
     const navigate = useNavigate();
 
     const HandleConFirmMail = (data) => {
-        console.log(data)
+        // console.log(data)
         if(data.email) {
+            setExpire(60)
             toast.success("Đã gửi, vui lòng vào email của bạn để lấy mã", {
                 hideProgressBar: true,
                 theme: "dark",
@@ -166,14 +167,11 @@ function SignUp() {
         passwordCF: yup.string().required("Bạn phải điền mục này").oneOf([yup.ref("password")], "Mật khẩu không khớp"),
         dateOfBirth: yup.string().required(),
         gender: yup.string().required(),
-        // codeConfirm: yup.string().required(),
-
     }).required();
 
     const { register, handleSubmit, watch, formState: { errors, touched } } = useForm({
         mode: "onTouched",
         resolver: yupResolver(schema),
-        
     });
 
     const InputRequire = ({message="Bạn phải điền mục này"}) => {
@@ -223,7 +221,7 @@ function SignUp() {
                             handleSubmit(HandleConFirmMail)(e)
                         }}
 
-                    >Gửi Mã</button>
+                    >{codeConfirm ? "Gửi Lại Mã" : "Gửi Mã"}</button>
                     {/* <span className={cx("timer")}> {expire}</span> */}
                 {
                     isCountdown && <span className={cx("timer")}> {expire}</span>

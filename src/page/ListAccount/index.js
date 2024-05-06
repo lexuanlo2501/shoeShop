@@ -19,8 +19,6 @@ import {toast } from 'react-toastify';
 
 
 
-
-
 let axiosJWT = createAxios()
 
 
@@ -40,11 +38,10 @@ const randomCode = (length) => {
 function ListAccount() {
     let infor_user = JSON.parse(localStorage.getItem("tokens"))
 
-
     const [acc, setAcc] = useState([])
     const [userSelect, setUserSelect] = useState({})
-
     const [rr_lock, setRr_lock] = useState(false)
+    const [trigger, setTrigger] = useState(false)
 
 
     const [show, setShow] = useState(false);
@@ -60,7 +57,7 @@ function ListAccount() {
             headers: {Authorization: infor_user.accessToken}
         })
         .then(res => setAcc(res.data))
-    }, [rr_lock])
+    }, [rr_lock, trigger])
 
     const handleLockAcc = (id, value) => {
         axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/accounts/${id}`, {"isLock":value}, {
@@ -152,67 +149,32 @@ function ListAccount() {
                     </tbody>
                 </table>
             </div>
-            <ModalInforUser show={show} handleClose={handleClose} userSelect={userSelect}/>
+            <ModalInforUser show={show} handleClose={handleClose} userSelect={userSelect} setTrigger={setTrigger}/>
 
         </div>
     );
 }
 
-function ModalInforUser({show, handleClose, userSelect}) {
-    const [codeConfirm, setCodeConfirm] = useState("")
-    const [expire, setExpire] = useState(60)
-    const [isCountdown, setIsCountdown] = useState(false)
-
-    useEffect(() => {
-        // Thiết lập interval khi component được render
-        let interval = null
-        if(isCountdown) {
-            interval = setInterval(() => {
-                setExpire((pre) => pre - 1); // Giảm giá trị đếm ngược đi 1
-            }, 1000);
-        
-            // Xóa interval khi component bị unmount hoặc khi giá trị countdown đạt 0
-            if (expire === 0) {
-              clearInterval(interval);
-              setIsCountdown(false)
-              setExpire(30)
-              setCodeConfirm("expire")
-            }
-
-        }
+function ModalInforUser({show, handleClose, userSelect, setTrigger}) {
     
-        return () => {
-          clearInterval(interval);
-        };
-      }, [expire, isCountdown]);
-
     const preLoadedValue = {
         fullName: "",
         gender: "",
         dateOfBirth: ""
     }
 
+    const schema = yup.object().shape({
+        newPassword: yup.string(),
+        newPassword_2: yup.string().oneOf([yup.ref("newPassword")], "Mật khẩu không khớp"),
+    }).required();
+
     const { register, handleSubmit, watch, setValue,reset, formState: { errors } } = useForm({
-        defaultValues: preLoadedValue
+        defaultValues: preLoadedValue,
+        resolver: yupResolver(schema),
     });
 
     const handleUpdateInforUser = (data) => {
-        const {newPassword, codeConfirm,...restData} = data
-        if(data.email !== userSelect.email) {
-            if(codeConfirm === "expire") {
-                toast("Mã Xác Nhận Đã Hết Hạn, Vui Lòng Gửi Mã Lại", { theme: "light", position: "top-center",})
-                return
-            }
-            else if(!data.codeConfirm ) {
-                toast("Vui Lòng Nhập Mã Xác Nhận", { theme: "light", position: "top-center",})
-                return
-            }
-            else if(data.codeConfirm !== codeConfirm) {
-                toast("Mã xác nhận không chính xác", { theme: "light", position: "top-center",})
-                return
-            }
-        }
-
+        const {newPassword,newPassword_2, codeConfirm,...restData} = data
         
         const dataFormArr = Object.keys(restData)
         const dataPatch = {}
@@ -221,37 +183,37 @@ function ModalInforUser({show, handleClose, userSelect}) {
                 dataPatch[keyObj] = data[keyObj]
             }
         })
+
+        
+        
+        if(newPassword === newPassword_2 && newPassword !== "") {
+            dataPatch.password = newPassword
+        }
+        
         console.log(dataPatch)
+        const inforAdmin = JSON.parse(localStorage.getItem("tokens"))
 
-
-
-            
-        
-
-        
-    }
-    const HandleConFirmMail = (data) => {
-        console.log(data)
-        if(data.email === userSelect.email) {
-            toast("Đây là email hiện tại của bạn", { theme: "light", position: "top-center",})
-        }
-        else if(data.email) {
-            toast.success("Đã gửi, vui lòng vào email của bạn để lấy mã", {
-                hideProgressBar: true,
-                theme: "dark",
-                position: "top-center",
-                autoClose: 1000,
+        if(Object.keys(dataPatch).length) {
+            axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/accounts/${userSelect['accName']}`, dataPatch, {
+                headers: {Authorization: inforAdmin.accessToken}
             })
-
-            const codeSend = randomCode(6)
-            setCodeConfirm(codeSend)
-            emailjs.send("service_3r592vw","template_lpdl74k",{
-                message: `Mã xác nhận của bạn là: ${codeSend}`,
-                user_email: data.email
-            }, "vVRWCJMmPNi61x4AK");
-            setIsCountdown(true)
+            .then(res => {
+                console.log(res)
+                // localStorage.setItem('tokens', JSON.stringify({...inforUser, ...data}))
+                setTrigger(pre => !pre)
+                toast(res.data.message, {
+                    theme: "light",
+                    position: "top-center",
+                })
+                
+            })
+            .catch(err => console.log(err))
         }
+       
+
+        
     }
+   
 
     useEffect(() => {
         setValue('fullName', userSelect.fullName)
@@ -259,10 +221,10 @@ function ModalInforUser({show, handleClose, userSelect}) {
         setValue('gender', userSelect.gender)
         setValue('email', userSelect.email)
         setValue('phoneNumber', userSelect.phoneNumber)
+        setValue('newPassword', "")
+        setValue('newPassword_2', "")
 
-        
-
-        console.log(userSelect)
+        // console.log(userSelect)
     }, [userSelect])
 
     return (
@@ -283,16 +245,6 @@ function ModalInforUser({show, handleClose, userSelect}) {
                             <p><span>vai trò</span>: {userSelect.role}</p>
                             <p><span>tài khoản</span>: {userSelect.accName}</p>
                             <p><span>email</span>: <input type='text' {...register("email")}/> </p>
-                            <p >
-                                <span>
-                                {
-                                    isCountdown && <span className={cx("timer")}> {expire}</span>
-                                }
-                                </span>|
-                                <input placeholder='Mã xác nhận email mới' type='text' {...register("codeConfirm")}/>
-                                <button className={cx("send_code_btn")} onClick={(e) => {handleSubmit(HandleConFirmMail)(e)}}>Gửi Mã</button>
-                           
-                            </p>
                             <p><span>tên</span>: <input type='text' {...register("fullName")}/></p>
                             <p><span>SĐT</span>: <input type='text' {...register("phoneNumber")}/></p>
                             <p><span>ngày sinh</span>: 
@@ -303,9 +255,11 @@ function ModalInforUser({show, handleClose, userSelect}) {
                                 <input type="radio" name="gender" value='Female' id="g2" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g2">Nữ</label>
                                 <input type="radio" name="gender" value='Other' id="g3" {...register("gender")}  /> <label className={cx('label_gender')} htmlFor="g3">Khác</label>
                             </p>
-                            <p><span>Mật Khẩu</span>: 
-                                <input type='text' placeholder="Đặt mật khẩu mới" {...register("newPassword")}/>
+                            <p><span>Mật Khẩu</span>: <input type='password' placeholder="Đặt mật khẩu mới" {...register("newPassword")}/></p>
+                            <p><span>Nhập Lại Mật Khẩu</span>: <input type='password' placeholder="Nhập Lại Mật Khẩu Mới" {...register("newPassword_2")}/>
+                                {errors.newPassword_2 && <span className={cx("notMatch_passW_mess")}>Mật khẩu không khớp</span>}
                             </p>
+                            
                             <button className={cx("update_infor_btn")} onClick={(e) => {handleSubmit(handleUpdateInforUser)(e)}}>Lưu</button>
                         </div>
 
@@ -314,10 +268,7 @@ function ModalInforUser({show, handleClose, userSelect}) {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                <button className={cx("close_btn")} onClick={handleClose}>
-                    Đóng
-                </button>
-                
+                    <button className={cx("close_btn")} onClick={handleClose}>Đóng</button>
                 </Modal.Footer>
             </Modal>
 

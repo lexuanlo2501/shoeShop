@@ -105,10 +105,9 @@
                 // margin-right: ;
 
             }
-            input[type=text], input[type=date] {
+            input[type=text], input[type=date], input[type=password] {
                 margin-left: 10px;
                 border-bottom: 0.5px solid #d1d1d1;
-                width: 220px;
             }
 
             input[type=radio] {
@@ -165,6 +164,11 @@
 
     @include btn_action;
 
+}
+
+.notMatch_passW_mess {
+    font-size: 14px;
+    color: rgb(246, 124, 124) !important;
 }
 
 

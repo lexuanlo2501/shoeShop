@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 const cx = classNames.bind(style)
 
-function ConfirmModal({btnText, className, title, body, accept = () => null}) {
+function ConfirmModal({btnText, className, title, body, accept = () => null, acceptClose=true}) {
     const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -38,7 +38,9 @@ function ConfirmModal({btnText, className, title, body, accept = () => null}) {
                 </button>
                 <button className={cx(['btnModal', "yes"])}  
                     onClick={() => {
-                        handleClose()
+                        if(acceptClose) {
+                            handleClose()
+                        }
                         accept()
                     }}
                 >

@@ -91,3 +91,24 @@
     text-align: center;
     color: #595858;
 }
+
+.send_code_btn {
+    background-color: rgb(80, 80, 80);
+    padding: 2px 5px;
+    font-size: 16px;
+    color: #fff;
+    border-radius: 5px;
+    margin-left: 10px;
+
+    &:hover {
+        opacity: 0.8;
+    }
+    &:active {
+        opacity: 0.9;
+    }
+}
+
+.notMatch_passW_mess {
+    font-size: 16px;
+    color: rgb(246, 124, 124) !important;
+}
