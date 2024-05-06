@@ -457,19 +457,7 @@ function InforUser() {
                        </div>
                        <p>Tỉnh/Thành phố, Quận/Huyện, Phường/Xã</p>
 
-                       <div style={{display:"flex", flexDirection:"column", gap:"4px", width:"300px"}}>
-                        <label htmlFor="input_4">Ghi Chú:</label>
-                            <div>
-                                <textarea style={{
-                                    paddingLeft:4,
-                                    paddingRight:4,
-                                   
-                                    }}  id="input_4"
-                                {...register("description")}
-                                />
-                            </div>
-                        
-                    </div>
+                      
                                        
                     </div>
             
