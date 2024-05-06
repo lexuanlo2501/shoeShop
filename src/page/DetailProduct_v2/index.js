@@ -347,11 +347,10 @@ function DetailProduct_v2({product_prop={}}) {
               theme: "light",
               position: "top-right",
           })
-           
-            if(comments.length > 0) {
-                setShowAddComment(prev => !prev)
-            }
+        
          
+            console.log('asdasda')
+            setShowAddComment(prev => !prev)
         })
 
         .catch((error) => {
@@ -359,7 +358,7 @@ function DetailProduct_v2({product_prop={}}) {
    })
     })
 
-    // console.log(admitComment)
+
    
     const handleSaveComment = ((idcomment, e) => {
         setLoading(true)
@@ -396,11 +395,13 @@ function DetailProduct_v2({product_prop={}}) {
 
           setBtnReply(prev => !prev);
           setInputReply(prev => !prev);
-        setIdcomment(id_cmt)
+          setIdcomment(id_cmt)
 
           console.log(id_cmt)
 
       }       
+
+      
        
     })
 
@@ -972,7 +973,6 @@ function DetailProduct_v2({product_prop={}}) {
                 }
                 </div> : (
                     <div className={cx("comments")}>
-
                         <p><strong>ĐÁNH GIÁ SẢN PHẨM:</strong></p>
                         {admitComment.status == true && showAddComment &&
                    <div className={cx('comments_add-comment')}>
