@@ -50,20 +50,21 @@ function Confirming() {
     const [orders, setOrders] = useState([])
     
     useEffect(() => {
+        const controller = new AbortController()
         const paramsSellerID = window.location.href.split("=")[1]
         const urlGetOrder = paramsSellerID ? 
             process.env.REACT_APP_BACKEND_URL+`/orders?_status=${pagCurr}&_sellerId=${paramsSellerID}` 
             :
             process.env.REACT_APP_BACKEND_URL+`/orders?_status=${pagCurr}`
             
-            axiosJWT.get(urlGetOrder, {
-                headers: {Authorization: infor_user.accessToken}
-            })
-
-       
+        axiosJWT.get(urlGetOrder, {
+            headers: {Authorization: infor_user.accessToken}
+        },  {signal:controller.signal})
         .then(res => {
             setOrders(res.data)
         })
+        
+        return () => controller.abort()
     },[pagCurr, checkChange])
 
     const handleCancel = (id) => {
@@ -93,6 +94,7 @@ function Confirming() {
         })
         .then(res => {
             console.log("Xac thuc thanh cong")
+            setCheckChange(pre => !pre)
         })
         .catch(err => console.log(err))
 
@@ -188,7 +190,7 @@ function Confirming() {
                                                 confirm_product(item_order.id, 3)
 
                                             }
-                                            setCheckChange(pre => !pre)
+                                            // setCheckChange(pre => !pre)
                                         }}
                                     />
                                 </td>

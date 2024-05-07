@@ -324,8 +324,11 @@ ul {
 
 .wapper_notify {
     width: 360px;
-    height: 450px;
-    
+
+    .notify_value {
+        height: 450px;
+        overflow-y: scroll;
+    }
   
     .notify_item+.notify_item {
         border-top: 0.7px solid #d6d3d3;

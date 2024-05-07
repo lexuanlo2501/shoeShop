@@ -21,11 +21,14 @@ function Carousel_v2({brand="", setTrigger, nameProd}) {
   
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL+`/shoes?_limit=10&_page=1&_brand=${brand}&_string=${nameProd||""}&_random=true`)
+        const controller = new AbortController()
+        axios.get(process.env.REACT_APP_BACKEND_URL+`/shoes?_limit=10&_page=1&_brand=${brand}&_string=${nameProd||""}&_random=true`, {signal:controller.signal})
         .then(res => {
             setProducts(res.data)
         })
         .catch(err => console.log(err))
+
+        return () => controller.abort()
     }, [])
 
     return (

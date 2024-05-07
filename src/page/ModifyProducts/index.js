@@ -352,6 +352,7 @@ function ModifyProducts() {
                                 <th scope="col" >giá</th>
                                 <th scope="col" >giảm giá</th>
                                 <th scope="col" >mô tả</th>
+                                <th scope="col" >đã bán</th>
                                 <th scope="col" >ảnh</th>
                                 <th scope="col" >màu nền</th>
                                 <th scope="col" >khóa</th>
@@ -391,7 +392,7 @@ function ModifyProducts() {
                                             {item.description}
                                         </div>
                                     </td>
-
+                                    <td>{item.sold}</td>
                                     <td>
                                         <img src={process.env.REACT_APP_BACKEND_URL+`/imgs/${item?.img}`} alt="error"/>
                                     </td>

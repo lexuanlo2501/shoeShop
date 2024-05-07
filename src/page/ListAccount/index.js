@@ -104,8 +104,14 @@ function ListAccount() {
                                 <td>{item.phoneNumber}</td>
                                 <td>
                                 {
-                                    item.role === "admin" ? <span className={cx(['role', 'i'])}>Admin</span> : <span className={cx(['role', 'ii'])}>Client</span>
+                                    item.role === "admin" && <span className={cx(['role', 'i'])}>Admin</span> 
                                 }
+                                {
+                                    item.role === "client" && <span className={cx(['role', 'ii'])}>Client</span>
+                                }
+                                {
+                                    item.role === "seller" && <span className={cx(['role', 'iii'])}>Seller</span>
+                                }   
                                 </td>
                                 <td 
                                     onClick={() => {
@@ -179,8 +185,8 @@ function ModalInforUser({show, handleClose, userSelect, setTrigger}) {
         const dataFormArr = Object.keys(restData)
         const dataPatch = {}
         dataFormArr.forEach((keyObj) => {
-            if(data[keyObj] !== userSelect[keyObj]) {
-                dataPatch[keyObj] = data[keyObj]
+            if(data[keyObj].trim() !== userSelect[keyObj].trim()) {
+                dataPatch[keyObj] = data[keyObj].trim()
             }
         })
 
@@ -210,8 +216,6 @@ function ModalInforUser({show, handleClose, userSelect, setTrigger}) {
             .catch(err => console.log(err))
         }
        
-
-        
     }
    
 

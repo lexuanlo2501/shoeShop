@@ -25,17 +25,19 @@ function Header({setRe_render}) {
     const [showtype, setShowtype] = useState(0);
     const[showMenuMobile,setShowMenuMobile] = useState(false);
     const [apiCategory, setApicategory] = useState([]);
-useEffect(()=> {
-    axios.get('http://localhost:5000/category')
-
-    .then((data) => {
+    
+    useEffect(()=> {
+        const controller = new AbortController()
+        axios.get('http://localhost:5000/category', {signal:controller.signal})
+        .then((data) => {
             if(data.status === 200) {
                 setApicategory(data.data);
                 console.log(apiCategory);
             }
-       
-    })
-},[])
+        })
+
+        return () => controller.abort()
+    },[])
  
        
  
@@ -56,7 +58,8 @@ useEffect(()=> {
         let cart = JSON.parse(localStorage.getItem('cart'))
         let cart_prod_id = cart.map(i => i.id).toString()
 
-        axios.get(process.env.REACT_APP_BACKEND_URL+"/shoesList/"+cart_prod_id)
+        const controller = new AbortController()
+        axios.get(process.env.REACT_APP_BACKEND_URL+"/shoesList/"+cart_prod_id,  {signal:controller.signal})
         .then(res => {
             let newCart = cart.map(item => {
                 return {
@@ -67,24 +70,24 @@ useEffect(()=> {
             setOrderItem(newCart.sort(function(a, b){return a.id - b.id}))
         })
 
-        
+        return () => controller.abort()
     }, [cart_123.cart_context])
 
     useEffect(() => {
         let cart = JSON.parse(localStorage.getItem('cart'))
         let cart_prod_id = cart.map(i => i.id).toString()
-        if(JSON.parse(token).status) {
-            axios.get(process.env.REACT_APP_BACKEND_URL+"/notify?_accName="+JSON.parse(token).accName)
-            .then(res => {
-                setNotify(res.data)
-            })
-        }
-        else {
-            axios.get(process.env.REACT_APP_BACKEND_URL+"/notify?_accName=all")
-            .then(res => {
-                setNotify(res.data)
-            })
-        }
+        let apiCall = JSON.parse(token).status ?
+            process.env.REACT_APP_BACKEND_URL+"/notify?_accName="+JSON.parse(token).accName
+            :
+            process.env.REACT_APP_BACKEND_URL+"/notify?_accName=all"
+        
+        const controller = new AbortController()
+        axios.get(apiCall, {signal:controller.signal})
+        .then(res => {
+            setNotify(res.data)
+        })
+
+        return () => controller.abort()
     }, [trigger])
 
     useEffect(() => {
@@ -194,26 +197,29 @@ useEffect(()=> {
                             render={attrs => (
                                 <div className={cx(["wapper_notify", "shape_Tippy"])}  tabIndex="-1" {...attrs}>
                                 {!notify.length && <h2 className="text-center">Không có thông báo nào</h2>}
-                                {
-                                    notify.map(i => (
-                                        <div className={cx("notify_item")} key={i.id}>
-                                            <div>
-                                                <h3>{i.name}</h3>
-                                                <p>{i.date}</p>
-                                                <button
-                                                    onClick={() => {
-                                                        handleDelete_notify(i.id)
-                                                        setTrigger(pre => !pre)
-                                                        console.log("delete")
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon icon={faClose}/>
-                                                </button>
+                                    <div className={cx("notify_value")}>
+                                    {
+                                        notify.map(i => (
+                                            <div className={cx("notify_item")} key={i.id}>
+                                                <div>
+                                                    <h3>{i.name}</h3>
+                                                    <p>{i.date}</p>
+                                                    <button
+                                                        onClick={() => {
+                                                            handleDelete_notify(i.id)
+                                                            setTrigger(pre => !pre)
+                                                            console.log("delete")
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon icon={faClose}/>
+                                                    </button>
+                                                </div>
+                                                <p>{i.content}</p>
                                             </div>
-                                            <p>{i.content}</p>
-                                        </div>
-                                    ))
-                                }
+                                        ))
+                                    }
+                                    </div>
+
                                    
                                 </div>
                             )}

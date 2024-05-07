@@ -68,8 +68,9 @@ function DetailProduct_v2({product_prop={}}) {
 
     let isQuickView = Object.keys(product_prop).length
     useEffect(() => {
+        const controller = new AbortController()
         if(!isQuickView) {
-            axios.get(process.env.REACT_APP_BACKEND_URL+"/shoes/"+paramToObject._id)
+            axios.get(process.env.REACT_APP_BACKEND_URL+"/shoes/"+paramToObject._id, {signal:controller.signal})
             .then(res => {
                 setProduct(res.data)
                 setImgMain(res.data.img)
@@ -80,7 +81,7 @@ function DetailProduct_v2({product_prop={}}) {
         }
         // console.log(paramToObject)
 
-
+        return () => controller.abort()
     }, [trigger])
 
     const addCart = (id_product) => {
@@ -122,16 +123,20 @@ function DetailProduct_v2({product_prop={}}) {
 
      //comments
      const [comments, setComments] = useState([]);
-     useEffect(() =>{
-       
-        axios.get(process.env.REACT_APP_BACKEND_URL+`/comments?_productId=${paramToObject._id}`)
-        .then((res)=> {
-            setComments(res.data)
-            setLoading(false)
-            // console.log(product.id)
-            // console.log(product)
-           
-        })
+    useEffect(() =>{
+        const controller = new AbortController()
+
+        if(!isQuickView) {
+           axios.get(process.env.REACT_APP_BACKEND_URL+`/comments?_productId=${paramToObject._id}`, {signal:controller.signal})
+           .then((res)=> {
+               setComments(res.data)
+               setLoading(false)
+               // console.log(product.id)
+               // console.log(product)
+              
+           })
+       }
+       return () => controller.abort()
 }, [trigger, paramToObject._id])
 
     //option comment
@@ -200,14 +205,20 @@ function DetailProduct_v2({product_prop={}}) {
     })
 
     useEffect(() => {
-        axios.post(process.env.REACT_APP_BACKEND_URL + `/checkPermitCmt`, {
-        product_id: paramToObject._id,
-        accName: user.accName
-    }) 
-    .then((res) => {
-    //    console.log(res.data)
-       setAdmitComment(res.data)
-    })
+        const controller = new AbortController()
+
+        if(!isQuickView) {
+            axios.post(process.env.REACT_APP_BACKEND_URL + `/checkPermitCmt`, {
+                product_id: paramToObject._id,
+                accName: user.accName
+            }, {signal:controller.signal}) 
+            .then((res) => {
+            //    console.log(res.data)
+               setAdmitComment(res.data)
+            })
+        }
+
+        return () => controller.abort()
     }, [paramToObject._id])
 
     const  handleChangeComment = ((id_cmt, index) => {

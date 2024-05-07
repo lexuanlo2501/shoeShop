@@ -56,7 +56,6 @@ function ProductList_v3({ re_render }) {
         const inforUser = JSON.parse(localStorage.getItem("tokens"));
         setLoading_page(true)
 
-        // axios.get(`http://localhost:5000/shoes?${param}`)
         axios.get(
             paramToObject._favorite === "true" ? 
             `${process.env.REACT_APP_BACKEND_URL}/shoesList/${inforUser.favorite.toString()}?${param}&_hideLock=true`
