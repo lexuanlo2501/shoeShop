@@ -104,7 +104,7 @@ function DetailProduct_v2({product_prop={}}) {
         if(indexProd !== -1) {
             // THÊM SỐ LƯỢNG VÀO SẢN PHẨM MÀ ĐÃ TỒN TẠI TRONG CART
             product_list[indexProd] = {...product_list[indexProd], quantity:product_list[indexProd].quantity+quantity_Order}
-            console.log(product_list[indexProd])
+            // console.log(product_list[indexProd])
             newCart = product_list
         }
         else {
@@ -167,26 +167,17 @@ function DetailProduct_v2({product_prop={}}) {
           
         }
         else if (accName === user.accName && idcomment !== idcmt  ) {
-    
             setIdcomment(idcmt);
             setIndexComment(index)
             setShowoption(prev => !prev)
-         
             setValuecomment(value)
             setShowInput(false)
-        
-
-
-            console.log(index )
-            console.log(indexcomment)
 
         }
         
        if (role == "admin" ) {
             setIndexComment(index);
             setIdcomment(idcmt);
-
-
             
             if(role == "admin" && idcmt == idcomment && index == indexcomment) {
                 setShowoption(prev => !prev)
@@ -331,7 +322,8 @@ function DetailProduct_v2({product_prop={}}) {
             axios.post(process.env.REACT_APP_BACKEND_URL + `/comments`, {
                 value: refAddComment.current.value,
                 product_id: paramToObject._id,
-                accName: user.accName
+                accName: user.accName,
+                detailOrderID: admitComment.detailOrder_ID
           })
           
           axios.post(process.env.REACT_APP_BACKEND_URL + `/rating`, {
@@ -349,7 +341,6 @@ function DetailProduct_v2({product_prop={}}) {
           })
         
          
-            console.log('asdasda')
             setShowAddComment(prev => !prev)
         })
 
@@ -387,22 +378,14 @@ function DetailProduct_v2({product_prop={}}) {
           setIdcomment(id_cmt)
           setBtnReply(prev => !prev);
           setInputReply(prev => !prev);
-          console.log(id_cmt)
-        
       }
 
       else if (accName == seller_id) {
-
-          setBtnReply(prev => !prev);
-          setInputReply(prev => !prev);
-          setIdcomment(id_cmt)
-
-          console.log(id_cmt)
-
+        setBtnReply(prev => !prev);
+        setInputReply(prev => !prev);
+        setIdcomment(id_cmt)
       }       
 
-      
-       
     })
 
     const handleSendReply = ((id_cmt) => {
@@ -431,9 +414,7 @@ function DetailProduct_v2({product_prop={}}) {
 
        .then (() => {
          setTrigger(prev => !prev);
-        
          refInputReply.current.value = '';
-         console.log(comments)
 
          toast.success("Đã gửi phản hồi thành công!", {
             autoClose: 2000,
@@ -454,7 +435,6 @@ function DetailProduct_v2({product_prop={}}) {
 
           .then(() => {
             setTrigger(prev => !prev)
-            console.log(id_cmt)
 
             toast.success("Đã xóa phản hồi thành công!", {
                 autoClose: 2000,
