@@ -10,7 +10,7 @@ import {priceDiscount, formatPrice} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import {  faStar as emptyStar  } from '@fortawesome/free-regular-svg-icons';
-import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faSpinner, faTrash, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faSpinner, faStore, faTrash, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
 import { HashLoader } from 'react-spinners';
 import { createAxios } from '../../createInstance';
 
@@ -26,6 +26,7 @@ import Carousel_v2 from '../../components/Carousel_v2';
 import { CartContext } from '../../App';
 import AvatarAuto from '../../components/AvatarAuto';
 import Tippy from '@tippyjs/react';
+import { Link } from 'react-router-dom';
 // import { CartContext } from '../../components/Layout/HeaderOnly';
 
 // import required modules
@@ -52,12 +53,8 @@ function DetailProduct_v2({product_prop={}}) {
     const [showWanr, setShowWanr] = useState(false)
     const [showRefun, setShowRefun] = useState(false)
 
-    
     const [quantity_Order, setQuantity_Order] = useState(1)
    
-
-    
-
     // const [size_Order, setSize_Order] = useState(sizeValues[0])
     const [size_Order, setSize_Order] = useState("")
     
@@ -137,7 +134,7 @@ function DetailProduct_v2({product_prop={}}) {
            })
        }
        return () => controller.abort()
-}, [trigger, paramToObject._id])
+    }, [trigger, paramToObject._id])
 
     //option comment
     const [showoption, setShowoption] = useState(false)
@@ -326,38 +323,38 @@ function DetailProduct_v2({product_prop={}}) {
 
         var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(refAddComment.current.value);
         if(containsSpecialChars) {
-            
             return;
         }
 
-            axios.post(process.env.REACT_APP_BACKEND_URL + `/comments`, {
-                value: refAddComment.current.value,
-                product_id: paramToObject._id,
-                accName: user.accName,
-                detailOrderID: admitComment.detailOrder_ID
-          })
+        axios.post(process.env.REACT_APP_BACKEND_URL + `/comments`, {
+            value: refAddComment.current.value,
+            product_id: paramToObject._id,
+            accName: user.accName,
+            detailOrderID: admitComment.detailOrder_ID
+        })
+        .then(res => {
+            setTrigger(prev => !prev)
+        })
           
-          axios.post(process.env.REACT_APP_BACKEND_URL + `/rating`, {
+        axios.post(process.env.REACT_APP_BACKEND_URL + `/rating`, {
             rating: numberStar,
             detail_order_id: admitComment.detailOrder_ID
         })    
-
         .then((res) => {
-            setTrigger(prev => !prev)
             toast.success(`${res.data}`, {
               autoClose: 2000,
               // theme: "colored",
               theme: "light",
               position: "top-right",
           })
-        
          
             setShowAddComment(prev => !prev)
-        })
+            setNumberStar(0)
 
+        })
         .catch((error) => {
             console.log(error)
-   })
+        })
     })
 
 
@@ -725,7 +722,6 @@ function DetailProduct_v2({product_prop={}}) {
                                     </div>
 
                                     <div className={cx(["line"])}></div>
-
                                     <div className={cx("policy")}>
                                         <h2 className={cx({"active_policy":showWanr})} onClick={() => {setShowWanr(pre => !pre)}}>BẢO HÀNH THẾ NÀO ?
                                         {
@@ -743,6 +739,24 @@ function DetailProduct_v2({product_prop={}}) {
                                     }
                                     
                                     </div>
+                                {
+                                    product.seller_id
+                                    &&
+                                    <>
+                                        <div className={cx(["line"])}></div>
+                                        <div className={cx("infor_seller")}>
+                                            <AvatarAuto nameU={product.seller_id}/>
+                                            <div className={cx("go_to_shop")}>
+                                                <p>{product.sellerName}</p>
+                                                <Link to={`/saleHome?_sellerID=${product.seller_id}`}><FontAwesomeIcon icon={faStore}/>Xem Shop</Link>
+                                            </div>
+                                            <div className={cx("asign_quantity")}>
+                                                <p><span>Đánh Giá</span>:</p>
+                                                <p><span>Sản Phẩm</span>:</p>
+                                            </div>
+                                        </div>
+                                    </>
+                                }
 
                                 </>
                                 

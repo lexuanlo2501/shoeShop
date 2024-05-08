@@ -47,7 +47,7 @@ function Header({setRe_render}) {
     const [trigger, setTrigger] = useState(false)
     const [login, setLogin] = useState("")
 
-    const token = localStorage.getItem("tokens");
+    const token = JSON.parse(localStorage.getItem("tokens"));
 
     const navigate = useNavigate();
 
@@ -76,8 +76,8 @@ function Header({setRe_render}) {
     useEffect(() => {
         let cart = JSON.parse(localStorage.getItem('cart'))
         let cart_prod_id = cart.map(i => i.id).toString()
-        let apiCall = JSON.parse(token).status ?
-            process.env.REACT_APP_BACKEND_URL+"/notify?_accName="+JSON.parse(token).accName
+        let apiCall = token.status ?
+            process.env.REACT_APP_BACKEND_URL+"/notify?_accName="+token.accName
             :
             process.env.REACT_APP_BACKEND_URL+"/notify?_accName=all"
         
@@ -94,8 +94,8 @@ function Header({setRe_render}) {
         if(!token) {
             localStorage.setItem("tokens", JSON.stringify({}));
         }
-        // console.log( (JSON.parse(token)) )
-        setLogin(JSON.parse(token)?.role)
+        // console.log( (token) )
+        setLogin(token?.role)
     }, [])
 
     const handleDelete_notify = (id) => {
@@ -263,7 +263,7 @@ function Header({setRe_render}) {
                                                     <Link to='/purchaseOrder'>Đơn mua</Link>
                                                 </li>
                                                 <li onClick={(e) => {window.scrollTo(0, 0)}}>
-                                                    <Link to='/saleHome'>Kênh bán hàng</Link>
+                                                    <Link to={`/saleHome?_sellerID=${token?.accName}`}>Kênh bán hàng</Link>
                                                 </li>
                                                 <li onClick={handleLogout}>
                                                     Đăng xuất

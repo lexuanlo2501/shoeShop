@@ -763,7 +763,7 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
                         atri_prod[attrib].map((type, index) => (
                             <tr key={type.id}>
                                 <th scope="row">{index}</th>
-                                <td>{type.type_name}</td>
+                                <td onDoubleClick={() => {console.log("Edit")}}>{type.type_name}</td>
                                 <td>
                                     <select defaultValue={type.category_id} className={cx("category_SelectInTypes")} onChange={e => handleChangeCategoryInType(e, type.id)}>
                                     {

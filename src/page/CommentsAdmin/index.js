@@ -92,6 +92,7 @@ function CommentsAdmin() {
                             <th scope="col">thời gian</th>
                             <th scope="col">Mã SP</th>
                             <th scope="col">Bình luận</th>
+                            <th scope="col">đánh giá</th>
                             <th scope="col">Khóa</th>
                         {
                             userInfor.role === "admin" && <th scope="col">Xóa</th>
@@ -107,6 +108,7 @@ function CommentsAdmin() {
                                 <td>{item.date}</td>
                                 <td>{item.product_id}</td>
                                 <td>{item.value}</td>
+                                <td>{item.rating} sao</td>
                                 <td>
                                 {
                                     <button className={cx(['status_btn',{"lock":item.isLock===0, "unlock":item.isLock===1}])}
