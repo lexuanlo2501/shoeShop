@@ -6,7 +6,7 @@ import Slider from '../../components/Slider';
 import styles from './DetailProduct.module.scss'
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import {priceDiscount, formatPrice} from "../../common"
+import {priceDiscount, formatPrice, limit} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import {  faStar as emptyStar  } from '@fortawesome/free-regular-svg-icons';
@@ -538,10 +538,10 @@ function DetailProduct_v2({product_prop={}}) {
                             <div className={cx("information_product")}>
                                 <p className={cx("shoe_name")}
                                 >{product.name}</p>
-                                <div className={cx("status")} style={{margin: "13px 0px"}}>
-                                    <p className={cx("id")}>Mã sản phẩm: <strong>{product.id}</strong></p>
-                                    <p className={cx("avalable")}>Tình trạng: <strong>Còn hàng</strong></p>
-
+                                <div className={cx("status_product")} style={{margin: "13px 0px"}}>
+                                    <p>Mã Sản Phẩm: <strong>{product.id}</strong></p>
+                                    <p>Đã Bán: <strong>{product.sold}</strong></p>
+                                    <p>Tình Trạng: <strong>Còn hàng</strong></p>
                                 </div>
                                 {
                                     !!product.price && 
@@ -748,11 +748,12 @@ function DetailProduct_v2({product_prop={}}) {
                                             <AvatarAuto nameU={product.seller_id}/>
                                             <div className={cx("go_to_shop")}>
                                                 <p>{product.sellerName}</p>
-                                                <Link to={`/saleHome?_sellerID=${product.seller_id}`}><FontAwesomeIcon icon={faStore}/>Xem Shop</Link>
+                                                {/* _page=1&_limit=16&_sellerID=lelolo123 */}
+                                                <Link to={`/saleHome?_page=1&_limit=${limit}&_sellerID=${product.seller_id}`} onClick={() => {window.scrollTo(0, 0)}}><FontAwesomeIcon icon={faStore}/>Xem Shop</Link>
                                             </div>
                                             <div className={cx("asign_quantity")}>
                                                 <p><span>Đánh Giá</span>:</p>
-                                                <p><span>Sản Phẩm</span>:</p>
+                                                <p><span>Sản Phẩm</span>: {product.amountProdStore}</p>
                                             </div>
                                         </div>
                                     </>
@@ -1013,9 +1014,6 @@ function DetailProduct_v2({product_prop={}}) {
                 </div>
                 </>
             }
-            
-           
-
 
             </div>
 

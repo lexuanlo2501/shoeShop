@@ -24,23 +24,20 @@ let axiosJWT = createAxios()
 
 
 
-function ProductList_v3({ re_render }) {
-    let infor_user = JSON.parse(localStorage.getItem("tokens"))
-
+function ProductList_v3({ re_render, accNameSeller }) {
+    // props accNameSeller mục đích là tận dụng logic để tạo trang saleHome (C2C)
 
     let currentUrl = window.location.href;
     let param = currentUrl.split("?")[1]
     let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
-    // console.log(currentUrl)
+
     const limit = paramToObject._limit
 
     const [products, setProducts] = useState([])
     const [pageChange, setPageChange] = useState(+paramToObject._page)
     const [loading, setLoading] = useState(true)
     const [loading_page, setLoading_page] = useState(false)
-
     const [numberOfPage, setNumberOfPage] = useState([])
-
     const [view, setView] = useState('grid-4')
 
     const arrPage = (n) => {
@@ -56,12 +53,16 @@ function ProductList_v3({ re_render }) {
         const inforUser = JSON.parse(localStorage.getItem("tokens"));
         setLoading_page(true)
 
-        axios.get(
-            paramToObject._favorite === "true" ? 
-            `${process.env.REACT_APP_BACKEND_URL}/shoesList/${inforUser.favorite.toString()}?${param}&_hideLock=true`
-            :
-            `${process.env.REACT_APP_BACKEND_URL}/shoes?${param}&_hideLock=true`, {signal:controller.signal}
-        )
+        let apiCall =   paramToObject._favorite === "true" ? 
+        `${process.env.REACT_APP_BACKEND_URL}/shoesList/${inforUser.favorite.toString()}?${param}&_hideLock=true`
+        :
+        `${process.env.REACT_APP_BACKEND_URL}/shoes?${param}&_hideLock=true`
+
+        if(accNameSeller) {
+            apiCall =  `${process.env.REACT_APP_BACKEND_URL}/shoes?${param}&_sellerId=${accNameSeller}&_hideLock=true`
+        }
+
+        axios.get(apiCall, {signal:controller.signal})
         .then(res => {
             setProducts(res.data)
             setLoading(false)
@@ -70,31 +71,24 @@ function ProductList_v3({ re_render }) {
             const xTotalCount = res.headers['x-total-count']
             setNumberOfPage(arrPage(xTotalCount))
 
-
         })
-        return () => controller.abort()
 
+        return () => controller.abort()
     }, [re_render, pageChange, trigger])
 
     const previousPage = () => {
         setPageChange(pre => pre>1 ? pre-1 : pre )
-
-        handleClickScroll()
+        handleClickScrollToTop()
     }
 
     const subsequentPage = () => {
         setPageChange(pre => pre<numberOfPage.length ? pre+1 : pre )
-        
-        handleClickScroll()
+        handleClickScrollToTop()
     }
 
-    const handleClickScroll = () => {
-        const element = document.getElementById('scrollTo');
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
+    const handleClickScrollToTop = () => {
+        window.scrollTo(0, 0)
     }
-
     
     return ( 
         <div id='scrollTo' className={cx('wrapper')}>
@@ -111,18 +105,14 @@ function ProductList_v3({ re_render }) {
                     paramToObject._favorite && <><span>&#8594; Yêu Thích</span> </>
                 }
                 </div>
-
                 <SearchItem setTrigger={setTrigger}/>
-
                 <div>
-                    
                     <TfiLayoutListThumbAlt className={cx(['viewProd_btn',{'active':view==="list"}])}
                         onClick = {() => {
                             setView("list")
                             console.log('list')
                         }}
                     />
-
                     <TfiLayoutColumn4Alt className={cx(['viewProd_btn','btn_grid4',{'active':view==="grid-4"}])}
                          onClick = {() => {
                             setView("grid-4")
@@ -140,25 +130,19 @@ function ProductList_v3({ re_render }) {
                         }}
                     />
                 </div>
-                
-
-                
             </div>
             
             <div className={cx('container')}>
             {
                 loading_page && <LoadingPage/>
             }
-
             {
                 loading && 
                 Array(16).fill(0).map((item, index) => <CardLoading key={index}/>)
             }
-
             {   
                 products.map((item, index) => <Card  view={view} key={item.id} product={item}/>)
             }
-
             {
                 loading === false && products.length === 0 && <div className={cx("not_found")}>Không tìm thấy sản phẩm</div>
             }
@@ -167,9 +151,9 @@ function ProductList_v3({ re_render }) {
             {/* pagination */}
             <div className={cx('pagination')}>
                 <div className={cx('pagination_container')}>
-                    <Link
-                        onClick={previousPage}
-                        to={`/shoes?${param?.replace(`page=${paramToObject._page}`,`page=${pageChange>1?pageChange-1:pageChange}`)}`} 
+                    <Link onClick={previousPage}
+                        // Kết quả toán 3 ngôi y hệt nhau chỉ khác nếu "true" thì route là "/saleHome", nếu không thì "/shoes"
+                        to={accNameSeller ? `/saleHome?${param?.replace(`page=${paramToObject._page}`,`page=${pageChange>1?pageChange-1:pageChange}`)}` : `/shoes?${param?.replace(`page=${paramToObject._page}`,`page=${pageChange>1?pageChange-1:pageChange}`)}`} 
                     >
                         <FontAwesomeIcon className={cx('direction_Page')} icon={faArrowLeft} />
                     </Link>
@@ -183,10 +167,11 @@ function ProductList_v3({ re_render }) {
                                 key={index} 
                                 onClick={ () => { 
                                     setPageChange(item) 
-                                    handleClickScroll()
+                                    handleClickScrollToTop()
                                 }}
                                 className={cx(['page_number', active])}
-                                to={`/shoes?${param?.replace(`page=${paramToObject._page}`,`page=${item}`)}`} 
+                                // Kết quả toán 3 ngôi y hệt nhau chỉ khác nếu "true" thì route là "/saleHome", nếu không thì "/shoes"
+                                to={accNameSeller ? `/saleHome?${param?.replace(`page=${paramToObject._page}`,`page=${item}`)}` : `/shoes?${param?.replace(`page=${paramToObject._page}`,`page=${item}`)}`} 
                             >
                                 {item}
                             </Link>
@@ -194,9 +179,9 @@ function ProductList_v3({ re_render }) {
                     })
                 }
 
-                    <Link
-                        onClick={subsequentPage}
-                        to={`/shoes?${param?.replace(`page=${paramToObject._page}`,`page=${pageChange<numberOfPage.length ? pageChange+1 : pageChange}`)}`} 
+                    <Link onClick={subsequentPage}
+                        // Kết quả toán 3 ngôi y hệt nhau chỉ khác nếu "true" thì route là "/saleHome", nếu không thì "/shoes"
+                        to={accNameSeller ? `/saleHome?${param?.replace(`page=${paramToObject._page}`,`page=${pageChange<numberOfPage.length ? pageChange+1 : pageChange}`)}` : `/shoes?${param?.replace(`page=${paramToObject._page}`,`page=${pageChange<numberOfPage.length ? pageChange+1 : pageChange}`)}`} 
                     >
                         <FontAwesomeIcon className={cx('direction_Page')} icon={faArrowRight} />
                     </Link>
@@ -213,11 +198,7 @@ function Card({product, view}) {
     const [like, setLike] = useState(inforUser?.favorite?.includes(product.id))
     const [token, setToken] = useState(inforUser)
 
-
-    
-
     const checkSoldOut = [...product.inventory].every(i => i.quantity===0)
-
 
     return (
         <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx(["card", {"list":view==="list","grid-4":view==="grid-4","grid-3":view==="grid-3","grid-2":view==="grid-2"}])}
@@ -250,27 +231,15 @@ function Card({product, view}) {
                         })
                         
                         setLike(pre => !pre)
-
-
                     }}
                 />
             }
-               
             </div>
             {/* listView */}
             <div className={cx("card-data", {"listView": view ==="list"})}>
 
-                <div href="" className={cx("card-button")}
-                    onClick={(e) => {
-                        e.preventDefault()
-
-                    }}
-                >
-                    <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx("detail_vew_btn")} 
-                        onClick={() => {
-                            
-                        }}
-                    >
+                <div href="" className={cx("card-button")} onClick={(e) => {e.preventDefault()}}>
+                    <Link to={`/shoes/detail_product?_id=${product.id}`} className={cx("detail_vew_btn")} >
                         <FontAwesomeIcon icon={faCartShopping}/>
                     </Link>
                     <ConfirmModal_v2
@@ -283,7 +252,6 @@ function Card({product, view}) {
                         </button>
                     </ConfirmModal_v2>
                 </div>
-
             </div>
             <div className={cx("card-items")}>
                 <div className={cx("card-title")}>{product.name}</div>
@@ -307,15 +275,9 @@ function CardLoading() {
 
     return (
         <div className={cx(['card', 'card_loading'])}>
-
             <div className={cx('card_thumna_loading')}>
-                <BeatLoader
-                    color="rgba(138, 138, 138, 1)"
-                    size={20}
-                />          
+                <BeatLoader color="rgba(138, 138, 138, 1)" size={20} />          
             </div>
-            
-            
             <Placeholder  as="p" animation="glow">
                 <Placeholder className="rounded-4 mt-3" bg='dark' xs={12} size='lg'/>
             </Placeholder>

@@ -68,8 +68,8 @@ function Carousel_v2({brand="", setTrigger, nameProd}) {
                             key={item.id}
                             to={`/shoes/detail_product?_id=${item.id}`}
                             onClick={() => {
-                                setTrigger(pre => !pre)
                                 window.scrollTo(0, 0)
+                                setTrigger && setTrigger(pre => !pre)
                             }}
                             replace
                             

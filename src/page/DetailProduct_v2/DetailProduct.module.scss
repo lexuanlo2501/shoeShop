@@ -460,13 +460,9 @@
     text-transform: capitalize;
 }
 
-.avalable,
-.id {
-    display: inline-block;
-}
-
-.avalable {
-    float: right;
+.status_product {
+  display: flex;
+  justify-content: space-between;
 }
 
 .shoe_price_old {

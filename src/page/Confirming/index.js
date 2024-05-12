@@ -1,26 +1,19 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import classNames from "classnames/bind";
 import styles from "./Confirming.module.scss"
 import {toast } from 'react-toastify';
-
-import axios from "axios";
 import { useEffect, useState } from "react";
 import {formatPrice} from "../../common"
-
-// bootstrap
 import Modal from 'react-bootstrap/Modal';
 
-
 // icon
-import { faCircle, faCircleInfo, faClipboardCheck, faClockRotateLeft, faTrashCan, faTruck} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import { faCalendarDays } from '@fortawesome/free-regular-svg-icons';
+import { faCircleInfo, faClipboardCheck, faClockRotateLeft, faTrashCan, faTruck} from "@fortawesome/free-solid-svg-icons";
 import ConfirmModal from '../../components/ConfirmModal';
 import { CardOrder } from '../PurchaseOrder';
 import { createAxios } from '../../createInstance';
 import ConfirmModal_v2 from '../../components/ConfirmModal_v2';
-import { faCalendar, faCalendarDays } from '@fortawesome/free-regular-svg-icons';
-import { date } from 'yup';
 
 
 let axiosJWT = createAxios()
@@ -31,15 +24,11 @@ function Confirming() {
     let infor_user = JSON.parse(localStorage.getItem("tokens"))
  
     const [order_detail, setOrder_detail] = useState({})
-
-
     const [checkChange, setCheckChange] = useState(false)
-    
 
     const [showDetail, setShowDetail] = useState(false);
     const handleClose_detail = () => setShowDetail(false);
     const handleShow_detail = () => setShowDetail(true);
-
 
     const pagName = ['chờ xác nhận','đang giao','hoàn thành']
     // 0:
@@ -83,17 +72,14 @@ function Confirming() {
         .catch(err => console.log(err))
 
     }
-
-    // axiosJWT.get(urlGetOrder, {
-    //     headers: {Authorization: infor_user.accessToken}
-    // })
+   
 
     const confirm_product = (order_id, status) => {
         axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/orders/${order_id}`, {"status": status}, {
             headers: {Authorization: infor_user.accessToken}
         })
         .then(res => {
-            console.log("Xac thuc thanh cong")
+            // console.log("Xac thuc thanh cong")
             setCheckChange(pre => !pre)
         })
         .catch(err => console.log(err))

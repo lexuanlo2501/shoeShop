@@ -4,7 +4,7 @@ import styles from "./admin.module.scss"
 import { toast } from 'react-toastify';
 import Modal from 'react-bootstrap/Modal';
 
-import { faClose, faFileCircleXmark, faFileImage, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faFileCircleXmark, faFileImage, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -16,6 +16,7 @@ import axios from "axios";
 import { useRef } from "react";
 import ConfirmModal from "../../components/ConfirmModal";
 import { createAxios } from '../../createInstance';
+import { faFloppyDisk } from "@fortawesome/free-regular-svg-icons";
 
 const axiosJWT = createAxios()
 const cx = classNames.bind(styles)
@@ -662,28 +663,48 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
     const [attrib, setAttrib] = useState(attrib_name)
 
     const input_add = useRef("");
+    const input_upd = useRef(null);
 
     const attrib_list = [{id:"brands",name:"Thương hiệu"}, {id:"category",name:"Danh mục"}, {id:"discounts",name:"Khuyến mãi"}, {id:"types",name:"loại"}]
     const [category_type, setCategory_type] = useState((atri_prod.category[0]).id)
 
+    const handle_update = (id) => {
+        const dataPatch = {}
+        if(attrib === "types") {
+            dataPatch.type_name = input_upd.current.value
+        }
+        else if(attrib === "category") {
+            dataPatch.name = input_upd.current.value
+        }
+
+        axios.patch(process.env.REACT_APP_BACKEND_URL+`/${attrib}/${id}`, {...dataPatch})
+        .then(() => {
+            // input_upd.current.value = ""
+        })
+        setTrigger_Atrib(pre => !pre)
+    }
     const handle_delete = (id) => {
         axios.delete(process.env.REACT_APP_BACKEND_URL+`/${attrib}/${id}`)
+        .then(res => {
+            if(res.data.status === false) {
+                toast.error(res.data.message)
+            }
+        })
         setTrigger_Atrib(pre => !pre)
-
     }
-    const handle_add = (value) => {
+    const handle_add = () => {
         setTrigger_Atrib(pre => !pre)
         if(attrib === "brands") {
-            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {brand_id:value})
+            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {brand_id:input_add.current.value})
         }
         else if (attrib === "discounts") {
-            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {per:+value})
+            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {per:+input_add.current.value})
         }
         else if (attrib === "types") {
-            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {type_name:value, category_id:category_type})
+            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {type_name:input_add.current.value, category_id:category_type})
         }
         else if (attrib === "category") {
-            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {name:value})
+            axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {name:input_add.current.value})
         }
         input_add.current.value = ""
     }
@@ -724,15 +745,18 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
                     <table className="table">
                         <thead className="table-secondary">
                             <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Gía Trị</th>
-                        {
-                            attrib === "types" &&  <th scope="col">Danh Mục</th>
-                        }
-                        {
-                            attrib === "category" &&  <th scope="col">Loại size</th>
-                        }
-                            <th scope="col">Chức Năng</th>
+                                <th scope="col">#</th>
+                                <th scope="col">Gía Trị</th>
+                            {
+                                attrib === "types" &&  <th scope="col">Danh Mục</th>
+                            }
+                            {
+                                attrib === "category" &&  <th scope="col">Loại size</th>
+                            }
+                            {
+                                (attrib === "category" || attrib === "types") && <th scope="col">Sửa</th>
+                            }
+                                <th scope="col">Xóa</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -749,6 +773,16 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
                                         atri_prod?.sizesType?.map(value => <option key={value} value={value} >{value}</option>)
                                     }
                                     </select>
+                                </td>
+                                <td>
+                                    <ConfirmModal className={cx("atrib_upd_btn")} btnText={<FontAwesomeIcon icon={faFloppyDisk}/>} title="CẬP NHẬT DANH MỤC" 
+                                        body={
+                                            <div className={cx("form_edit_atrib")}>
+                                                <input defaultValue={item.name} ref={input_upd} placeholder="Nhập Tên Mới" type="text"/>
+                                            </div>
+                                        }
+                                        accept={() => handle_update(item.id)}
+                                    />
                                 </td>
                                 <td>
                                     <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA LOẠI SẢN PHẨM" body={<div>Bạn có muốn xóa danh mục <b>{item.name}</b> không ?</div>}
@@ -775,7 +809,17 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
                                     </select>
                                 </td>
                                 <td>
-                                    <ConfirmModal className={cx("atrib_del_btn")} btnText="x" title="XÓA LOẠI SẢN PHẨM" body={<div>Bạn có muốn xóa loại <b>{type.type_name}</b> không ?</div>}
+                                    <ConfirmModal className={cx("atrib_upd_btn")} btnText={<FontAwesomeIcon icon={faFloppyDisk}/>} title="CẬP NHẬT LOẠI SẢN PHẨM" 
+                                        body={
+                                            <div className={cx("form_edit_atrib")}>
+                                                <input defaultValue={type.type_name} ref={input_upd} placeholder="Nhập Tên Mới" type="text"/>
+                                            </div>
+                                        }
+                                        accept={() => handle_update(type.id)}
+                                    />
+                                </td>
+                                <td>
+                                    <ConfirmModal className={cx("atrib_del_btn")} btnText={<FontAwesomeIcon icon={faXmark}/>} title="XÓA LOẠI SẢN PHẨM" body={<div>Bạn có muốn xóa loại <b>{type.type_name}</b> không ?</div>}
                                         accept={() => handle_delete(type.id)}
                                     />
                                 </td>
@@ -832,7 +876,7 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
                                     <button className={cx("atrib_add_btn")}
                                         onClick={() => {
                                             // console.log(input_add.current.value)
-                                            handle_add(input_add.current.value)
+                                            handle_add()
                                         }}
                                     >+</button>
                                 </td>

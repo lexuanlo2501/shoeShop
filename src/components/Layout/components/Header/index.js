@@ -263,7 +263,7 @@ function Header({setRe_render}) {
                                                     <Link to='/purchaseOrder'>Đơn mua</Link>
                                                 </li>
                                                 <li onClick={(e) => {window.scrollTo(0, 0)}}>
-                                                    <Link to={`/saleHome?_sellerID=${token?.accName}`}>Kênh bán hàng</Link>
+                                                    <Link to={`/saleHome?_page=1&_limit=${limit}&_sellerID=${token?.accName}`}>Kênh bán hàng</Link>
                                                 </li>
                                                 <li onClick={handleLogout}>
                                                     Đăng xuất
