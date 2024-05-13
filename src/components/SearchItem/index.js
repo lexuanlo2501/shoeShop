@@ -12,11 +12,18 @@ import { useRef } from "react";
 
 const cx = classNames.bind(style)
 
-function SearchItem({setTrigger}) {
+function SearchItem({setTrigger, C2C='false', accNameSeller}) {
     const [products, setProducts] = useState([])
     const [input, setInput] = useState('')
     const [loading, setLoading] = useState(false)
 
+    let routeCall = `/shoes?_string=${input}`
+    if(C2C === 'true') {
+        routeCall += `&_C2C=true`
+    }
+    else if(accNameSeller) {
+        routeCall += `&_sellerId=${accNameSeller}`
+    }
     useEffect(() => {
         const delay = 1000;
         let timeoutId;
@@ -25,7 +32,7 @@ function SearchItem({setTrigger}) {
         const debounceFetchData = () => {
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => {
-                axios.get(process.env.REACT_APP_BACKEND_URL+`/shoes?_string=${input}`)
+                axios.get(process.env.REACT_APP_BACKEND_URL+routeCall)
                 .then(res => {
                     setProducts(res.data)
                     setLoading(false)
@@ -38,11 +45,6 @@ function SearchItem({setTrigger}) {
             clearTimeout(timeoutId);
         };
     }, [input])
-
-
-    // let currentUrl = window.location.href;
-    // let param = currentUrl.split("?")[1]
-    // let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
 
     const parentRef = useRef(null);
     const childRef = useRef(null);
@@ -82,7 +84,6 @@ function SearchItem({setTrigger}) {
     return ( 
         <div className={cx(['wrapper', {"wrapper_focus":showResult}])}
             ref={parentRef}
-
             // CÁCH CŨ
             // MÔ TẢ LỖI: click vào kết quả tìm kiếm bị sự kiện onblur
             // ĐÃ FIX bằng js thuần trong useEffect trên
@@ -97,21 +98,17 @@ function SearchItem({setTrigger}) {
             //     setShowResult(true)
             //     console.log("focus")
             // }}
-
-           
-
         >
-            <input placeholder="Tìm kiếm"
-                onChange={e => setInput(e.target.value)}
-            />
-
+            <input placeholder="Tìm kiếm" onChange={e => setInput(e.target.value)} />
             
-            <Link to={input ?`/shoes?_page=1&_limit=${limit}&_string=${input}`:`/shoes?_page=1&_limit=${limit}`}
+            <Link 
+                // routeCall
+                // to={input ?`/shoes?_page=1&_limit=${limit}&_string=${input}`:`/shoes?_page=1&_limit=${limit}`}
+                to={accNameSeller ? routeCall.replace("shoes", "saleHome")+`&_page=1&_limit=${limit}` : routeCall+`&_page=1&_limit=${limit}`}
                 onClick={() => setTrigger(pre => !pre)}
             >
                 <FontAwesomeIcon className={cx('search_icon')} icon={faSearch}/>
             </Link>
-
 
         {
             input && showResult && 
@@ -123,12 +120,10 @@ function SearchItem({setTrigger}) {
                 </div>
                 :
                 products.length ? <FilterDataSearch products={products} input={input} /> : <div>Không có sản phẩm nào</div>
-                
 
             }
             </div>
         }
-            
         </div>
            
     );

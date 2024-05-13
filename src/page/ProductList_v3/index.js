@@ -105,7 +105,7 @@ function ProductList_v3({ re_render, accNameSeller }) {
                     paramToObject._favorite && <><span>&#8594; Yêu Thích</span> </>
                 }
                 </div>
-                <SearchItem setTrigger={setTrigger}/>
+                <SearchItem setTrigger={setTrigger} C2C={paramToObject._C2C === 'true' ? 'true' : 'false'} accNameSeller={accNameSeller}/>
                 <div>
                     <TfiLayoutListThumbAlt className={cx(['viewProd_btn',{'active':view==="list"}])}
                         onClick = {() => {

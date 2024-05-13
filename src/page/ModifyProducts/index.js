@@ -63,13 +63,10 @@ function ModifyProducts() {
     const [brand, setBrand] = useState("")
     const [products, setProducts] = useState([])
 
-
     const [checkUpd, setCheckUpd] = useState(true)
     const [isErrSearch, setIsErrSearch] = useState(false)
 
-
     const [numberOfPage, setNumberOfPage] = useState([])
-
 
     // search
     const [price, setprice] = useState([0, 30000000])
@@ -96,14 +93,12 @@ function ModifyProducts() {
 
     // ADMIN
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("tokens"));
         const controller = new AbortController()
         const handle_CallAIP = async () => {
             const brands_data = await axios(process.env.REACT_APP_BACKEND_URL+"/brands", {signal:controller.signal})
             const types_data = await axios(process.env.REACT_APP_BACKEND_URL+"/types", {signal:controller.signal})
             const discount_data = await axios(process.env.REACT_APP_BACKEND_URL+"/discounts", {signal:controller.signal})
             const caregory_data = await axios(process.env.REACT_APP_BACKEND_URL+"/category", {signal:controller.signal})
-
 
             const combineData = {brands: brands_data.data, types: types_data.data, discounts: discount_data.data, caregory: caregory_data.data}
             // console.log(combineData)
@@ -112,11 +107,12 @@ function ModifyProducts() {
         handle_CallAIP()
 
         return () => controller.abort()
-
     }, [])
 
 
     useEffect(() => {
+        setLoading(true)
+
         // const url = !brand ? process.env.REACT_APP_BACKEND_URL+'/shoes' : process.env.REACT_APP_BACKEND_URL+`/shoes?_brand=${brand}`
         const url =process.env.REACT_APP_BACKEND_URL+ `/shoes?${param}`
         // console.log(url)
@@ -137,7 +133,7 @@ function ModifyProducts() {
 
         })
         .catch(err => {
-            setLoading(true)
+            // setLoading(true)
 
         })
 

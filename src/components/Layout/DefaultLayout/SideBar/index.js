@@ -123,31 +123,15 @@ function SideBar({setRe_render}) {
                             max={10000000}
                             step={10000}
                         />
-                        {/* <br/> */}
-                        {/* <button className={cx('filter_price_btn')} 
-                            onClick={() => {
-                                // setRe_render(pre => !pre)
-                                const params = `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}&_brand=${paramToObject._brand}`
-
-                                console.log(params)
+                        <Link className={cx('filter_price_btn')}
+                            onClick={() => setRe_render(pre => !pre)}
+                            to={
+                                paramToObject?._brand ? 
+                                `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}&_brand=${paramToObject._brand}`
+                                :
+                                `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}`
                             }
-                        }> */}
-                            <Link className={cx('filter_price_btn')}
-                                onClick={() => setRe_render(pre => !pre)}
-                                to={
-                                    paramToObject?._brand ? 
-                                    `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}&_brand=${paramToObject._brand}`
-                                    :
-                                    `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}`
-                                }
-                            >Lọc</Link>
-                        
-                            
-                        {/* </button> */}
-                       
-
-                  
-                    
+                        >Lọc</Link>
                     </li>
                     
                 </ul>
