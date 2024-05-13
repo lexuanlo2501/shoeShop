@@ -363,7 +363,23 @@ function DetailProduct_v2({product_prop={}}) {
     const handleSaveComment = ((idcomment, e) => {
         setLoading(true)
        
-       setIdcomment(idcomment)
+       
+        setIdcomment(idcomment)
+
+        var trimmedStr = refinput.current.value.replace(/^\s+|\s+$/g, ' ');
+        if(trimmedStr === ' ') {
+            setLoading(false)
+            setSaveBtn(true)
+            return;
+        }
+
+        var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(refinput.current.value);
+        if(containsSpecialChars) {
+            setLoading(false)
+            setSaveBtn(true)
+            return;
+        }
+
         axios.patch(process.env.REACT_APP_BACKEND_URL + `/comments/${idcomment}`, {
             value: valuecomment
         })
