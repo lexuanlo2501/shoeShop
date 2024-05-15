@@ -27,17 +27,17 @@ function SaleChannel() {
     }, [])
 
     return (
-        <div>
-        {
-            userInfor.accName === paramToObject._sellerID && <Link onClick={()=>window.scroll(0,0)} to='/admin' className={cx('link_footer')}>Quản Lý Cửa hàng</Link>
-        }
-            <div>
-                <div>
+        <div className={cx("wrapper")}>
+        
+            <div className={cx("infor_contact_store")}>
+                <div className={cx("avatar_name")}>
                     <AvatarAuto nameU={inforStore.fullName}/>
                     <p>{inforStore.fullName}</p>
                 </div>
                 <p>Số Điện Thoại Liên Hệ: {inforStore.phoneNumber}</p>
-
+            {
+                userInfor.accName === paramToObject._sellerID && <Link onClick={()=>window.scroll(0,0)} to='/admin' className={cx('manage_store_btn')}>Quản Lý Cửa hàng</Link>
+            }
             </div>
 
             <ProductList_v3 accNameSeller={paramToObject._sellerID}/>

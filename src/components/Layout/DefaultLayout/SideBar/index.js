@@ -125,7 +125,7 @@ function SideBar({setRe_render}) {
                         />
                         <Link className={cx('filter_price_btn')}
                             onClick={() => setRe_render(pre => !pre)}
-                            to={
+                            to={ 
                                 paramToObject?._brand ? 
                                 `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}&_brand=${paramToObject._brand}`
                                 :

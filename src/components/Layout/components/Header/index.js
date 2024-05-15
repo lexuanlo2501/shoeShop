@@ -22,7 +22,7 @@ const cx = classNames.bind(styles)
 
 function Header({setRe_render}) {
     //Category
-    const [showtype, setShowtype] = useState(0);
+    const [showtype, setShowtype] = useState(1); /* 1 is shoes */
     const[showMenuMobile,setShowMenuMobile] = useState(false);
     const [apiCategory, setApicategory] = useState([]);
     
@@ -124,6 +124,11 @@ function Header({setRe_render}) {
 
     }
 
+    const scrollToTop = () => {
+        window.scrollTo(0, 0)
+        setRe_render(pre => !pre)
+    }
+
     return ( 
         <div className={cx('wrapper')}>
 
@@ -148,47 +153,26 @@ function Header({setRe_render}) {
                     </li>
     
                     <li className={cx(["menu"])}>
-                        <Link 
-                            to={`/shoes?_page=1&_limit=${limit}`} 
-                            onClick={() => {
-                                window.scrollTo(0, 0)
-                                setRe_render(pre => !pre)
-                            }}
-                        >
+                        <Link  to={`/shoes?_page=1&_limit=${limit}`}  onClick={() => {scrollToTop()}}>
                             <span className={cx("nav_desktop")}>sản phẩm</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faShopify}/></span>
-                            
                         </Link>
-                       
                     </li>
     
                     <li className={cx(["menu"])}>
                         <Link to={`/shoes?_page=1&_limit=${limit}&_isDiscount=true`} 
-                            onClick={() => {
-                                window.scrollTo(0, 0)
-                                setRe_render(pre => !pre)
-                                
-                            }}
+                            onClick={() => {scrollToTop()}}
                         >
                             <span className={cx("nav_desktop")}>giảm giá</span><span className={cx("nav_mobile")}><FontAwesomeIcon icon={faPercent}/></span>
                         </Link>
                     </li>
 
                     <li className={cx(["menu"])}>
-                        <Link to={`/shoes?_page=1&_limit=${limit}&_C2C=true`} className={cx("c2cMode_btn")}
-                            onClick={() => {
-                                window.scrollTo(0, 0)
-                                setRe_render(pre => !pre)
-                                
-                            }}
-                        >
+                        <Link to={`/shoes?_page=1&_limit=${limit}&_C2C=true`} className={cx("c2cMode_btn")} onClick={() => {scrollToTop()}} >
                             <span className={cx("nav_desktop")}>Chợ</span><FontAwesomeIcon icon={faStore}/>
                         </Link>
                     </li>
                     
-    
-                  
                 </ul>
-    
     
                 <ul id={styles["nav"]}>
                     <li>
@@ -238,13 +222,7 @@ function Header({setRe_render}) {
                         <>
                             
                             <li className={cx(['favorite'])}>
-                                <Link to={`/shoes?_favorite=true&_page=1&_limit=${limit}`}
-                                    onClick={() => {
-                                        window.scrollTo(0, 0)
-                                        setRe_render(pre => !pre)
-                                        
-                                    }}
-                                >
+                                <Link to={`/shoes?_favorite=true&_page=1&_limit=${limit}`} onClick={() => {scrollToTop()}} >
                                     <FontAwesomeIcon className={cx("btn_header")} icon={faHeart}/>
                                 </Link>
                             </li>
@@ -298,14 +276,7 @@ function Header({setRe_render}) {
                             <Link to="/order" className={cx("header_cart")}>
                                 <FontAwesomeIcon className={cx(["btn_header"])} icon={faCartShopping}/>
                             </Link>
-                            {/* <span className={cx("header_cart-notice")}>{orderItem.length}</span> */}
                             <span className={cx("header_cart_quantity")}><span>{orderItem.length}</span></span>
-    
-                        {/* {
-                            Boolean(orderItem.length) && <span className={cx("header_cart-notice")}></span>
-                        } */}
-                            {/* <span className={cx("header_cart-notice")}></span> */}
-    
                             
                             <div className={cx("header_cart-list")}>
                                 <img src="./assets/img/no-cart.png" alt="" className={cx("header_cart-no-cart-img")}/>
@@ -316,7 +287,6 @@ function Header({setRe_render}) {
                                     <p>¯\_( ͡❛ ͜ʖ ͡❛)_/¯</p>
                                 </p>
                             }
-                                
                                 
                                 <ul className={cx("header_cart-list-item")}>
                                     
@@ -339,46 +309,92 @@ function Header({setRe_render}) {
           
            <div className={cx('category')}>
               <div className={cx('category_items')}>
-              <button className={cx('icon_menu')} onClick={()=>setShowMenuMobile(!showMenuMobile)}><FontAwesomeIcon icon={faBars}
-                /></button>
-                {showMenuMobile && <div className={cx('menu_mobile')}><div className={cx('wrapper_btn_exit')}><button onClick={()=>setShowMenuMobile(!showMenuMobile)} className={cx('btn_exit')}><FontAwesomeIcon className={cx('icon_exit')} icon={faXmark}/></button>
+              <button className={cx('icon_menu')} onClick={()=>setShowMenuMobile(!showMenuMobile)}><FontAwesomeIcon icon={faBars}/></button>
+                {showMenuMobile && 
+                <div className={cx('menu_mobile')}><div className={cx('wrapper_btn_exit')}><button onClick={()=>setShowMenuMobile(!showMenuMobile)} className={cx('btn_exit')}><FontAwesomeIcon className={cx('icon_exit')} icon={faXmark}/></button>
                 </div>
                 <div className={cx('group_btn_category')}> <div className={cx('wrapper_btn_category')}>
-                {apiCategory.map((item,index) =>(<button onClick={()=>{setShowtype(index)
-                console.log(index)}} className={cx('btn_category')}>{item.name}
-                
-                </button>))} 
+                {
+                    apiCategory.map((item,index) =>(
+                    <button key={item.id} onClick={()=>{setShowtype(item.id)}} className={cx('btn_category')}>{item.name}</button>))
+                } 
                 </div>
-                {showtype === 0 && <ul className={cx('list_category')}>
-                    
-                    <li className={cx('view_all_phukien')}><Link className={cx('btn_link')} to={`/shoes?_page=1&_limit=16&_category=1` } onClick={() => {
-                                window.scrollTo(0, 0)
-                                setRe_render(pre => !pre)
-                                setShowMenuMobile(!showMenuMobile)
-                            }}>Xem tất cả</Link></li>
-                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=1&_category=1`} onClick={() => {
-                                window.scrollTo(0, 0)
-                                setRe_render(pre => !pre)
-                                setShowMenuMobile(!showMenuMobile)
-                            }}>Sneaker</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=2&_category=1`}
-                onClick={() => {
-                    window.scrollTo(0, 0)
-                    setRe_render(pre => !pre)
-                    setShowMenuMobile(!showMenuMobile)
-                }}>Boot</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=3&_category=1`} onClick={() => {
-                    window.scrollTo(0, 0)
-                    setRe_render(pre => !pre)
-                    setShowMenuMobile(!showMenuMobile)
-                }}>Sandal</Link></li>
-                <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=4&_category=1`} onClick={() => {
-                    window.scrollTo(0, 0)
-                    setRe_render(pre => !pre)
-                    setShowMenuMobile(!showMenuMobile)
-                }}>Dép</Link></li>
+
+            {
+                apiCategory.map((item) => {
+                    if(showtype === item.id) {
+                        return (
+                            <ul className={cx('list_category')}>
+                                <li className={cx('view_all_phukien')}>
+                                    <Link className={cx('btn_link')} to={`/shoes?_page=1&_limit=16&_category=${item.id}` } 
+                                        onClick={() => {
+                                            window.scrollTo(0, 0)
+                                            setRe_render(pre => !pre)
+                                            setShowMenuMobile(!showMenuMobile)
+                                        }}
+                                    >Xem tất cả</Link>
+                                </li>
+                                
+                            {
+                                apiCategory.find(cate => cate.id === showtype).detail.map(type => (
+                                    <li>
+                                        <Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=${type.id}&_category=${showtype}`} 
+                                            onClick={() => {
+                                                window.scrollTo(0, 0)
+                                                setRe_render(pre => !pre)
+                                                setShowMenuMobile(!showMenuMobile)
+                                            }}
+                                        >{type.type_name}</Link>
+                                    </li>
+                                ))
+                            }
+
+                              
+                            </ul>
+                        )
+                    }
+
+                })
                 
-                </ul>}
+            }
+
+              
+                {/* {
+                    showtype === 0 && <ul className={cx('list_category')}>
+                        
+                        <li className={cx('view_all_phukien')}><Link className={cx('btn_link')} to={`/shoes?_page=1&_limit=16&_category=1` } onClick={() => {
+                                    window.scrollTo(0, 0)
+                                    setRe_render(pre => !pre)
+                                    setShowMenuMobile(!showMenuMobile)
+                                }}>Xem tất cả</Link>
+                        </li>
+                        <li>
+                            <Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=1&_category=1`} onClick={() => {
+                                    window.scrollTo(0, 0)
+                                    setRe_render(pre => !pre)
+                                    setShowMenuMobile(!showMenuMobile)
+                                }}>Sneaker</Link></li>
+                        <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=2&_category=1`}
+                    onClick={() => {
+                        window.scrollTo(0, 0)
+                        setRe_render(pre => !pre)
+                        setShowMenuMobile(!showMenuMobile)
+                    }}>Boot</Link></li>
+                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=3&_category=1`} onClick={() => {
+                        window.scrollTo(0, 0)
+                        setRe_render(pre => !pre)
+                        setShowMenuMobile(!showMenuMobile)
+                    }}>Sandal</Link></li>
+                    <li><Link className={cx('btn_link')}  to={`/shoes?_page=1&_limit=16&_type=4&_category=1`} onClick={() => {
+                        window.scrollTo(0, 0)
+                        setRe_render(pre => !pre)
+                        setShowMenuMobile(!showMenuMobile)
+                    }}>Dép</Link></li>
+                    
+                    </ul>
+                }
+
+
                 {showtype === 1 && <div className={cx('quanao_div')}>
                     
                     <ul >
@@ -501,81 +517,77 @@ function Header({setRe_render}) {
                     window.scrollTo(0, 0)
                     setRe_render(pre => !pre)
                     setShowMenuMobile(!showMenuMobile)
-                }}>Ví</Link></li></ul>}
+                }}>Ví</Link></li></ul>} */}
                 
 
                 </div>
 
-                </div>}
-                {apiCategory.map((item) =>(
-                     <button className={cx('category_button')} key={item.id}>{item.name} <FontAwesomeIcon icon={faCaretDown}/>
-                      <div className={cx('category_menu')}>
-                      <Link to={`/shoes?_page=1&_limit=16&_category=${item.id}`} className={cx('link_btn_view_all')}  
-                                onClick={() => {
-                                window.scrollTo(0, 0)
-                                setRe_render(pre => !pre)
-                                
-                            }}>Xem tất cả</Link>
-                               <div className={cx('category_list')}>
-                                
-                               {item.name === 'Giày' && (<ul>
-                                { item.detail.map((item, index) => (<li key={index}><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`} className={cx('category_item_button')} 
-                            onClick={() => {
-                                window.scrollTo(0, 0)
-                                setRe_render(pre => !pre)
-                                
-                            }} >{item.type_name} </Link></li>))}</ul>) }
-                               
-                                {item.name==='Quần Áo' &&  
-                                <div className={cx('block_clothes')}>
-                                    <ul>
-                                    <h2 className={cx('block_clothes_header')}>Áo</h2>
-                                    
-                                            {item.detail.map((item, index) =>item.type_name.startsWith('Áo') && (
-                                            <div key={index}>
-                                                <li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`} onClick={() => {
-                                        window.scrollTo(0, 0)
-                                        setRe_render(pre => !pre)
-                                        
-                                    }}  className={cx('category_item_button')}>{item.type_name} </Link></li></div>))}
-                                    </ul>
-                                    
-                                    <ul>
-                                    <h2 className={cx('block_clothes_header')}>Quần</h2>
-                                
-                                    {item.detail.map((item, index) =>item.type_name.startsWith('Quần') &&  
-                                        <li key={item.id}><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`}
-                                        onClick={() => {
-                                            window.scrollTo(0, 0)
-                                            setRe_render(pre => !pre)
-                                            
-                                        }}
-                                         className={cx('category_item_button')}>            
-                                            { item.type_name}
-                                            </Link></li>
-                                    )}
-                                    </ul>
-                              
-                                    
-                             </div>}
+                </div>
+            }
 
-                               {item.name==='Phụ Kiện'  && (
+            {
+                apiCategory.map((item) => (
+                    <button className={cx('category_button')} key={item.id}>
+                        {item.name} <FontAwesomeIcon icon={faCaretDown}/>
+                        <div className={cx('category_menu')}>
+                            <Link to={`/shoes?_page=1&_limit=16&_category=${item.id}`} className={cx('link_btn_view_all')}  onClick={() => {scrollToTop()}}>Xem tất cả</Link>
+                            <div className={cx('category_list')}>
+                            {
+                                item.id !== 2 /* id = 2 là danh mục quần áo */?  
                                 <ul>
-                                    
-                               {item.detail.map(item => (<li><Link
-                               to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`} onClick={() => {
-                                window.scrollTo(0, 0)
-                                setRe_render(pre => !pre)
-                                
-                            }}  className={cx('category_item_button')}>{item.category_id===3 && item.type_name}</Link></li>))}
+                                { 
+                                    item.detail.map((item, index) => (
+                                        <li key={index}>
+                                            <Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`} className={cx('category_item_button')} 
+                                                onClick={() => {
+                                                    window.scrollTo(0, 0)
+                                                    setRe_render(pre => !pre)
+                                                }}>{item.type_name}</Link>
+                                        </li>
+                                    ))
+                                }
                                 </ul>
-                               )}
-                               </div>
-                      </div>
-              </button>
-              ))}
-             
-              </div>
+                                :
+                                <>
+                                    <div className={cx('block_clothes')}>
+                                        <ul>
+                                            <h2 className={cx('block_clothes_header')}>Áo</h2>
+                                            {
+                                                item.detail.map((item, index) => item.type_name.toLowerCase().startsWith('áo') && (
+                                                    <div key={index}>
+                                                        <li><Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`} onClick={() => {scrollToTop()}}className={cx('category_item_button')}>{item.type_name} </Link></li>
+                                                    </div>)
+                                                )
+                                            }
+                                        </ul>
+                                        <ul>
+                                            <h2 className={cx('block_clothes_header')}>Quần</h2>
+                                            {
+                                                item.detail.map((item) => item.type_name.toLowerCase().startsWith('quần') &&  
+                                                    <li key={item.id}>
+                                                        <Link to={`/shoes?_page=1&_limit=16&_type=${item.id}&_category=${item.category_id}`}
+                                                            onClick={() => {scrollToTop()}}
+                                                            className={cx('category_item_button')}
+                                                        >            
+                                                                { item.type_name}
+                                                        </Link>
+                                                    </li>
+                                                )
+                                            }
+                                        </ul>
+                                    </div>
+                                </>
+                            }
+                            </div>
+                        </div>
+
+                    </button>
+                ))
+                
+                
+            }
+
+                </div>
            </div>
            
             

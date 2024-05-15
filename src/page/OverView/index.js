@@ -29,7 +29,7 @@ function OverView() {
 
     const [dashboard, setDashboard] = useState({})
 
-    const [year, setYear] = useState(2023)
+    const [year, setYear] = useState(new Date().getFullYear())
     const [month, setMonth] = useState(0)
 
     const [show_modal, setShow_modal] = useState(false);

@@ -693,6 +693,10 @@ const Modal_modify_atribute = ({show, handleClose, atri_prod, setTrigger_Atrib, 
         setTrigger_Atrib(pre => !pre)
     }
     const handle_add = () => {
+        if(!(input_add.current.value).trim()) {
+            toast("Vui lòng nhập giá trị hợp lệ")
+            return
+        }
         setTrigger_Atrib(pre => !pre)
         if(attrib === "brands") {
             axios.post(process.env.REACT_APP_BACKEND_URL+`/${attrib}`, {brand_id:input_add.current.value})

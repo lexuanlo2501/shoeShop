@@ -1,0 +1,24 @@
+.infor_contact_store {
+    background-color: rgb(239, 243, 246);
+    padding: 15px;
+    margin: 0 10px;
+    border-radius: 20px;
+
+    .avatar_name {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+
+        p {
+            margin-left: 10px;
+        }
+    }
+
+    .manage_store_btn {
+        background-color: rgba(247, 114, 114, 0.843);
+        padding: 5px 10px; 
+        border-radius: 5px;
+        color: #fff;
+
+    }
+}
