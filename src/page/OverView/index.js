@@ -171,7 +171,7 @@ function OverView() {
 
                 </div>
 
-                <div className={cx("hot_products")}>
+                {/* <div className={cx("hot_products")}>
                     <h3 className={cx("title_content")}>Sản phẩm bán chạy</h3>
                 {
                     dashboard?.hot_product?.map(prod => (
@@ -186,8 +186,36 @@ function OverView() {
                         </div>
                     ))
                 }
-                </div>
+                </div> */}
 
+            </div>
+
+            <div className={cx("wrapper_hot_products")}>
+                <h1 style={{'color': '#686868', 'marginBottom':"10px"}}>SẢN PHẨM BÁN CHẠY</h1>
+            {
+                dashboard?.hotProductCategory?.map(i => (
+                    <div className={cx("hot_products_category")}>
+                        <h2>{i.categoryName}</h2>
+                    {
+                        i?.products?.map(prod => (
+                            <div className={cx("prod")}>
+                                <img src={`${process.env.REACT_APP_BACKEND_URL}/imgs/${prod.img}`}/>
+                                <div className={cx("prod_infor")}>
+                                    <p>Mã SP: {prod.id}</p>
+                                    <p>{prod.name}</p>
+                                    <p>{formatPrice(prod.price)}</p>
+                                    <p>Đã bán: {prod.total}</p>
+                                </div>
+                            </div>
+                        ))
+                    } 
+                    {
+                        i?.products?.length === 0 && <p style={{'textAlign': 'center'}}>Chưa có sản phẩm được bán</p>
+                    } 
+                    </div>
+                ))
+            }
+           
             </div>
 
         </div>

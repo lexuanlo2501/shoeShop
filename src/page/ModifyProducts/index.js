@@ -149,6 +149,10 @@ function ModifyProducts() {
             headers: {Authorization: infor_user.accessToken}
         })
         .then(res => {
+            if(res.data?.status === false) {
+                toast.error(res.data.message)
+                return
+            }
             toast.success("xóa sản phẩm thành công")
 
 
