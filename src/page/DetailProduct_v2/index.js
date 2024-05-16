@@ -1009,7 +1009,7 @@ function DetailProduct_v2({product_prop={}}) {
                         </div>
                     
                     {
-                        product?.brand_id && <Carousel_v2 brand={product?.brand_id} setTrigger={setTrigger}/>
+                        product?.brand_id && <Carousel_v2 brand={product?.brand_id} categoryID={product?.categoryID}  setTrigger={setTrigger}/>
                     }
                 </div>
                 </>

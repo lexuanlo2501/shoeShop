@@ -1,3 +1,18 @@
+.wrapper_comingSoon {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    h2 {
+        color: #555555;
+    }
+    h1 {
+        color: #464646;
+    }
+}
+
 .wrapper {
     margin: 30px;
     // width: 700px;

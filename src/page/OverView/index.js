@@ -96,7 +96,15 @@ function OverView() {
         ],
       };
 
-    
+    const inforUser = JSON.parse(localStorage.getItem("tokens"))
+    if(inforUser.role === 'seller') {
+        return (
+            <div className={cx('wrapper_comingSoon')}>
+                <h2>ĐANG PHÁT TRIỂN</h2>
+                <h1>HIỆN CHƯA CÓ TÍNH NĂNG NÀY CHO NGƯỜI BÁN</h1>
+            </div>
+        )
+    }
 
     return (
         <div className={cx('wrapper')}>
