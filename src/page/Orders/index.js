@@ -26,15 +26,12 @@ const axiosJWT = createAxios()
 function Orders() {
 
     const [user, setUser] = useState({})
-
     const [orderItem, setOrderItem] = useState([])
     const [check, setCheck] = useState(false)
     const [loading, setLoading] = useState(true)
-
     const [show, setShow] = useState(false);
     const [optionPay, setOptionPay] = useState("cod")
     const [errQuantity, setErrQuantity] = useState([])
-    
     const [urlVNP, setUrlVNP] = useState("")
 
     const handleChange_payMent = (event) => {
@@ -570,6 +567,19 @@ function Orders() {
 
 function Item_order({order, setCheck}) {
     const cart_context = useContext(CartContext);
+    console.log({order})
+    const [category, setCategory] = useState([])
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND_URL+"/category")
+        .then(res => {
+            setCategory(res.data)
+        })
+    }, [])
+
+    const findSizeCategory = (categoryID) => {
+        return category?.find(i => i.id === categoryID)?.sizes_value
+    }
 
     const [quantity, setQuantity] = useState(order.quantity)
 
@@ -627,8 +637,6 @@ function Item_order({order, setCheck}) {
 
     const handleChangeSize = (product, size) => {
         let cart = JSON.parse(localStorage.getItem('cart'))
-
-       
 
         // tìm ra sản phẩm đang select
         let tmp = cart.find(i => i.id === product.id && i.size === product.size)
@@ -690,8 +698,11 @@ function Item_order({order, setCheck}) {
                            
                         }}
                     >
-                    {
+                    {/* {
                         sizeValues.map(i => <option key={i} value={i}>{i}</option>)
+                    } */}
+                    {
+                        findSizeCategory(order?.product?.categoryID)?.map(i => <option key={i} value={i}>{i}</option>)
                     }
                     </select>
                 </div>
