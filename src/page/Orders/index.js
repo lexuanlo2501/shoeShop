@@ -224,10 +224,8 @@ function Orders() {
         refinputAddress.current.focus();
         axios.post(process.env.REACT_APP_BACKEND_URL+`/addresses` ,
         {
-          
             addressName : value,
             accName: userInfor.accName
-          
         }) 
         .then(()=>{
             setLoadicon1(false);
@@ -558,8 +556,6 @@ function Orders() {
                 </Modal.Footer>
             </Modal>
 
-            
-       
     </div>
     );
 }
@@ -567,7 +563,6 @@ function Orders() {
 
 function Item_order({order, setCheck}) {
     const cart_context = useContext(CartContext);
-    console.log({order})
     const [category, setCategory] = useState([])
 
     useEffect(() => {

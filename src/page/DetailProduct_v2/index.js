@@ -56,7 +56,7 @@ function DetailProduct_v2({product_prop={}}) {
     const [quantity_Order, setQuantity_Order] = useState(1)
    
     // const [size_Order, setSize_Order] = useState(sizeValues[0])
-    const [size_Order, setSize_Order] = useState("")
+    const [size_Order, setSize_Order] = useState(product_prop?.inventory?.length === 1 ? product_prop?.inventory[0].size : "")
     
 
     let currentUrl = window.location.href;
@@ -71,6 +71,9 @@ function DetailProduct_v2({product_prop={}}) {
             .then(res => {
                 setProduct(res.data)
                 setImgMain(res.data.img)
+                
+                // nếu category = none thì set mặc định (k cần select size khi none size)
+                setSize_Order(res.data?.inventory?.length === 1 ? res.data?.inventory[0].size : "")
             })
         }
         else {
@@ -114,7 +117,11 @@ function DetailProduct_v2({product_prop={}}) {
 
     }
 
-    const size_quantiry_select = product?.inventory?.find(i => i.size === size_Order)?.quantity
+    // 
+    const size_quantiry_select = product?.inventory?.length === 1 ?
+    product?.inventory[0].quantity
+    :
+    product?.inventory?.find(i => i.size === size_Order)?.quantity
     
     let user = JSON.parse(localStorage.getItem('tokens')) || {}
 
@@ -191,11 +198,8 @@ function DetailProduct_v2({product_prop={}}) {
                 setIndexComment(index);
                 setIdcomment(idcmt);
                 setShowoption(prev => !prev) 
-                    setShowInput(false)
-                    setValuecomment( value)
-         
-
-            
+                setShowInput(false)
+                setValuecomment( value)
             }    
         }
 
@@ -438,22 +442,18 @@ function DetailProduct_v2({product_prop={}}) {
     let arrStar = [1,2,3,4,5]
 
     const handleDelReply = ((id_cmt) => {
-
-          axios.delete( process.env.REACT_APP_BACKEND_URL + `/replycomments/${id_cmt}`)
-
-          .then(() => {
+        axios.delete( process.env.REACT_APP_BACKEND_URL + `/replycomments/${id_cmt}`)
+        .then(() => {
             setTrigger(prev => !prev)
-
             toast.success("Đã xóa phản hồi thành công!", {
                 autoClose: 2000,
                 // theme: "colored",
                 theme: "light",
                 position: "top-right",
             })
-
-            
-          })
+        })
     })
+
     return (
         <div >
            
@@ -573,34 +573,41 @@ function DetailProduct_v2({product_prop={}}) {
                             <div className={cx("line")}></div>
                             <div className={cx("option", {"quick_view":isQuickView})}>
                                 <div className={cx("size_product")}>
-                                    <p className={cx(["select","m-0"])}>Size: </p>
-                                    <ul className={cx("button_size")}>
-                                        <SelectActive>
-                                        {
-                                            // sizeValues
-                                            product?.inventory?.map(i=>i.size)?.map((item, index) => {
-                                                let quantitySize_select = product?.inventory?.find(i => i.size===item)
+                                {
+                                    // size = none thì không cần show size để select
+                                    product?.inventory?.length !== 1
+                                    && 
+                                    <>
+                                        <p className={cx(["select","m-0"])}>Size: </p>
+                                        <ul className={cx("button_size")}>
+                                            <SelectActive>
+                                            {
+                                                // sizeValues
+                                                product?.inventory?.map(i=>i.size)?.map((item, index) => {
+                                                    let quantitySize_select = product?.inventory?.find(i => i.size===item)
 
-                                                return (
-                                                    Number(quantitySize_select?.quantity) ?
-                                                    <span key={index}
-                                                        className={cx("btn_size")}
-                                                        onClick={() => {
-                                                            // console.log(quantitySize_select)
-                                                            setSize_Order(item)
-                                                        }}
-                                                    >
-                                                        {item}
-                                                    </span>
-                                                    :
-                                                    <span noActive key={index} className={cx(["btn_size", "noActive"])} onClick={() => {}}><span>x</span></span>
-                                                )
-                                                
+                                                    return (
+                                                        Number(quantitySize_select?.quantity) ?
+                                                        <span key={index}
+                                                            className={cx("btn_size")}
+                                                            onClick={() => {
+                                                                // console.log(quantitySize_select)
+                                                                setSize_Order(item)
+                                                            }}
+                                                        >
+                                                            {item}
+                                                        </span>
+                                                        :
+                                                        <span noActive key={index} className={cx(["btn_size", "noActive"])} onClick={() => {}}><span>x</span></span>
+                                                    )
+                                                    
 
-                                            })
-                                        }
-                                        </SelectActive>
-                                    </ul>
+                                                })
+                                            }
+                                            </SelectActive>
+                                        </ul>
+                                    </>
+                                }
                                 </div>
                                 <div className={cx("quantity_product")}>
                                     <p className={cx(["quantity", "m-0"])}>Số Lượng: </p>
@@ -659,6 +666,7 @@ function DetailProduct_v2({product_prop={}}) {
                 
                                 <div className={cx("add_btn_grp")}
                                     onClick={() =>{
+                                        console.log(size_Order)
                                         if(size_quantiry_select<quantity_Order) {
                                             toast.error("Sản phẩm không đủ số lượng", {
                                                 autoClose: 2000,
@@ -677,11 +685,13 @@ function DetailProduct_v2({product_prop={}}) {
                                             })
                                         }
                                         else {
-                                            toast.error("Vui lòng chọn size", {
-                                                autoClose: 2000,
-                                                theme: "colored",
-                                                position: "bottom-right",
-                                            })
+                                            if(product?.inventory.length !== 1) {
+                                                toast.error("Vui lòng chọn size", {
+                                                    autoClose: 2000,
+                                                    theme: "colored",
+                                                    position: "bottom-right",
+                                                })
+                                            }
                                         }
                                        
                                     }}
