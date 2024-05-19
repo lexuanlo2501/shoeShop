@@ -13,8 +13,8 @@ import { formatPrice, priceDiscount } from '../../common';
 
 const cx = classNames.bind(styles)
 
-function Carousel_v2({brand="", setTrigger, nameProd, categoryID}) {
-
+function Carousel_v2({brand="", setTrigger, nameProd, categoryID, accID}) {
+    // accID
     const [products, setProducts] = useState([])
   
     const handleDragStart = (e) => e.preventDefault();
@@ -23,7 +23,11 @@ function Carousel_v2({brand="", setTrigger, nameProd, categoryID}) {
 
     useEffect(() => {
         const controller = new AbortController()
-        axios.get(process.env.REACT_APP_BACKEND_URL+`/shoes?_limit=10&_page=1&_brand=${brand}&_string=${nameProd||""}&_random=true${paramCategory}`, {signal:controller.signal})
+        const apiCall = !accID ?
+        process.env.REACT_APP_BACKEND_URL+`/shoes?_limit=10&_page=1&_brand=${brand}&_string=${nameProd||""}&_random=true${paramCategory}`
+        :
+        process.env.REACT_APP_BACKEND_URL+"/recommendProd/"+accID
+        axios.get(apiCall, {signal:controller.signal})
         .then(res => {
             setProducts(res.data)
         })
