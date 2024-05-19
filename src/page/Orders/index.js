@@ -600,14 +600,9 @@ function Item_order({order, setCheck}) {
             }
         }
         else {
-            console.log("use onchange event")
-            console.log(action.target.value)
             setQuantity(+(action.target.value))
             quantityUpdate = +(action.target.value)
-
-
         }
-        // console.log(quantityUpdate)
 
         let newCart = [...cart, {...tmp, "quantity":quantityUpdate}].sort(
             function(a, b){
@@ -622,10 +617,6 @@ function Item_order({order, setCheck}) {
 
         setCheck(pre => !pre)
         
-    }
-
-    const modifyQuantity_input = (e) => {
-        setQuantity(e.target.value)
     }
 
     const [size, setSize] = useState(order?.size)
@@ -645,7 +636,6 @@ function Item_order({order, setCheck}) {
                 return a.id*Number(a.size) - b.id*Number(b.size)
                 //  lấy id x size để cố định số index trên item component khi thay đổi số lượng sản phẩm
                 //  việc thay đổi số lượng làm set lại card bằng toán tử ..., các phầm tử array sẽ thay đổi vị trí
-
             }
         )
         localStorage.setItem('cart', JSON.stringify(cart_sort))
@@ -653,8 +643,6 @@ function Item_order({order, setCheck}) {
 
 
     }
-
-    const sizeValues = ['36', '37', '38', '39', '40', '41', '42', '43']
 
     return (
         <div className={cx("content_description_wrapper")}>
@@ -674,32 +662,36 @@ function Item_order({order, setCheck}) {
                     </Link>
                     
                     {/* <p>Size {order.size}</p> */}
-                    <span>Size: </span>
-                    <select
-                        value={size}
-                        onChange={(e) => {
-                            let cart = JSON.parse(localStorage.getItem('cart'))
+                {
+                    
+                }
 
-                             // xử lý nếu trùng size với cùng là 1 sản phẩm (giỏ hàng có 2 sản phẩm mã giống nhưng khác size)
-                            if( cart.map(i=>i.id+i.size).includes(order?.id+e.target.value) ) {
-                                toast.error(`Sản phẩm ${order?.product?.name} size ${e.target.value} đã tồn tại trong giỏ hàng`, {
-                                    position: "top-center",
-                                })
-                            }
-                            else {
-                                setSize(e.target.value)
-                                handleChangeSize(order, e.target.value)
-                            }
-                           
-                        }}
-                    >
-                    {/* {
-                        sizeValues.map(i => <option key={i} value={i}>{i}</option>)
-                    } */}
-                    {
-                        findSizeCategory(order?.product?.categoryID)?.map(i => <option key={i} value={i}>{i}</option>)
-                    }
-                    </select>
+                {
+                    findSizeCategory(order?.product?.categoryID).length !== 1 &&
+                    <>
+                        <span>Size: </span>
+                        <select
+                            value={size}
+                            onChange={(e) => {
+                                let cart = JSON.parse(localStorage.getItem('cart'))
+                                // xử lý nếu trùng size với cùng là 1 sản phẩm (giỏ hàng có 2 sản phẩm mã giống nhưng khác size)
+                                if( cart.map(i=>i.id+i.size).includes(order?.id+e.target.value) ) {
+                                    toast.error(`Sản phẩm ${order?.product?.name} size ${e.target.value} đã tồn tại trong giỏ hàng`, {
+                                        position: "top-center",
+                                    })
+                                }
+                                else {
+                                    setSize(e.target.value)
+                                    handleChangeSize(order, e.target.value)
+                                }
+                            }}
+                        >
+                        {
+                            findSizeCategory(order?.product?.categoryID)?.map(i => <option key={i} value={i}>{i}</option>)
+                        }
+                        </select>
+                    </>
+                }
                 </div>
             {
                 order?.product?.discount_id ?
