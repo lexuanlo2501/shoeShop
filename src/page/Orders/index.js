@@ -218,6 +218,17 @@ function Orders() {
 
 
     const handleAddaddress = (value) => {
+        
+        var trimmedStr = refinputAddress.current.value.replace(/^\s+|\s+$/g, ' ');
+        if(trimmedStr === ' ') {
+            return;
+        }
+
+        var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(refinputAddress.current.value);
+        if(containsSpecialChars) {
+            
+            return;
+        }
         setLoadicon1(true);
         setIconAddaddress(false);
         const userInfor = JSON.parse(localStorage.getItem("tokens"))
