@@ -295,12 +295,12 @@ function Orders() {
                             <h1 className={cx("lbl_shopping_cart")}>
                             Giỏ hàng     
                             </h1>
-                            <span>(<span className={cx("count_item")}> {orderItem.length} </span>sản phẩm)</span>
+                            <span>(<span className={cx("count_item")}> {orderItem?.length} </span>sản phẩm)</span>
                         </div>
 
                         
                     {
-                        !!errQuantity.length && 
+                        !!errQuantity?.length && 
                         <div className={cx("err_quantity_order")}>
                             <p>* Thông báo: không đủ số lượng để bạn đặt hàng</p>
                             <p>Bạn vui lòng kiểm tra thông tin giỏ hàng với những thông tin dưới đây</p>
@@ -351,7 +351,7 @@ function Orders() {
                                                     navigate("/signin")
                                                 }
 
-                                                if(!addressList.length) {
+                                                if(!addressList?.length) {
                                                     toast.error("Vui Lòng Thêm Địa chỉ Nhận Hàng")
                                                     refinputAddress.current.focus();
                                                     return
@@ -678,7 +678,7 @@ function Item_order({order, setCheck}) {
                 }
 
                 {
-                    findSizeCategory(order?.product?.categoryID).length !== 1 &&
+                    findSizeCategory(order?.product?.categoryID)?.length !== 1 &&
                     <>
                         <span>Size: </span>
                         <select
