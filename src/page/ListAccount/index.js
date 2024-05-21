@@ -59,11 +59,18 @@ function ListAccount() {
         .then(res => setAcc(res.data))
     }, [rr_lock, trigger])
 
-    const handleLockAcc = (id, value) => {
-        axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/accounts/${id}`, {"isLock":value}, {
+    const handleLockAcc = (accName, value) => {
+        axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/accounts/${accName}`, {"isLock":value}, {
             headers: {Authorization: infor_user.accessToken}
         })
         // .then(res => console.log(res))
+        setRr_lock(pre => !pre)
+    }
+
+    const handChangeRole = (accName, newRole) => {
+        axiosJWT.patch(process.env.REACT_APP_BACKEND_URL+`/accounts/${accName}`, {"role":newRole}, {
+            headers: {Authorization: infor_user.accessToken}
+        })
         setRr_lock(pre => !pre)
     }
 
@@ -103,9 +110,13 @@ function ListAccount() {
                                 <td>{item.email}</td>
                                 <td>{item.phoneNumber}</td>
                                 <td>
-                                {
-                                    item.role === "admin" ? <span className={cx(['role', 'i'])}>Admin</span> : <span className={cx(['role', 'ii'])}>Client</span>
-                                }
+                                    <select defaultValue={item.role} className={cx(['role', {i:item.role=='admin', ii:item.role=='client', iii: item.role=="seller"}])}
+                                        onChange={e => handChangeRole(item.accName,e.target.value)}
+                                    >
+                                        <option value='admin'>Admin</option>
+                                        <option value='client'>Client</option>
+                                        <option value='seller'>Seller</option>
+                                    </select>
                                 </td>
                                 <td 
                                     onClick={() => {
@@ -179,8 +190,8 @@ function ModalInforUser({show, handleClose, userSelect, setTrigger}) {
         const dataFormArr = Object.keys(restData)
         const dataPatch = {}
         dataFormArr.forEach((keyObj) => {
-            if(data[keyObj] !== userSelect[keyObj]) {
-                dataPatch[keyObj] = data[keyObj]
+            if(data[keyObj].trim() !== userSelect[keyObj].trim()) {
+                dataPatch[keyObj] = data[keyObj].trim()
             }
         })
 
@@ -210,8 +221,6 @@ function ModalInforUser({show, handleClose, userSelect, setTrigger}) {
             .catch(err => console.log(err))
         }
        
-
-        
     }
    
 

@@ -17,7 +17,13 @@ body {
 
 }
 
-
+.form_edit_atrib {
+    text-align: center;
+    padding: 15px 0;
+    input {
+        border-bottom: 2px solid #9c9c9c;
+    }
+}
 
 .input_textarea {
     resize:both;
@@ -958,8 +964,8 @@ ul {
 
 }
 
-.atrib_add_btn, .atrib_del_btn {
-    font-size: 20px;
+.atrib_add_btn, .atrib_del_btn, .atrib_upd_btn {
+    font-size: 18px;
     font-weight: 800;
     line-height: 1;
     padding: 3px;
@@ -979,10 +985,16 @@ ul {
     color: rgb(69, 144, 50);
 }
 
+.atrib_upd_btn {
+    color: rgb(244, 173, 102);
+
+}
+
 .atrib_del_btn {
     color: rgb(208, 93, 93);
 
 }
+
 
 
 // pagination

@@ -13,19 +13,27 @@ import { formatPrice, priceDiscount } from '../../common';
 
 const cx = classNames.bind(styles)
 
-function Carousel_v2({brand="", setTrigger, nameProd}) {
-
+function Carousel_v2({brand="", setTrigger, nameProd, categoryID, accID}) {
+    // accID
     const [products, setProducts] = useState([])
   
     const handleDragStart = (e) => e.preventDefault();
-  
+    
+    const paramCategory = categoryID ? `&_category=${categoryID}` : ""
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL+`/shoes?_limit=10&_page=1&_brand=${brand}&_string=${nameProd||""}&_random=true`)
+        const controller = new AbortController()
+        const apiCall = !accID ?
+        process.env.REACT_APP_BACKEND_URL+`/shoes?_limit=10&_page=1&_brand=${brand}&_string=${nameProd||""}&_random=true${paramCategory}`
+        :
+        process.env.REACT_APP_BACKEND_URL+"/recommendProd/"+accID
+        axios.get(apiCall, {signal:controller.signal})
         .then(res => {
             setProducts(res.data)
         })
         .catch(err => console.log(err))
+
+        return () => controller.abort()
     }, [])
 
     return (
@@ -65,8 +73,8 @@ function Carousel_v2({brand="", setTrigger, nameProd}) {
                             key={item.id}
                             to={`/shoes/detail_product?_id=${item.id}`}
                             onClick={() => {
-                                setTrigger(pre => !pre)
                                 window.scrollTo(0, 0)
+                                setTrigger && setTrigger(pre => !pre)
                             }}
                             replace
                             

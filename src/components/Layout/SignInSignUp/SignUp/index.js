@@ -160,7 +160,7 @@ function SignUp() {
 
     const schema = yup.object().shape({
         fullName: yup.string().required(),
-        phoneNumber: yup.string().required("Bạn phải điền mục này").length(10, "Số điện thoại phải có 10 số"),
+        phoneNumber: yup.string().required("Bạn phải điền mục này").matches(/^[0-9]+$/, "Số điện thoại chỉ được chứa các ký tự số").length(10, "Số điện thoại phải có 10 số"),
         email: yup.string().required(),
         accName: yup.string().required(),
         password: yup.string().required(),

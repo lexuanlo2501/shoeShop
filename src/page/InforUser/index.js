@@ -64,6 +64,7 @@ function InforUser() {
     }
     // pass_confirm,newPass
     const schema = yup.object().shape({
+        phoneNumber: yup.string().matches(/^[0-9]+$/, "Số điện thoại chỉ được chứa các ký tự số").length(10, "Số điện thoại phải có 10 số"),
         newPass: yup.string(),
         pass_confirm: yup.string().oneOf([yup.ref("newPass")], "Mật khẩu không khớp"),
     }).required();
@@ -105,7 +106,7 @@ function InforUser() {
             headers: {Authorization: infor_user.accessToken}
         })
         .then(res => {
-            // console.log(res)
+            console.log(res)
             localStorage.setItem('tokens', JSON.stringify({...infor_user, fullName:dataPatch.fullName}))
             toast(res.data.message, {
                 theme: "light",
@@ -245,6 +246,8 @@ function InforUser() {
                                 setStatusChange(pre => ({...pre, phoneNumber:!pre.phoneNumber}))
                             }}
                         >{statusChange.phoneNumber ?  "Đóng" : "thay đổi"}</button>
+                    {errors.phoneNumber && <p style={{"color": "#ee5353",'textAlign': 'center'}}>{errors.phoneNumber?.message}</p>}
+
                     </div>
                     <div className={cx('input_update')}>
                         <label>Mật khẩu :</label> <span className={cx('valueClkToChange')}>************</span>

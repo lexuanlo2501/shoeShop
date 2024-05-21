@@ -25,10 +25,10 @@ function SideBar({setRe_render}) {
     let param = currentUrl.split("?")[1]
 
     let paramToObject = param && JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
-
+    let paramCategory = paramToObject?._category ? `&_category=${paramToObject?._category}` : ""
+    let paramC2C = paramToObject?._C2C  ? `&_C2C=${paramToObject?._C2C}` : ""
 
     useEffect(() => {
-        // axios.get('http://localhost:4000/products')
         try {
             axios.get(process.env.REACT_APP_BACKEND_URL+'/brands')
             .then((res) => {
@@ -41,7 +41,6 @@ function SideBar({setRe_render}) {
             } catch (error) {
                 console.log(error)
             }
-      
     }, [])
 
     const handleClickScroll = () => {
@@ -63,12 +62,12 @@ function SideBar({setRe_render}) {
                     <li
                         className={cx('select_type-Brand')}
                         onClick={() => {
-                            handleClickScroll(
+                            window.scrollTo(0, 0)
                             setRe_render(pre => !pre)
 
-                        )}}
+                        }}
                     >
-                        <Link to={`/shoes?_page=1&_limit=${limit}&_category=${paramToObject?._category}`} >tất cả</Link>
+                        <Link to={ paramToObject?._category ? `/shoes?_page=1&_limit=${limit}&_category=${paramToObject?._category}${paramC2C}` : `/shoes?_page=1&_limit=${limit}${paramC2C}`} >tất cả</Link>
                     </li>
                 {
                     brands.map((item, index) => 
@@ -76,10 +75,12 @@ function SideBar({setRe_render}) {
                             className={cx('select_type-Brand')}
                             onClick={() => {
                                 setRe_render(pre => !pre)
-                                handleClickScroll()
+                                window.scrollTo(0, 0)
                             }}
                         >
-                            <Link to={`/shoes?_page=1&_limit=${limit}&_brand=${item.brand_id}&_category=${paramToObject?._category}`}>{item.brand_id}</Link>
+                            <Link to={ paramToObject?._category ? `/shoes?_page=1&_limit=${limit}&_brand=${item.brand_id}&_category=${paramToObject?._category}${paramC2C}` : `/shoes?_page=1&_limit=${limit}&_brand=${item.brand_id}${paramC2C}`}>
+                                {item.brand_id}
+                            </Link>
                         </li>
                     )
                 }
@@ -123,31 +124,15 @@ function SideBar({setRe_render}) {
                             max={10000000}
                             step={10000}
                         />
-                        {/* <br/> */}
-                        {/* <button className={cx('filter_price_btn')} 
-                            onClick={() => {
-                                // setRe_render(pre => !pre)
-                                const params = `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}&_brand=${paramToObject._brand}`
-
-                                console.log(params)
+                        <Link className={cx('filter_price_btn')}
+                            onClick={() => setRe_render(pre => !pre)}
+                            to={ 
+                                paramToObject?._brand ? 
+                                `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}${paramCategory}&_brand=${paramToObject._brand}${paramC2C}`
+                                :
+                                `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}${paramCategory}${paramC2C}`
                             }
-                        }> */}
-                            <Link className={cx('filter_price_btn')}
-                                onClick={() => setRe_render(pre => !pre)}
-                                to={
-                                    paramToObject?._brand ? 
-                                    `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}&_brand=${paramToObject._brand}`
-                                    :
-                                    `/shoes?_page=1&_limit=${limit}&_min=${price[0]}&_max=${price[1]}${type}&_category=${paramToObject?._category}`
-                                }
-                            >Lọc</Link>
-                        
-                            
-                        {/* </button> */}
-                       
-
-                  
-                    
+                        >Lọc</Link>
                     </li>
                     
                 </ul>

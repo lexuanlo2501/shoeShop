@@ -324,8 +324,11 @@ ul {
 
 .wapper_notify {
     width: 360px;
-    height: 450px;
-    
+
+    .notify_value {
+        height: 450px;
+        overflow-y: scroll;
+    }
   
     .notify_item+.notify_item {
         border-top: 0.7px solid #d6d3d3;
@@ -640,7 +643,7 @@ li.cart_btn:hover > div.header_cart-wrap>.header_cart{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 40%;
+    // width: 90%;
     font-size: 14px;
     font-weight: bold;
     line-height: 20px;

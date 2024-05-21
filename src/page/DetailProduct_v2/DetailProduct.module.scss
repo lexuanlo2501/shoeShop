@@ -460,13 +460,9 @@
     text-transform: capitalize;
 }
 
-.avalable,
-.id {
-    display: inline-block;
-}
-
-.avalable {
-    float: right;
+.status_product {
+  display: flex;
+  justify-content: space-between;
 }
 
 .shoe_price_old {
@@ -785,6 +781,39 @@ p.btn_size-link:hover {
   }
 }
 
+.infor_seller {
+  margin-top: 10px;
+  display: flex;
+
+  .go_to_shop {
+    margin-left: 8px;
+
+    a {
+      display: inline-block;
+      color: #757575;
+      border: 1px solid #c3c2c2;
+      border-radius: 5px;
+      padding: 3px 6px;
+
+      svg {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .asign_quantity {
+    margin-left: 50px;
+
+    p {
+
+      span {
+        display: inline-block;
+        width: 100px;
+      }
+    }
+  }
+
+}
 
 
 /* Tablet-specific styles */

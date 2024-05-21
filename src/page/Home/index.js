@@ -8,6 +8,7 @@ const cx = classNames.bind(style)
 function Home({}) {
 
     const brands = ['adidas','nike','converse', 'vans']
+    const userInfor = JSON.parse(localStorage.getItem("tokens"))
 
     const debounce = (fn, delay) => {
         delay = delay || 0
@@ -34,7 +35,14 @@ function Home({}) {
             {/* <div>
                 <button onClick={debouncedClickOrder}>Test debounce</button>
             </div> */}
+        {
+            userInfor.accID &&
+            <div>
+                <h2></h2>
+                <Carousel_v2 brand={"nike"} accID={userInfor.accID}/>
 
+            </div>
+        }
             
             <div className={cx('brand')}>
                 <img src={require("./logoBrand/Sneaker-Brand-Logos-2.png")}/>

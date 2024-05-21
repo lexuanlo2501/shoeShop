@@ -6,11 +6,11 @@ import Slider from '../../components/Slider';
 import styles from './DetailProduct.module.scss'
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import {priceDiscount, formatPrice} from "../../common"
+import {priceDiscount, formatPrice, limit} from "../../common"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import {  faStar as emptyStar  } from '@fortawesome/free-regular-svg-icons';
-import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faSpinner, faTrash, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faDeleteLeft, faEllipsisVertical, faFloppyDisk, faHeart as faHeartSolid, faPen, faSpinner, faStore, faTrash, faXmark, faStar as starPick  } from '@fortawesome/free-solid-svg-icons';
 import { HashLoader } from 'react-spinners';
 import { createAxios } from '../../createInstance';
 
@@ -26,6 +26,7 @@ import Carousel_v2 from '../../components/Carousel_v2';
 import { CartContext } from '../../App';
 import AvatarAuto from '../../components/AvatarAuto';
 import Tippy from '@tippyjs/react';
+import { Link } from 'react-router-dom';
 // import { CartContext } from '../../components/Layout/HeaderOnly';
 
 // import required modules
@@ -52,14 +53,10 @@ function DetailProduct_v2({product_prop={}}) {
     const [showWanr, setShowWanr] = useState(false)
     const [showRefun, setShowRefun] = useState(false)
 
-    
     const [quantity_Order, setQuantity_Order] = useState(1)
    
-
-    
-
     // const [size_Order, setSize_Order] = useState(sizeValues[0])
-    const [size_Order, setSize_Order] = useState("")
+    const [size_Order, setSize_Order] = useState(product_prop?.inventory?.length === 1 ? product_prop?.inventory[0].size : "")
     
 
     let currentUrl = window.location.href;
@@ -68,11 +65,15 @@ function DetailProduct_v2({product_prop={}}) {
 
     let isQuickView = Object.keys(product_prop).length
     useEffect(() => {
+        const controller = new AbortController()
         if(!isQuickView) {
-            axios.get(process.env.REACT_APP_BACKEND_URL+"/shoes/"+paramToObject._id)
+            axios.get(process.env.REACT_APP_BACKEND_URL+"/shoes/"+paramToObject._id, {signal:controller.signal})
             .then(res => {
                 setProduct(res.data)
                 setImgMain(res.data.img)
+                
+                // nếu category = none thì set mặc định (k cần select size khi none size)
+                setSize_Order(res.data?.inventory?.length === 1 ? res.data?.inventory[0].size : "")
             })
         }
         else {
@@ -80,7 +81,7 @@ function DetailProduct_v2({product_prop={}}) {
         }
         // console.log(paramToObject)
 
-
+        return () => controller.abort()
     }, [trigger])
 
     const addCart = (id_product) => {
@@ -104,7 +105,7 @@ function DetailProduct_v2({product_prop={}}) {
         if(indexProd !== -1) {
             // THÊM SỐ LƯỢNG VÀO SẢN PHẨM MÀ ĐÃ TỒN TẠI TRONG CART
             product_list[indexProd] = {...product_list[indexProd], quantity:product_list[indexProd].quantity+quantity_Order}
-            console.log(product_list[indexProd])
+            // console.log(product_list[indexProd])
             newCart = product_list
         }
         else {
@@ -116,23 +117,31 @@ function DetailProduct_v2({product_prop={}}) {
 
     }
 
-    const size_quantiry_select = product?.inventory?.find(i => i.size === size_Order)?.quantity
+    // 
+    const size_quantiry_select = product?.inventory?.length === 1 ?
+    product?.inventory[0].quantity
+    :
+    product?.inventory?.find(i => i.size === size_Order)?.quantity
     
     let user = JSON.parse(localStorage.getItem('tokens')) || {}
 
      //comments
      const [comments, setComments] = useState([]);
-     useEffect(() =>{
-       
-        axios.get(process.env.REACT_APP_BACKEND_URL+`/comments?_productId=${paramToObject._id}`)
-        .then((res)=> {
-            setComments(res.data)
-            setLoading(false)
-            // console.log(product.id)
-            // console.log(product)
-           
-        })
-}, [trigger, paramToObject._id])
+    useEffect(() =>{
+        const controller = new AbortController()
+
+        if(!isQuickView) {
+           axios.get(process.env.REACT_APP_BACKEND_URL+`/comments?_productId=${paramToObject._id}`, {signal:controller.signal})
+           .then((res)=> {
+               setComments(res.data)
+               setLoading(false)
+               // console.log(product.id)
+               // console.log(product)
+              
+           })
+       }
+       return () => controller.abort()
+    }, [trigger, paramToObject._id])
 
     //option comment
     const [showoption, setShowoption] = useState(false)
@@ -167,26 +176,17 @@ function DetailProduct_v2({product_prop={}}) {
           
         }
         else if (accName === user.accName && idcomment !== idcmt  ) {
-    
             setIdcomment(idcmt);
             setIndexComment(index)
             setShowoption(prev => !prev)
-         
             setValuecomment(value)
             setShowInput(false)
-        
-
-
-            console.log(index )
-            console.log(indexcomment)
 
         }
         
        if (role == "admin" ) {
             setIndexComment(index);
             setIdcomment(idcmt);
-
-
             
             if(role == "admin" && idcmt == idcomment && index == indexcomment) {
                 setShowoption(prev => !prev)
@@ -198,25 +198,28 @@ function DetailProduct_v2({product_prop={}}) {
                 setIndexComment(index);
                 setIdcomment(idcmt);
                 setShowoption(prev => !prev) 
-                    setShowInput(false)
-                    setValuecomment( value)
-         
-
-            
+                setShowInput(false)
+                setValuecomment( value)
             }    
         }
 
     })
 
     useEffect(() => {
-        axios.post(process.env.REACT_APP_BACKEND_URL + `/checkPermitCmt`, {
-        product_id: paramToObject._id,
-        accName: user.accName
-    }) 
-    .then((res) => {
-    //    console.log(res.data)
-       setAdmitComment(res.data)
-    })
+        const controller = new AbortController()
+
+        if(!isQuickView) {
+            axios.post(process.env.REACT_APP_BACKEND_URL + `/checkPermitCmt`, {
+                product_id: paramToObject._id,
+                accName: user.accName
+            }, {signal:controller.signal}) 
+            .then((res) => {
+            //    console.log(res.data)
+               setAdmitComment(res.data)
+            })
+        }
+
+        return () => controller.abort()
     }, [paramToObject._id])
 
     const  handleChangeComment = ((id_cmt, index) => {
@@ -324,38 +327,38 @@ function DetailProduct_v2({product_prop={}}) {
 
         var containsSpecialChars =/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(refAddComment.current.value);
         if(containsSpecialChars) {
-            
             return;
         }
 
-            axios.post(process.env.REACT_APP_BACKEND_URL + `/comments`, {
-                value: refAddComment.current.value,
-                product_id: paramToObject._id,
-                accName: user.accName
-          })
+        axios.post(process.env.REACT_APP_BACKEND_URL + `/comments`, {
+            value: refAddComment.current.value,
+            product_id: paramToObject._id,
+            accName: user.accName,
+            detailOrderID: admitComment.detailOrder_ID
+        })
+        .then(res => {
+            setTrigger(prev => !prev)
+        })
           
-          axios.post(process.env.REACT_APP_BACKEND_URL + `/rating`, {
+        axios.post(process.env.REACT_APP_BACKEND_URL + `/rating`, {
             rating: numberStar,
             detail_order_id: admitComment.detailOrder_ID
         })    
-
         .then((res) => {
-            setTrigger(prev => !prev)
             toast.success(`${res.data}`, {
               autoClose: 2000,
               // theme: "colored",
               theme: "light",
               position: "top-right",
           })
-        
          
-            console.log('asdasda')
             setShowAddComment(prev => !prev)
-        })
+            setNumberStar(0)
 
+        })
         .catch((error) => {
             console.log(error)
-   })
+        })
     })
 
 
@@ -387,22 +390,14 @@ function DetailProduct_v2({product_prop={}}) {
           setIdcomment(id_cmt)
           setBtnReply(prev => !prev);
           setInputReply(prev => !prev);
-          console.log(id_cmt)
-        
       }
 
       else if (accName == seller_id) {
-
-          setBtnReply(prev => !prev);
-          setInputReply(prev => !prev);
-          setIdcomment(id_cmt)
-
-          console.log(id_cmt)
-
+        setBtnReply(prev => !prev);
+        setInputReply(prev => !prev);
+        setIdcomment(id_cmt)
       }       
 
-      
-       
     })
 
     const handleSendReply = ((id_cmt) => {
@@ -431,9 +426,7 @@ function DetailProduct_v2({product_prop={}}) {
 
        .then (() => {
          setTrigger(prev => !prev);
-        
          refInputReply.current.value = '';
-         console.log(comments)
 
          toast.success("Đã gửi phản hồi thành công!", {
             autoClose: 2000,
@@ -449,23 +442,18 @@ function DetailProduct_v2({product_prop={}}) {
     let arrStar = [1,2,3,4,5]
 
     const handleDelReply = ((id_cmt) => {
-
-          axios.delete( process.env.REACT_APP_BACKEND_URL + `/replycomments/${id_cmt}`)
-
-          .then(() => {
+        axios.delete( process.env.REACT_APP_BACKEND_URL + `/replycomments/${id_cmt}`)
+        .then(() => {
             setTrigger(prev => !prev)
-            console.log(id_cmt)
-
             toast.success("Đã xóa phản hồi thành công!", {
                 autoClose: 2000,
                 // theme: "colored",
                 theme: "light",
                 position: "top-right",
             })
-
-            
-          })
+        })
     })
+
     return (
         <div >
            
@@ -550,10 +538,10 @@ function DetailProduct_v2({product_prop={}}) {
                             <div className={cx("information_product")}>
                                 <p className={cx("shoe_name")}
                                 >{product.name}</p>
-                                <div className={cx("status")} style={{margin: "13px 0px"}}>
-                                    <p className={cx("id")}>Mã sản phẩm: <strong>{product.id}</strong></p>
-                                    <p className={cx("avalable")}>Tình trạng: <strong>Còn hàng</strong></p>
-
+                                <div className={cx("status_product")} style={{margin: "13px 0px"}}>
+                                    <p>Mã Sản Phẩm: <strong>{product.id}</strong></p>
+                                    <p>Đã Bán: <strong>{product.sold}</strong></p>
+                                    <p>Tình Trạng: <strong>Còn hàng</strong></p>
                                 </div>
                                 {
                                     !!product.price && 
@@ -585,34 +573,41 @@ function DetailProduct_v2({product_prop={}}) {
                             <div className={cx("line")}></div>
                             <div className={cx("option", {"quick_view":isQuickView})}>
                                 <div className={cx("size_product")}>
-                                    <p className={cx(["select","m-0"])}>Size: </p>
-                                    <ul className={cx("button_size")}>
-                                        <SelectActive>
-                                        {
-                                            // sizeValues
-                                            product?.inventory?.map(i=>i.size)?.map((item, index) => {
-                                                let quantitySize_select = product?.inventory?.find(i => i.size===item)
+                                {
+                                    // size = none thì không cần show size để select
+                                    product?.inventory?.length !== 1
+                                    && 
+                                    <>
+                                        <p className={cx(["select","m-0"])}>Size: </p>
+                                        <ul className={cx("button_size")}>
+                                            <SelectActive>
+                                            {
+                                                // sizeValues
+                                                product?.inventory?.map(i=>i.size)?.map((item, index) => {
+                                                    let quantitySize_select = product?.inventory?.find(i => i.size===item)
 
-                                                return (
-                                                    Number(quantitySize_select?.quantity) ?
-                                                    <span key={index}
-                                                        className={cx("btn_size")}
-                                                        onClick={() => {
-                                                            // console.log(quantitySize_select)
-                                                            setSize_Order(item)
-                                                        }}
-                                                    >
-                                                        {item}
-                                                    </span>
-                                                    :
-                                                    <span noActive key={index} className={cx(["btn_size", "noActive"])} onClick={() => {}}><span>x</span></span>
-                                                )
-                                                
+                                                    return (
+                                                        Number(quantitySize_select?.quantity) ?
+                                                        <span key={index}
+                                                            className={cx("btn_size")}
+                                                            onClick={() => {
+                                                                // console.log(quantitySize_select)
+                                                                setSize_Order(item)
+                                                            }}
+                                                        >
+                                                            {item}
+                                                        </span>
+                                                        :
+                                                        <span noActive key={index} className={cx(["btn_size", "noActive"])} onClick={() => {}}><span>x</span></span>
+                                                    )
+                                                    
 
-                                            })
-                                        }
-                                        </SelectActive>
-                                    </ul>
+                                                })
+                                            }
+                                            </SelectActive>
+                                        </ul>
+                                    </>
+                                }
                                 </div>
                                 <div className={cx("quantity_product")}>
                                     <p className={cx(["quantity", "m-0"])}>Số Lượng: </p>
@@ -671,6 +666,7 @@ function DetailProduct_v2({product_prop={}}) {
                 
                                 <div className={cx("add_btn_grp")}
                                     onClick={() =>{
+                                        console.log(size_Order)
                                         if(size_quantiry_select<quantity_Order) {
                                             toast.error("Sản phẩm không đủ số lượng", {
                                                 autoClose: 2000,
@@ -689,11 +685,13 @@ function DetailProduct_v2({product_prop={}}) {
                                             })
                                         }
                                         else {
-                                            toast.error("Vui lòng chọn size", {
-                                                autoClose: 2000,
-                                                theme: "colored",
-                                                position: "bottom-right",
-                                            })
+                                            if(product?.inventory.length !== 1) {
+                                                toast.error("Vui lòng chọn size", {
+                                                    autoClose: 2000,
+                                                    theme: "colored",
+                                                    position: "bottom-right",
+                                                })
+                                            }
                                         }
                                        
                                     }}
@@ -734,7 +732,6 @@ function DetailProduct_v2({product_prop={}}) {
                                     </div>
 
                                     <div className={cx(["line"])}></div>
-
                                     <div className={cx("policy")}>
                                         <h2 className={cx({"active_policy":showWanr})} onClick={() => {setShowWanr(pre => !pre)}}>BẢO HÀNH THẾ NÀO ?
                                         {
@@ -752,6 +749,25 @@ function DetailProduct_v2({product_prop={}}) {
                                     }
                                     
                                     </div>
+                                {
+                                    product.seller_id
+                                    &&
+                                    <>
+                                        <div className={cx(["line"])}></div>
+                                        <div className={cx("infor_seller")}>
+                                            <AvatarAuto nameU={product.seller_id}/>
+                                            <div className={cx("go_to_shop")}>
+                                                <p>{product.sellerName}</p>
+                                                {/* _page=1&_limit=16&_sellerID=lelolo123 */}
+                                                <Link to={`/saleHome?_page=1&_limit=${limit}&_sellerID=${product.seller_id}`} onClick={() => {window.scrollTo(0, 0)}}><FontAwesomeIcon icon={faStore}/>Xem Shop</Link>
+                                            </div>
+                                            <div className={cx("asign_quantity")}>
+                                                <p><span>Đánh Giá</span>:</p>
+                                                <p><span>Sản Phẩm</span>: {product.amountProdStore}</p>
+                                            </div>
+                                        </div>
+                                    </>
+                                }
 
                                 </>
                                 
@@ -1003,14 +1019,11 @@ function DetailProduct_v2({product_prop={}}) {
                         </div>
                     
                     {
-                        product?.brand_id && <Carousel_v2 brand={product?.brand_id} setTrigger={setTrigger}/>
+                        product?.brand_id && <Carousel_v2 brand={product?.brand_id} categoryID={product?.categoryID}  setTrigger={setTrigger}/>
                     }
                 </div>
                 </>
             }
-            
-           
-
 
             </div>
 

@@ -175,8 +175,6 @@ a{
             .card-img{
                 width: 300px;
                 border-radius: 30px;
-
-                
             }
         }
 
@@ -200,6 +198,10 @@ a{
                 color: #6d6c6c;
             }
 
+            div {
+                margin-bottom: 10px;
+            }
+
         }
    }
 
@@ -213,13 +215,11 @@ a{
         .card_thumnal {
             height: 300px;
         }
-
     }
     &.grid-2 {
         width: 40%;
         .card_thumnal {
             height: 300px;
-
         }
     }
 
@@ -537,6 +537,8 @@ a{
                     width: 150px;
                 }
             }
+
+           
         }
         
        

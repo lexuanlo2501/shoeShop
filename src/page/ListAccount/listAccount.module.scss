@@ -17,13 +17,17 @@
     padding: 5px 10px;
     border-radius: 15px;
     font-weight: 600;
+    letter-spacing: 1px;
 
 
     &.i {
         background-color: rgb(249, 193, 140);
     }
     &.ii {
-        background-color: rgb(255, 199, 199);
+        background-color: rgb(204, 236, 246);
+    }
+    &.iii {
+        background-color: rgb(185, 227, 195);
     }
 
 }
