@@ -16,6 +16,8 @@ const cx = classNames.bind(styles)
 function Carousel_v2({brand="", setTrigger, nameProd, categoryID, accID}) {
     // accID
     const [products, setProducts] = useState([])
+    const [showLabelRecommend,setShowLabelRecommend] = useState(false)
+
   
     const handleDragStart = (e) => e.preventDefault();
     
@@ -29,7 +31,11 @@ function Carousel_v2({brand="", setTrigger, nameProd, categoryID, accID}) {
         process.env.REACT_APP_BACKEND_URL+"/recommendProd/"+accID
         axios.get(apiCall, {signal:controller.signal})
         .then(res => {
+            console.log({res:res.data})
             setProducts(res.data)
+            if(accID && res.data.length !== 0) {
+                setShowLabelRecommend(true)
+            }
         })
         .catch(err => console.log(err))
 
@@ -38,7 +44,9 @@ function Carousel_v2({brand="", setTrigger, nameProd, categoryID, accID}) {
 
     return (
         <div className={cx("carousel_wrapper")}>
-            
+        {
+            showLabelRecommend && <h1>Gợi ý Theo Đánh Gía Của Bạn</h1>
+        }
             <Swiper
                 style={{
                     // '--swiper-navigation-color': '#333',
@@ -67,7 +75,7 @@ function Carousel_v2({brand="", setTrigger, nameProd, categoryID, accID}) {
                 }}
             >
             {
-                products.map(item => (
+                products?.map(item => (
                     <SwiperSlide key={item.id} className={cx("link")}>
                         <Link
                             key={item.id}
@@ -103,6 +111,9 @@ function Carousel_v2({brand="", setTrigger, nameProd, categoryID, accID}) {
                 ))
             }
             </Swiper>
+            {
+                products.length === 0 && !accID && <h2 className={cx("empty_prod")}>CHƯA CÓ SẢN PHẨM CHO MỤC NÀY</h2>
+            }
         </div>
     );
 }

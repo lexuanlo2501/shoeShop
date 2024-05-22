@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import { createAxios } from "../../createInstance";
 import {toast} from 'react-toastify';
+import { limit } from "../../common";
 
 
 const cx = classNames.bind(styles)
@@ -20,7 +21,8 @@ const RegisterSale = () => {
         })
         .then(res => {
             if(res.data.status) {
-                navigate("/saleHome")
+                navigate(`/saleHome?_page=1&_limit=${limit}&_sellerID=${userInfor?.accName}`)
+                
                 localStorage.setItem("tokens", JSON.stringify({...userInfor, role:"seller"}))
                 toast.success("Đăng Ký Thành Công")
             }

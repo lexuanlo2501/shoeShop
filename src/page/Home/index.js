@@ -36,11 +36,9 @@ function Home({}) {
                 <button onClick={debouncedClickOrder}>Test debounce</button>
             </div> */}
         {
-            userInfor.accID &&
+            userInfor?.accID &&
             <div>
-                <h2></h2>
-                <Carousel_v2 brand={"nike"} accID={userInfor.accID}/>
-
+                <Carousel_v2 accID={userInfor.accID}/>
             </div>
         }
             

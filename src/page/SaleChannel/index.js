@@ -17,7 +17,7 @@ function SaleChannel() {
 
     let currentUrl = window.location.href;
     let param = currentUrl.split("?")[1]
-    let paramToObject = JSON.parse('{"' + decodeURI(param.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
+    let paramToObject = JSON.parse('{"' + decodeURI(param?.replace(/&/g, "\",\"")?.replace(/=/g,"\":\"")) + '"}')
 
     useEffect(() => {
        axios.get(process.env.REACT_APP_BACKEND_URL+"/accountsLite/"+paramToObject._sellerID)
